@@ -1,0 +1,115 @@
+{
+  "project_info": {
+    "project_number": "380769848314",
+    "firebase_url": "https://turismoar-72e69.firebaseio.com",
+    "project_id": "turismoar-72e69",
+    "storage_bucket": "turismoar-72e69.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:380769848314:android:c2895c3aceb455c4",
+        "android_client_info": {
+          "package_name": "com.example.henry.latacungaar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "380769848314-1o8qi9i2a9t010v9u4gstvtlf1sdutj6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.henry.latacungaar",
+            "certificate_hash": "34fa606b780a515508121d246afbcb0d5ba1a0fa"
+          }
+        },
+        {
+          "client_id": "380769848314-efpoug5hfickj0998mg0rla2ei6ibhs9.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "380769848314-q4s3orad4i0v2n4sj2ekr1r8fjto7ub5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.henry.latacungaar",
+            "certificate_hash": "4946d3a441fd774d795982cd709861fe5ba9f397"
+          }
+        },
+        {
+          "client_id": "380769848314-cgmmkm7cjohsdkfu7fketd667m67ngk0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuSEaFHC-DiHjlgYOrp7QMD2ul8BRY_W8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "380769848314-efpoug5hfickj0998mg0rla2ei6ibhs9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:380769848314:android:651a04bb88729963",
+        "android_client_info": {
+          "package_name": "com.example.jona.latacungadigital"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "380769848314-sp31jc3f3mjcmg9lneuuukdh8te8jfro.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jona.latacungadigital",
+            "certificate_hash": "3808561a798c9b2171eda0998f7b1c892c1219a3"
+          }
+        },
+        {
+          "client_id": "380769848314-efpoug5hfickj0998mg0rla2ei6ibhs9.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "380769848314-cgmmkm7cjohsdkfu7fketd667m67ngk0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuSEaFHC-DiHjlgYOrp7QMD2ul8BRY_W8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "380769848314-efpoug5hfickj0998mg0rla2ei6ibhs9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
