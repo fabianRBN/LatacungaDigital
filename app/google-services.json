@@ -71,6 +71,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "380769848314-6uonduf4oj8gj9530eb7cb4lv01k98ua.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jona.latacungadigital",
+            "certificate_hash": "34fa606b780a515508121d246afbcb0d5ba1a0fa"
+          }
+        },
+        {
           "client_id": "380769848314-sp31jc3f3mjcmg9lneuuukdh8te8jfro.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
