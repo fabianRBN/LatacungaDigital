@@ -9,6 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -44,6 +45,8 @@ dependencies {
 
     // Para el contorno del mensaje del chat.
     implementation 'com.github.lguipeng:BubbleView:1.0.1'
+
+    implementation 'com.android.support:multidex:1.0.3'
 
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.android.support:support-vector-drawable:27.1.1'

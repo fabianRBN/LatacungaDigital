@@ -15,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.jona.latacungadigital.Activities.Adapters.CustomInfoWindowsAdapter;
+import com.example.jona.latacungadigital.Activities.Adapters.MyOnInfoWindowsClickListener;
+import com.example.jona.latacungadigital.Activities.Adapters.OnMarkerClickListenerAdapter;
 import com.example.jona.latacungadigital.Activities.Parser.DirectionsParser;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.Manifest;
@@ -57,7 +60,7 @@ import java.util.List;
  * Use the {@link MapaFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapaFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
+public class MapaFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -75,15 +78,9 @@ public class MapaFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
     // Variables de firebase
     private DatabaseReference mDatabase;
-    private static ArrayList<Coordenada> listaCoordenadas = new ArrayList<Coordenada>();
+    private static ArrayList<MarkerOptions> listaMarkadores = new ArrayList<MarkerOptions>();
 
-    public static ArrayList<Coordenada> getListaCoordenadas() {
-        return listaCoordenadas;
-    }
 
-    public static void setListaCoordenadas(Coordenada coordenadas) {
-        MapaFragment.listaCoordenadas.add(coordenadas);
-    }
 
     private OnFragmentInteractionListener mListener;
 
@@ -133,8 +130,6 @@ public class MapaFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-        mMapView.onResume(); // needed to get the map to display immediately
-
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
         } catch (Exception e) {
@@ -158,9 +153,13 @@ public class MapaFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                     //googleMap.getUiSettings().setMyLocationButtonEnabled(true);
                 }
                 googleMap.setMyLocationEnabled(true);
-
+                googleMap.setInfoWindowAdapter(new CustomInfoWindowsAdapter(getContext()));
+                googleMap.setOnInfoWindowClickListener( new MyOnInfoWindowsClickListener(getContext()));
 
                 // For dropping a marker at a point on the Map
+
+                final OnMarkerClickListenerAdapter onMarkerClickListenerAdapter = new OnMarkerClickListenerAdapter(getContext(),googleMap);
+
 
                 mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -176,27 +175,31 @@ public class MapaFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
                             String nombreAtractivo = child.child("nombre").getValue().toString();
                             String descripcionAtractivo = child.child("descripcion").getValue().toString();
+                            String snippit ="";
+                            String pathImagen= "";
+                            /*for(DataSnapshot galeria: child.child("galeria").getChildren()){
+                                pathImagen = galeria.child("imagenURL").getValue().toString();
+
+                            }
+
+                            snippit = descripcionAtractivo +"&##"+pathImagen;*/
                             Coordenada coordenada =  child.child("posicion").getValue(Coordenada.class);
                             LatLng punto = new LatLng( coordenada.getLat(), coordenada.getLng());
                             System.out.println("Posiciones:"+ puntoOrigen+" "+punto );
-
-
-                            googleMap.addMarker(new MarkerOptions()
-                                    .position(punto)
+                            MarkerOptions markerOptions = new  MarkerOptions().position(punto)
                                     .title(nombreAtractivo)
-                                    .snippet(descripcionAtractivo)
-
-
-                            );
-
-
+                                    .snippet(descripcionAtractivo);
+                            listaMarkadores.add(markerOptions);
+                            googleMap.addMarker(markerOptions);
 
 
 
-                                String url = getRequestUrl(puntoOrigen,punto);
+
+
+                                /*String url = getRequestUrl(puntoOrigen,punto);
                                 System.out.println("Url :"+url);
                                 TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
-                                taskRequestDirections.execute(url);
+                                taskRequestDirections.execute(url);*/
 
                             puntoOrigen = punto;
 
@@ -205,6 +208,8 @@ public class MapaFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
 
                         }
+                        onMarkerClickListenerAdapter.setListaMarkers(listaMarkadores);
+                        onMarkerClickListenerAdapter.setGoogleMapTemporal(googleMap);
 
                     }
 
@@ -220,10 +225,12 @@ public class MapaFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
 
                 // For zooming automatically to the location of the marker
+                googleMap.setOnMarkerClickListener(onMarkerClickListenerAdapter);
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(ultimopunto).zoom(12).build();
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-                
+
+
 
 
             }
@@ -233,59 +240,9 @@ public class MapaFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         return rootView;
     }
 
-    private String getRequestUrl( LatLng origen, LatLng destino){
-        // Valor de origen
-        String str_origen = "origin="+origen.latitude+","+origen.longitude;
-        // Valor de destino
-        String str_destino = "destination="+destino.latitude+","+destino.longitude;
-        // Valor de sensor
-        String sensor = "sensor=false";
-        // Modo de direccion
-        String mode = "mode=driving";
-        // Construir parametros google api
-        String param = str_origen+"&"+str_destino+"&"+sensor+"&"+mode;
-        // Output api
-        String output = "json";
-        //Crear url request google api destino
-        String url = "https://maps.googleapis.com/maps/api/directions/"+output+"?"+param;
 
-        return  url;
-    }
 
-    private String requestDirection(String reqUrl) throws IOException {
-        String responseString="";
-        InputStream inputStream = null;
-        HttpURLConnection httpURLConnection = null;
-        try{
-            URL url = new URL(reqUrl);
-            httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.connect();
 
-            // Get request
-            inputStream = httpURLConnection.getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-            StringBuffer  stringBuffer = new StringBuffer();
-            String line = "";
-            while((line = bufferedReader.readLine())!= null){
-                stringBuffer.append(line);
-            }
-            responseString = stringBuffer.toString();
-            bufferedReader.close();
-            inputStreamReader.close();
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            if(inputStream != null){
-                inputStream.close();
-            }
-            httpURLConnection.disconnect();
-
-        }
-        return  responseString;
-    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -352,87 +309,8 @@ public class MapaFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     }
 
 
-    public  class TaskRequestDirections extends AsyncTask<String,Void,String>{
-
-        @Override
-        protected String doInBackground(String... strings) {
-            String responseString = "";
-            try {
-                responseString = requestDirection(strings[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return  responseString;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            TaskParser taskParser = new TaskParser();
-            taskParser.execute(s);
-        }
-    }
-
-    public class TaskParser extends AsyncTask<String, Void, List<List<HashMap<String, String>>> > {
-
-        @Override
-        protected List<List<HashMap<String, String>>> doInBackground(String... strings) {
-            JSONObject jsonObject = null;
-            List<List<HashMap<String, String>>> routes = null;
-            try {
-                jsonObject = new JSONObject(strings[0]);
-                DirectionsParser directionsParser = new DirectionsParser();
-                routes = directionsParser.parse(jsonObject);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return routes;
-        }
-
-        @Override
-        protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
-            //Get list route and display it into the map
-
-            ArrayList points = null;
-
-            PolylineOptions polylineOptions = null;
-
-            for (List<HashMap<String, String>> path : lists) {
-                points = new ArrayList();
-                polylineOptions = new PolylineOptions();
-
-                for (HashMap<String, String> point : path) {
-                    double lat = Double.parseDouble(point.get("lat"));
-
-                    double lon = Double.parseDouble(point.get("lon"));
-                    System.out.println("Punto añadido:"+ lon+" "+lat);
-                    points.add(new LatLng(lat,lon));
-                }
-
-                polylineOptions.addAll(points);
-                polylineOptions.width(15);
-                polylineOptions.color(Color.BLUE);
-                polylineOptions.geodesic(true);
-            }
-
-            if (polylineOptions!=null) {
-                System.out.println("Puntos completos");
-                googleMap.addPolyline(polylineOptions);
 
 
-            } else {
-                Toast.makeText(getContext(), "Direction not found!", Toast.LENGTH_SHORT).show();
-            }
 
-        }
-    }
 
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        Log.i("GoogleMapActivity", "onMarkerClick");
-        Toast.makeText(getContext(),
-                "Marker Clicked: " + marker.getTitle(), Toast.LENGTH_LONG)
-                .show();
-        return false;
-    }
 }
