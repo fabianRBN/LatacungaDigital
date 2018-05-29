@@ -10,7 +10,7 @@ import com.google.android.gms.maps.model.Marker;
  * Created by fabia on 26/05/2018.
  */
 
-public class MyOnInfoWindowsClickListener implements GoogleMap.OnInfoWindowClickListener {
+public class MyOnInfoWindowsClickListener implements GoogleMap.OnInfoWindowClickListener ,GoogleMap.OnInfoWindowLongClickListener {
 
     private Context context;
 
@@ -22,6 +22,16 @@ public class MyOnInfoWindowsClickListener implements GoogleMap.OnInfoWindowClick
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(context,
                 "onInfoWindowClick():\n" +
+                        marker.getPosition().latitude + "\n" +
+                        marker.getPosition().longitude,
+                Toast.LENGTH_LONG).show();
+    }
+
+
+    @Override
+    public void onInfoWindowLongClick(Marker marker) {
+        Toast.makeText(context,
+                "Click largo:\n" +
                         marker.getPosition().latitude + "\n" +
                         marker.getPosition().longitude,
                 Toast.LENGTH_LONG).show();

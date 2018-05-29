@@ -45,7 +45,7 @@ public class TaskRequestDirections  extends AsyncTask<String,Void,String> implem
         // Valor de sensor
         String sensor = "sensor=false";
         // Modo de direccion
-        String mode = "mode=driving";
+        String mode = "mode=walking";
         // Construir parametros google api
         String param = str_origen+"&"+str_destino+"&"+sensor+"&"+mode;
         // Output api
