@@ -1,6 +1,5 @@
 package com.example.jona.latacungadigital.Activities;
 
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,9 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.R;
 import com.google.android.gms.auth.api.Auth;
@@ -48,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     return true;
                 case R.id.navigation_dashboard:
                    // mTextMessage.setText(R.string.title_dashboard);
+                    OpenChatBotActivity();
                     return true;
                 case R.id.navigation_notifications:
                     // mTextMessage.setText(R.string.title_notifications);
@@ -96,6 +96,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         startActivity(intent);
     }
 
+    private void OpenChatBotActivity() {
+        Intent intent = new Intent(this, ChatBotActivity.class);
+        startActivity(intent);
+    }
+
     // Método para cerrar sesión de la aplicacion.
     private void logOut() {
         // Cerrar sesión con Firebase.
@@ -135,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-
 
     private void setFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
