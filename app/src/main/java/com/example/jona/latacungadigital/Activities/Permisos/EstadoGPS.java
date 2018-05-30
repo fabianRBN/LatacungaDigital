@@ -15,6 +15,7 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -25,6 +26,7 @@ public class EstadoGPS {
 
 
     Context context;
+    private GoogleMap googleMap;
     LocationManager locationManager;
     boolean gps_enabled = false;
     boolean network_enabled = false;
@@ -32,11 +34,21 @@ public class EstadoGPS {
     public LatLng puntoOrigen = new LatLng(-0.9337192,-78.6174786);
 
 
-    public EstadoGPS(Context context) {
+    public EstadoGPS(Context context, GoogleMap googleMap) {
         this.context = context;
+        this.googleMap = googleMap;
         this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        PuntodeOrigenGoogleMap();
     }
 
+    public void PuntodeOrigenGoogleMap(){
+        googleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                puntoOrigen = new LatLng(location.getLatitude(),location.getLongitude());
+            }
+        });
+    }
     public boolean GpsStado() {
         gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if(!gps_enabled){

@@ -65,7 +65,7 @@ public class OnMarkerClickListenerAdapter implements GoogleMap.OnMarkerClickList
         this.mContext = mContext;
         this.googleMap = googleMap;
         accesoInternet = new AccesoInternet();
-        estadoGPS = new EstadoGPS(mContext);
+        estadoGPS = new EstadoGPS(mContext,googleMap);
         posicionPorGps();
 
     }
@@ -76,14 +76,17 @@ public class OnMarkerClickListenerAdapter implements GoogleMap.OnMarkerClickList
 
 
         marker.showInfoWindow();
+        if(marker.isInfoWindowShown()){
+            marker.hideInfoWindow();
+            marker.showInfoWindow();
+        }
         // Delay para dibujar la imagen en el lienso de infowindows google maps
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 marker.showInfoWindow();
-
-            }
+                            }
         }, 200);
 
         LatLng puntoFinal = new LatLng(marker.getPosition().latitude,marker.getPosition().longitude);

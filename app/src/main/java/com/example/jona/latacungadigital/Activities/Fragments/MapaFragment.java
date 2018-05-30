@@ -104,7 +104,7 @@ public class MapaFragment extends Fragment {
                 dataFirebase();
 
                 LatLng ultimopunto = new LatLng(-0.9337192,-78.6174786);
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(ultimopunto).zoom(12).build();
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(ultimopunto).zoom(13).build();
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
             }
@@ -155,7 +155,7 @@ public class MapaFragment extends Fragment {
 
                 }
                 onMarkerClickListenerAdapter.setListaMarkers(listaMarkadores);
-                onMarkerClickListenerAdapter.setGoogleMapTemporal(googleMap);
+
 
             }
 

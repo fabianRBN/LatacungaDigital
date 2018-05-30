@@ -27,6 +27,7 @@ public class CustomInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter  {
 
 
 
+
     public CustomInfoWindowsAdapter(Context context) {
         mContext =  context;
         this.mWindow = LayoutInflater.from(context).inflate(R.layout.custom_info_window,null);
@@ -35,7 +36,7 @@ public class CustomInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter  {
     }
 
     @SuppressLint("InflateParams")
-    private void rendowWindowsText(final Marker marker, View view){
+    private void rendowWindowsText(final Marker marker, final View view){
 
         String titulo = marker.getTitle();
         TextView tvTitulo = (TextView) view.findViewById(R.id.str_titulo);
@@ -44,12 +45,12 @@ public class CustomInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter  {
         }
         String snippet = marker.getSnippet();
         TextView tvSnippet = (TextView) view.findViewById(R.id.str_descripcion);
-        ImageView imgSnppet = (ImageView) view.findViewById(R.id.img_atractivo);
+        final ImageView imgSnppet = (ImageView) view.findViewById(R.id.img_atractivo);
         if(!snippet.equals("")){
             String[] parametros = snippet.split("&##");
 
             tvSnippet.setText(parametros[0]);
-
+            final String pathImagen = parametros[1];
             Picasso.get().load(parametros[1]).networkPolicy(NetworkPolicy.OFFLINE).into(imgSnppet, new Callback() {
                 @Override
                 public void onSuccess() {
@@ -58,7 +59,7 @@ public class CustomInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter  {
 
                 @Override
                 public void onError(Exception e) {
-
+                    Picasso.get().load(pathImagen).into(imgSnppet);
                 }
             });
 
