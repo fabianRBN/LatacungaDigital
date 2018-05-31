@@ -31,7 +31,12 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBUS1fRuy5oUX5jXnEw9S1KPrTf42yN5nU" />
 
-        <activity android:name=".Activities.ChatBotActivity" android:parentActivityName=".Activities.MainActivity"></activity>
+        <activity
+            android:name=".Activities.ChatBotActivity"
+            android:parentActivityName=".Activities.MainActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

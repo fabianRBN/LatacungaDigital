@@ -10,11 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.jona.latacungadigital.Activities.Clases.CharacterClass;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
 import com.github.library.bubbleview.BubbleTextView;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessagesAdapter extends RecyclerView.Adapter {
 
@@ -121,25 +125,47 @@ public class MessagesAdapter extends RecyclerView.Adapter {
 
     private class ChatBotMessageHolder extends RecyclerView.ViewHolder {
         BubbleTextView messageText;
+        CircleImageView circleImageView;
 
         ChatBotMessageHolder(View itemView) {
             super(itemView);
 
             messageText = itemView.findViewById(R.id.textMessageChatBot);
+            circleImageView = itemView.findViewById(R.id.chatBotImage);
         }
 
         void bind(TextMessageModel message) {
             messageText.setText(message.getMessage()); // Se envia el mensaje del ChatBot.
+            // Se coloca la imagen del personaje en el chatbot.
+            CharacterClass characterClass = new CharacterClass();
+            characterClass.ReadCharacterFromDatabase(new CharacterClass.DataOfCharacters() {
+                @Override
+                public void nameCharacter(String nameCharacter, String imageCharacterURL) {
+                    Glide.with(context).load(imageCharacterURL).crossFade().centerCrop().into(circleImageView);
+                }
+            });
         }
     }
 
     private class ChatBotTypingHolder extends RecyclerView.ViewHolder {
+        CircleImageView circleImageViewTyping;
 
         ChatBotTypingHolder(View itemView) {
             super(itemView);
+
+            circleImageViewTyping = itemView.findViewById(R.id.chatBotTypingImage);
         }
 
-        void bind() {}
+        void bind() {
+            // Se coloca la imagen del personaje en el chatbot.
+            CharacterClass characterClass = new CharacterClass();
+            characterClass.ReadCharacterFromDatabase(new CharacterClass.DataOfCharacters() {
+                @Override
+                public void nameCharacter(String nameCharacter, String imageCharacterURL) {
+                    Glide.with(context).load(imageCharacterURL).crossFade().centerCrop().into(circleImageViewTyping);
+                }
+            });
+        }
     }
 
     // Clase para manipular la informacion de los atractivos y ponerles en sus respectivos componetes para agregarles en el RecycleView.

@@ -36,6 +36,7 @@ dependencies {
     // Firebase dependencias.
     implementation 'com.google.firebase:firebase-core:10.0.1'
     implementation 'com.google.firebase:firebase-auth:10.0.1'
+    implementation 'com.google.firebase:firebase-database:10.0.1'
 
     // Para comunicarse con Dialogflow
     implementation 'ai.api:sdk:2.0.7@aar'

@@ -30,7 +30,7 @@ public class AccesoInternet {
         return false;
     }
 
-    private boolean isNetDisponible(Context context) {
+    public boolean isNetDisponible(Context context) {
 
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
