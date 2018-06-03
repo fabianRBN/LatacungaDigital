@@ -22,9 +22,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -53,8 +51,6 @@ public class MapaFragment extends Fragment {
         // Required empty public constructor
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,11 +60,7 @@ public class MapaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_mapa, container, false);
-
-
-
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
@@ -85,17 +77,14 @@ public class MapaFragment extends Fragment {
                 googleMap = mMap;
 
                 // For showing a move to my location button
-
-
                 if ( ContextCompat.checkSelfPermission( getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
                     ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
                     return;
-                    //googleMap.getUiSettings().setMyLocationButtonEnabled(true);
                 }
+                MyOnInfoWindowsClickListener myOnInfoWindowsClickListener= new MyOnInfoWindowsClickListener(getContext(),googleMap);
+
                 googleMap.setMyLocationEnabled(true);
                 googleMap.setInfoWindowAdapter(new CustomInfoWindowsAdapter(getContext()));
-
-                MyOnInfoWindowsClickListener myOnInfoWindowsClickListener= new MyOnInfoWindowsClickListener(getContext());
                 googleMap.setOnInfoWindowClickListener( myOnInfoWindowsClickListener);
                 googleMap.setOnInfoWindowLongClickListener(myOnInfoWindowsClickListener);
 
@@ -124,10 +113,6 @@ public class MapaFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                int contador = 0;
-
-                LatLng puntoOrigen = new LatLng(-0.9337192,-78.6174786);
-
                 for (DataSnapshot child: dataSnapshot.getChildren()){
 
                     String nombreAtractivo = child.child("nombre").getValue().toString();
@@ -136,10 +121,8 @@ public class MapaFragment extends Fragment {
                     String pathImagen= "";
                             for(DataSnapshot galeria: child.child("galeria").getChildren()){
                                 pathImagen = galeria.child("imagenURL").getValue().toString();
-
                             }
-
-                            snippit = descripcionAtractivo +"&##"+pathImagen;
+                            snippit = descripcionAtractivo +"&##"+pathImagen+"&##"+child.getKey();
                     Coordenada coordenada =  child.child("posicion").getValue(Coordenada.class);
                     LatLng punto = new LatLng( coordenada.getLat(), coordenada.getLng());
                     MarkerOptions markerOptions = new  MarkerOptions().position(punto)
@@ -148,14 +131,8 @@ public class MapaFragment extends Fragment {
                     listaMarkadores.add(markerOptions);
                     googleMap.addMarker(markerOptions);
 
-                                /*String url = getRequestUrl(puntoOrigen,punto);
-                                System.out.println("Url :"+url);
-                                TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
-                                taskRequestDirections.execute(url);*/
 
                 }
-                onMarkerClickListenerAdapter.setListaMarkers(listaMarkadores);
-
 
             }
 

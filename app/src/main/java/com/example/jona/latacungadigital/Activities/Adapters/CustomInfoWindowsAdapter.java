@@ -2,6 +2,7 @@ package com.example.jona.latacungadigital.Activities.Adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,12 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
 import com.example.jona.latacungadigital.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 /**
  * Created by fabia on 25/05/2018.
@@ -48,10 +51,9 @@ public class CustomInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter  {
         final ImageView imgSnppet = (ImageView) view.findViewById(R.id.img_atractivo);
         if(!snippet.equals("")){
             String[] parametros = snippet.split("&##");
-
             tvSnippet.setText(parametros[0]);
             final String pathImagen = parametros[1];
-            Picasso.get().load(parametros[1]).networkPolicy(NetworkPolicy.OFFLINE).into(imgSnppet, new Callback() {
+            /*Picasso.get().load(parametros[1]).networkPolicy(NetworkPolicy.OFFLINE).into(imgSnppet, new Callback() {
                 @Override
                 public void onSuccess() {
 
@@ -61,7 +63,22 @@ public class CustomInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter  {
                 public void onError(Exception e) {
                     Picasso.get().load(pathImagen).into(imgSnppet);
                 }
-            });
+            });*/
+
+            Glide.with(mContext).load(parametros[1]).asBitmap().override(100,100).listener(new RequestListener<String, Bitmap>() {
+                @Override
+                public boolean onException(Exception e, String model, com.bumptech.glide.request.target.Target<Bitmap> target, boolean isFirstResource) {
+                    e.printStackTrace();
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(Bitmap resource, String model, com.bumptech.glide.request.target.Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    if(!isFromMemoryCache) marker.showInfoWindow();
+                    return false;
+                }
+
+            }).into(imgSnppet);
 
 
         }
@@ -84,4 +101,5 @@ public class CustomInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter  {
 
 
 
-}
+
+    }

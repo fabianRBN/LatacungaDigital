@@ -30,15 +30,12 @@ public class OnMarkerClickListenerAdapter implements GoogleMap.OnMarkerClickList
 
     private Context mContext;
     private GoogleMap googleMap;
-    private GoogleMap googleMapTemporal;
-    private ArrayList<MarkerOptions> listaMarkers = new ArrayList<>();
-    LocationManager locationManager;
-    Criteria criteria = new Criteria();
-    private Polyline polyline;
+  /*  private ArrayList<MarkerOptions> listaMarkers = new ArrayList<>();
+
     AccesoInternet accesoInternet;
     EstadoGPS estadoGPS;
 
-    Location location;
+
     LatLng puntoOrigen = new LatLng(-0.9337192,-78.6174786);
 
     public ArrayList<MarkerOptions> getListaMarkers() {
@@ -48,25 +45,15 @@ public class OnMarkerClickListenerAdapter implements GoogleMap.OnMarkerClickList
     public void setListaMarkers(ArrayList<MarkerOptions> listaMarkers) {
         this.listaMarkers = listaMarkers;
     }
-
-
-    public void setPolyline(Polyline polyline) {
-        this.polyline = polyline;
-    }
-
-    public void setGoogleMapTemporal(GoogleMap googleMapTemporal) {
-        this.googleMapTemporal = googleMapTemporal;
-    }
-
-
+*/
 
 
     public OnMarkerClickListenerAdapter(Context mContext, GoogleMap googleMap) {
         this.mContext = mContext;
         this.googleMap = googleMap;
-        accesoInternet = new AccesoInternet();
-        estadoGPS = new EstadoGPS(mContext,googleMap);
-        posicionPorGps();
+        //accesoInternet = new AccesoInternet();
+        //estadoGPS = new EstadoGPS(mContext,googleMap);
+        //posicionPorGps();
 
     }
 
@@ -89,62 +76,34 @@ public class OnMarkerClickListenerAdapter implements GoogleMap.OnMarkerClickList
                             }
         }, 200);
 
-        LatLng puntoFinal = new LatLng(marker.getPosition().latitude,marker.getPosition().longitude);
-        /*if(estadoGPS.GpsStado()) {
+        /*LatLng puntoFinal = new LatLng(marker.getPosition().latitude,marker.getPosition().longitude);
 
-                puntoOrigen = new LatLng(location.getLatitude(), location.getLongitude());
-
-        }else{
-            Toast.makeText(mContext,"Active GPS",Toast.LENGTH_SHORT).show();
-        }*/
         puntoOrigen = estadoGPS.puntoOrigen;
         if(accesoInternet.isOnlineNet()) {
             distanciaGoogle(puntoOrigen, puntoFinal);
         }else{
             Toast.makeText(mContext,"No tiene acceso a internet",Toast.LENGTH_SHORT).show();
-        }
+        }*/
         return true;
     }
 
-    public void distanciaGoogle(LatLng puntoOrigen, LatLng punto){
-
-        //googleMap.clear();
-        //googleMap = googleMapTemporal;
+   /* public void distanciaGoogle(LatLng puntoOrigen, LatLng punto){
 
         TaskRequestDirections taskRequestDirections = new TaskRequestDirections(googleMap,mContext);
-        //googleMap.clear();
-        /*googleMap = googleMapTemporal;
-        if(listaMarkers.size() >0) {
-
-            for (MarkerOptions markerOptions : listaMarkers) {
-                googleMap.addMarker(markerOptions);
-
-            }
-
-            googleMap.setInfoWindowAdapter(new CustomInfoWindowsAdapter(mContext));
-            googleMap.setOnInfoWindowClickListener( new MyOnInfoWindowsClickListener(mContext));
-        }*/
-
-
         String url = taskRequestDirections.getRequestUrl(puntoOrigen,punto);
 
         taskRequestDirections.execute(url);
-        setPolyline(taskRequestDirections.getPolyline());
+
 
 
     }
-
-    public void posicionPorGps(){
-        /*locationManager =  (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return ;
-        }
-        location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));*/
+*/
+  /*  public void posicionPorGps(){
 
         if(estadoGPS.checkLocation()){
             estadoGPS.toggleGPSUpdates();
         }
-    }
+    }*/
 
 
 

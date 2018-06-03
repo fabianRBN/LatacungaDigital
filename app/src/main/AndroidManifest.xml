@@ -33,9 +33,15 @@
 
         <activity
             android:name=".Activities.ChatBotActivity"
-            android:parentActivityName=".Activities.MainActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:parentActivityName=".Activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".Activities.AtractivoActivity"
+            android:label="@string/title_activity_atractivo"
+            android:theme="@style/AppTheme.NoActionBar"
+            >
+
         </activity>
     </application>
 
