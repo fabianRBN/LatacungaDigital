@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.jona.latacungadigital.EstructuraDatos.Cliente;
 import com.example.jona.latacungadigital.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -23,7 +24,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -37,6 +43,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
     private ProgressBar progressBar;
+    //firebase almanecenamiento
+    private DatabaseReference mFirebaseDatabase;
+    private FirebaseDatabase mFirebaseInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +80,31 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                final FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     goMainScreen();
+                    //ingreso a la database en firebase
+                    mFirebaseInstance = FirebaseDatabase.getInstance();
+                    mFirebaseDatabase = mFirebaseInstance.getReference();
+                    Query queryCliente = mFirebaseDatabase.child("cliente").orderByChild("idcliente").equalTo(user.getUid());
+                    queryCliente.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                //Si encuentra regitro no hace nada mas
+                            }else {
+                                //Como no esta registrado el cliente procede al registro en firebase
+                                //idUsuario = mFirebaseDatabase.push().getKey();//genera la key unica de cada cliente
+                                Cliente cliente = new Cliente( user.getDisplayName(),user.getEmail(),user.getUid()); //instancia de cliente
+                                mFirebaseDatabase.child("cliente").child(user.getUid()).setValue(cliente);//guarda la informacion en firebase
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
         };
