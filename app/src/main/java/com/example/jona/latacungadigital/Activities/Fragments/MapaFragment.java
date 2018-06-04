@@ -131,7 +131,6 @@ public class MapaFragment extends Fragment {
                     listaMarkadores.add(markerOptions);
                     googleMap.addMarker(markerOptions);
 
-
                 }
 
             }

@@ -45,10 +45,12 @@ public class AttractiveAdpater extends PagerAdapter {
         View view = layoutInflater.inflate(R.layout.image_attractive_content, container, false);
         ImageView imageView = view.findViewById(R.id.imagePlacesInformation);
 
-        Glide.with(view.getContext()).load(listImagenURL.get(position)).crossFade().centerCrop().into(imageView);
+        Glide.with(view.getContext()).load(listImagenURL.get(position)).centerCrop().into(imageView);
 
         ViewPager viewPager = (ViewPager) container;
         viewPager.addView(view, 0);
+
+
         return view;
     }
 

@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
+import com.example.jona.latacungadigital.Activities.Fragments.ListAtractivosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.R;
 import com.google.android.gms.auth.api.Auth;
@@ -24,7 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.common.api.ResultCallback;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener ,ListAtractivosFragment.OnFragmentInteractionListener {
 
     //private TextView mTextMessage;
 
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
     private MapaFragment mapaFragment = new MapaFragment();;
+    private ListAtractivosFragment listAtractivosFragment = new ListAtractivosFragment();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     return true;
                 case R.id.navigation_notifications:
                     // mTextMessage.setText(R.string.title_notifications);
+                    setFragment(listAtractivosFragment);
                     return true;
             }
             return false;

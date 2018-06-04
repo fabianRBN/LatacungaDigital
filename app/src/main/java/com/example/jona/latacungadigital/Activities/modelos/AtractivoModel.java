@@ -29,11 +29,33 @@ public  class AtractivoModel {
 
     public String creadorUid;
 
+    public String pathImagen;
+
+    public String key;
+
+
+
 
 
 
     public AtractivoModel() {
 
+    }
+
+    public String getPathImagen() {
+        return pathImagen;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public void setPathImagen(String pathImagen) {
+        this.pathImagen = pathImagen;
     }
 
     public String getCreadorUid() {
