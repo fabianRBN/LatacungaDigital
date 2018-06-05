@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_buscar"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="Buscar"
+        app:showAsAction="always"
+        android:iconTint="@color/white"/>
+
+    <item
+        android:id="@+id/navigation_perfil"
+        android:icon="@drawable/ic_account_circle_black_24dp"
+        android:title="Cuenta"
+        app:showAsAction="always"
+        android:iconTint="@color/white"/>
+
+    <item
+        android:id="@+id/navigation_configuraciones"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="Configuracion"
+        app:showAsAction="never"
+        android:iconTint="@color/white"/>
+
+    <item
+        android:id="@+id/navigation_salir"
+        android:icon="@drawable/ic_account_circle_black_24dp"
+        android:title="Salir"
+        app:showAsAction="never"
+        android:iconTint="@color/white"/>
+
+
+
+
+</menu>

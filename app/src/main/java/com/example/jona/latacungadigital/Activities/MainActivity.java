@@ -9,8 +9,10 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.ListAtractivosFragment;
@@ -27,7 +29,7 @@ import com.google.android.gms.common.api.ResultCallback;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener ,ListAtractivosFragment.OnFragmentInteractionListener {
 
-    //private TextView mTextMessage;
+
 
     private GoogleApiClient googleApiClient; // Variable para manejar los datos de Google.
 
@@ -45,15 +47,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     //mTextMessage.setText(R.string.title_home);
-                    setFragment(mapaFragment);
-                    return true;
-                case R.id.navigation_dashboard:
-                   // mTextMessage.setText(R.string.title_dashboard);
-                    OpenChatBotActivity();
-                    return true;
-                case R.id.navigation_notifications:
-                    // mTextMessage.setText(R.string.title_notifications);
                     setFragment(listAtractivosFragment);
+
+                    return true;
+                case R.id.navigation_mapa:
+                   // mTextMessage.setText(R.string.title_dashboard);
+                    setFragment(mapaFragment);
+
+                    return true;
+                case R.id.navigation_chat:
+                    // mTextMessage.setText(R.string.title_notifications);
+                    OpenChatBotActivity();
+
+                    return true;
+
+                case R.id.navigation_ar:
+                    // mTextMessage.setText(R.string.title_notifications);
+
                     return true;
             }
             return false;
@@ -65,6 +75,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
+        setFragment(listAtractivosFragment);
 
         //mTextMessage = findViewById(R.id.message);
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -91,6 +104,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 }
             }
         };
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_toolbar,menu);
+        return true;
     }
 
     private void goLogInScreen() {
