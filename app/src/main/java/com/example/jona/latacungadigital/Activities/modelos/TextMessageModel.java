@@ -1,5 +1,8 @@
 package com.example.jona.latacungadigital.Activities.modelos;
 
+import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class TextMessageModel {
@@ -13,6 +16,9 @@ public class TextMessageModel {
     private String nameAttractive;
     private String categoryAttactive;
     private String descriptionAttractive;
+
+    // Declaracion de variables para la consulta de servicios.
+    private ArrayList<ServiceClass> listService;
 
     // Constructores.
     public TextMessageModel(String message) {
@@ -49,4 +55,12 @@ public class TextMessageModel {
     public String getDescriptionAttractive() { return descriptionAttractive; }
 
     public void setDescriptionAttractive(String descriptionAttractive) { this.descriptionAttractive = descriptionAttractive; }
+
+    public ArrayList<ServiceClass> getListService() {
+        return listService;
+    }
+
+    public void setListService(ArrayList<ServiceClass> listService) {
+        this.listService = listService;
+    }
 }

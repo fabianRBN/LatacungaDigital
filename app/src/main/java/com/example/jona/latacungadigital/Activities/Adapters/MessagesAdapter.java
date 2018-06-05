@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.jona.latacungadigital.Activities.Clases.CharacterClass;
+import com.example.jona.latacungadigital.Activities.Clases.MessageCardMapListItemView;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
 import com.github.library.bubbleview.BubbleTextView;
@@ -27,13 +28,15 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_CHATBOT = 2;
     private static final int VIEW_TYPE_MESSAGE_CHATBOT_TYPING = 3;
     private static final int VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT = 4;
+    private static final int VIEW_TYPE_MESSAGE_CARD_VIEW_MAP = 5;
 
     private List<TextMessageModel> listChatModel;
+    private List<MessageCardMapListItemView> listMessageCardMapView;
     private Context context;
 
-    // Constructor con los parametros de la lista de mensaje y el contexto de la vista.
-    public MessagesAdapter(List<TextMessageModel> listChatModels, Context context) {
+    public MessagesAdapter(List<TextMessageModel> listChatModels, List<MessageCardMapListItemView> listMessageCardMapView, Context context) {
         this.listChatModel = listChatModels;
+        this.listMessageCardMapView = listMessageCardMapView;
         this.context = context;
     }
     @NonNull
@@ -57,6 +60,11 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.attractive_information, parent, false);
             return new AttractiveMessageHolder(view);
+        } else if (viewType == VIEW_TYPE_MESSAGE_CARD_VIEW_MAP) { // Si el mensaje muestra un mapa se añade el view message_cv_map
+            MessageCardMapListItemView messageCardMapListItemView = new MessageCardMapListItemView(parent.getContext());
+            messageCardMapListItemView.mapViewOnCreate(null);
+            listMessageCardMapView.add(messageCardMapListItemView);
+            return new MapMessageHolder(messageCardMapListItemView);
         }
 
         return null;
@@ -82,6 +90,10 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 ((AttractiveMessageHolder) holder).viewPager.setAdapter(attractiveAdpater);
                 ((AttractiveMessageHolder) holder).bind(message);
                 break;
+            case VIEW_TYPE_MESSAGE_CARD_VIEW_MAP:
+                MapMessageHolder mapMessageHolder = (MapMessageHolder) holder;
+                mapMessageHolder.bind(message);
+                break;
         }
     }
 
@@ -103,9 +115,12 @@ public class MessagesAdapter extends RecyclerView.Adapter {
         } else if (listChatModel.get(position).getViewTypeMessage() == 3) {
             // Si el ChatBot esta escribiendo el mensaje.
             return VIEW_TYPE_MESSAGE_CHATBOT_TYPING;
-        } else {
+        } else if (listChatModel.get(position).getViewTypeMessage() == 4){
             // El chatbot envia un mensaje con informacion de un atractivo turistico
             return VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT;
+        } else {
+            // El chatbot envia un mensaje con un mapa
+            return VIEW_TYPE_MESSAGE_CARD_VIEW_MAP;
         }
     }
 
@@ -145,6 +160,10 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 }
             });
         }
+    }
+
+    public List<MessageCardMapListItemView> getListMessageCardMapView() {
+        return listMessageCardMapView;
     }
 
     private class ChatBotTypingHolder extends RecyclerView.ViewHolder {
@@ -192,6 +211,34 @@ public class MessagesAdapter extends RecyclerView.Adapter {
 
             // Se envia la categoria del atractivo a su respetivo TextView.
             txtCategoryAttractive.setText(Html.fromHtml("<b>Categoría: </b>" + message.getCategoryAttactive()));
+        }
+    }
+
+    private class MapMessageHolder extends RecyclerView.ViewHolder {
+        // Declaracion de la clase MessageCardMapListItemView
+        private MessageCardMapListItemView messageCardMapListItemView;
+
+        // Constructor de la clase
+        public MapMessageHolder(MessageCardMapListItemView messageCardMapListItemView) {
+            super(messageCardMapListItemView);
+            this.messageCardMapListItemView = messageCardMapListItemView;
+        }
+
+        private void mapViewListItemViewOnResume() {
+            if (messageCardMapListItemView != null) {
+                messageCardMapListItemView.mapViewOnResume();
+            }
+        }
+
+        private void mapViewListItemViewSetMessage(TextMessageModel message) {
+            if (messageCardMapListItemView != null) {
+                messageCardMapListItemView.setMessage(message);
+            }
+        }
+
+        void bind(TextMessageModel message) { // Se asigna la informacion consultada a los componentes del layout.
+            mapViewListItemViewSetMessage(message);
+            mapViewListItemViewOnResume();
         }
     }
 }

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
 import com.example.jona.latacungadigital.Activities.Clases.DialogflowClass;
+import com.example.jona.latacungadigital.Activities.Clases.MessageCardMapListItemView;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
 
@@ -54,6 +56,7 @@ public class ChatTextFragment extends Fragment {
     // Declaración de variables para poder controlar los mensajes del usuario y del ChatBot.
     private RecyclerView rvListMessages;
     private List<TextMessageModel> listMessagesText;
+    private List<MessageCardMapListItemView> listMessageCardMapView;
     private FloatingActionButton btnSendMessage;
     private EditText txtMessageUserSend;
     private MessagesAdapter messagesAdapter;
@@ -97,6 +100,7 @@ public class ChatTextFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         listMessagesText = new ArrayList<>(); // Incializar la lista de los mensajes de texto.
+        listMessageCardMapView = new ArrayList<>();
 
         view = inflater.inflate(R.layout.fragment_chat_text, container, false);
 
@@ -112,7 +116,7 @@ public class ChatTextFragment extends Fragment {
 
         ValidateAudioRecord(view); // Permitimos la entrada de audio al chat.
 
-        messagesAdapter = new MessagesAdapter(listMessagesText, view.getContext());
+        messagesAdapter = new MessagesAdapter(listMessagesText, listMessageCardMapView , view.getContext());
         rvListMessages.setAdapter(messagesAdapter); // Adaptamos el Recicle View a al adaptador que contendran los mensajes.
 
         dialogflowClass = new DialogflowClass(view, listMessagesText, rvListMessages, messagesAdapter, txtMessageUserSend);
@@ -241,6 +245,76 @@ public class ChatTextFragment extends Fragment {
                     dialogflowClass.CreateMessage(speech); // Enviamos el mensaje que dijo el usuario a Dialogflow.
                 }
                 break;
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(listMessageCardMapView !=null){
+            for (MessageCardMapListItemView view : listMessageCardMapView) {
+                view.mapViewOnStart();
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(listMessageCardMapView !=null){
+            for (MessageCardMapListItemView view : listMessageCardMapView) {
+                view.mapViewOnResume();
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(listMessageCardMapView != null){
+            for (MessageCardMapListItemView view : listMessageCardMapView) {
+                view.mapViewOnSaveInstanceState(outState);
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(listMessageCardMapView != null){
+            for (MessageCardMapListItemView view : listMessageCardMapView) {
+                view.mapViewOnPause();
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(listMessageCardMapView != null){
+            for (MessageCardMapListItemView view : listMessageCardMapView) {
+                view.mapViewOnStop();
+            }
+        }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        if(listMessageCardMapView != null){
+            for (MessageCardMapListItemView view : listMessageCardMapView) {
+                view.mapViewOnLowMemory();
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(listMessageCardMapView != null){
+            for (MessageCardMapListItemView view : listMessageCardMapView) {
+                view.mapViewOnDestroy();
             }
         }
     }
