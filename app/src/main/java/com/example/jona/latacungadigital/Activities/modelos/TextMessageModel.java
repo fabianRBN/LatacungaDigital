@@ -11,6 +11,7 @@ public class TextMessageModel {
     private String message;
     private int viewTypeMessage ; // Para saber si el usuario o el chatbot envio el mensaje.
     private List<String> listImagesURL; // Para almacenar todas las imagenes en un array.
+    private String titulo;
 
     // Declaracion de variables de la información de los atractivos turisticos.
     private String nameAttractive;
@@ -62,5 +63,13 @@ public class TextMessageModel {
 
     public void setListService(ArrayList<ServiceClass> listService) {
         this.listService = listService;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 }

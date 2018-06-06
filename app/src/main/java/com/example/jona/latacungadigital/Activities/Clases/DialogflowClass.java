@@ -141,7 +141,9 @@ public class DialogflowClass {
                 CardDialogflow(attractiveClass, result);
 
             } else if (action.equals("consultarAlojamientoEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
-                sendServicesToMapMessage(result);
+                sendServicesToMapMessage(result, "Alojamiento");
+            } else if (action.equals("consultarComidaYBebidaEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
+                sendServicesToMapMessage(result, "Comidas y bebidas");
             } else {
 
                 String speech = result.getFulfillment().getSpeech();
@@ -194,7 +196,7 @@ public class DialogflowClass {
     }
 
     // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa
-    private void sendServicesToMapMessage(Result result){
+    private void sendServicesToMapMessage(Result result, String categoria){
         Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
         ArrayList<ServiceClass> listService =  new ArrayList<ServiceClass>(); // Lista de servicios
         TextMessageModel textMessageModel = new TextMessageModel();
@@ -215,6 +217,7 @@ public class DialogflowClass {
             // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
             textMessageModel.setViewTypeMessage(VIEW_TYPE_MESSAGE_CARD_VIEW_MAP);
             textMessageModel.setListService(listService);
+            textMessageModel.setTitulo(categoria);
             listMessagesText.add(textMessageModel);
             addMessagesAdapter(listMessagesText);
         }

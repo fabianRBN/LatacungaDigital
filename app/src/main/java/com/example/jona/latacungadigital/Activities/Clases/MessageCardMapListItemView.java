@@ -57,8 +57,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
     private void setValues() {
         if(message != null){
             listService = message.getListService();
-            String titulo = "Alojamiento";
-            txtTitle.setText(titulo);
+            txtTitle.setText(message.getTitulo());
             mapView.getMapAsync(this);
         }
     }
@@ -121,8 +120,6 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
     private void createMarker(ServiceClass service){
         MarkerOptions markerOptions =  new MarkerOptions();
         markerOptions.position(new LatLng(service.getLatitude(),service.getLongitude()));
-        markerOptions.title(service.getName());
-        markerOptions.snippet(service.getTypeOfActivity());
         if(service.getIcon() != 0){ // Validar si existe un icono predefinido del servicio
             markerOptions.icon(BitmapDescriptorFactory.fromResource(service.getIcon()));
         }
