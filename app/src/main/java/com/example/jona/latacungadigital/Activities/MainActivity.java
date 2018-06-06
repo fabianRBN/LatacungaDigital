@@ -1,5 +1,6 @@
 package com.example.jona.latacungadigital.Activities;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,8 +10,11 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
@@ -27,6 +31,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.common.api.ResultCallback;
 
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener ,ListAtractivosFragment.OnFragmentInteractionListener {
 
 
@@ -39,6 +45,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private MapaFragment mapaFragment = new MapaFragment();;
     private ListAtractivosFragment listAtractivosFragment = new ListAtractivosFragment();
 
+    // Vriables para identificar  en el fragmento que nos encontramos
+
+
+    private Bundle args = new Bundle();
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -47,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     //mTextMessage.setText(R.string.title_home);
+
                     setFragment(listAtractivosFragment);
 
                     return true;
@@ -108,6 +120,26 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_toolbar,menu);
+
+        MenuItem menuItem = menu.findItem(R.id.action_buscar);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                setFragment(listAtractivosFragment);
+                listAtractivosFragment.listaAtractivo.clear();
+                listAtractivosFragment.ConsultarAtractivos(newText);
+                return true;
+            }
+        });
+
+
         return true;
     }
 

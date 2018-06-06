@@ -16,49 +16,31 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ListAtractivosFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ListAtractivosFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ListAtractivosFragment extends Fragment {
 
+    private String FRAGMENT_TAG = "ListaAtractivos";
 
     private ListView listView;
     private DatabaseReference mDatabase;
     private OnFragmentInteractionListener mListener;
-    private ArrayList<AtractivoModel> listaAtractivo = new ArrayList<>();
+    public ArrayList<AtractivoModel> listaAtractivo = new ArrayList<>();
+    private String filter = "";
 
     public ListAtractivosFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ListAtractivosFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ListAtractivosFragment newInstance(String param1, String param2) {
-        ListAtractivosFragment fragment = new ListAtractivosFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
     }
 
@@ -69,18 +51,20 @@ public class ListAtractivosFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list_atractivos, container, false);
 
         listView = (ListView) view.findViewById(R.id.listViewAtractivos);
-        ConsultarAtractivos();
+        ConsultarAtractivos("");
 
 
         return view;
     }
 
 
-    public void ConsultarAtractivos(){
+
+    public void ConsultarAtractivos(String arg){
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("atractivo");
         mDatabase.keepSynced(true);
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        Query query = mDatabase.orderByChild("nombre").startAt(arg);
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
