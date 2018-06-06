@@ -130,6 +130,9 @@ public class ServiceClass {
             case "Alojamiento":
                 this.icon = R.drawable.ic_marker_hotel_red;
                 break;
+            case "Comidas y bebidas":
+                this.icon = R.drawable.ic_marker_restaurant_orange;
+                break;
             default:
                 this.icon = 0;
                 break;
