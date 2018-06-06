@@ -16,6 +16,7 @@
             android:id="@+id/toolBarChatBot"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            app:titleMarginStart="30dp"
             app:titleTextColor="#FFF"
             app:subtitleTextColor="#FFF"
             app:navigationIcon="?attr/homeAsUpIndicator"

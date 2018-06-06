@@ -61,7 +61,8 @@ dependencies {
     // Manejo de imagenes con picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-
+    // Para mostrar un snack bar debjo del toolbar.
+    implementation 'com.androidadvance:topsnackbar:1.1.1'
 
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     testImplementation 'junit:junit:4.12'

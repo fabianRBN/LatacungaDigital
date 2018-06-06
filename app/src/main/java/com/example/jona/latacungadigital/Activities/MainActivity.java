@@ -1,24 +1,21 @@
 package com.example.jona.latacungadigital.Activities;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.SearchView;
 import android.widget.Toast;
-import android.support.v7.widget.Toolbar;
 
-import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
+import com.example.jona.latacungadigital.Activities.Fragments.DialogSignOffFragement;
 import com.example.jona.latacungadigital.Activities.Fragments.ListAtractivosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.R;
@@ -31,22 +28,20 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.common.api.ResultCallback;
 
-import java.util.Map;
-
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener ,ListAtractivosFragment.OnFragmentInteractionListener {
-
-
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener,
+        ListAtractivosFragment.OnFragmentInteractionListener, DialogSignOffFragement.NoticeDialogListener {
 
     private GoogleApiClient googleApiClient; // Variable para manejar los datos de Google.
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
-    private MapaFragment mapaFragment = new MapaFragment();;
+    private DialogSignOffFragement dialogSignOffFragement; // Varibale para controlar el Dialogo de cerrar sesion.
+
+    private MapaFragment mapaFragment = new MapaFragment();
     private ListAtractivosFragment listAtractivosFragment = new ListAtractivosFragment();
 
-    // Vriables para identificar  en el fragmento que nos encontramos
-
+    // Variables para identificar  en el fragmento que nos encontramos
 
     private Bundle args = new Bundle();
 
@@ -87,8 +82,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         setFragment(listAtractivosFragment);
 
         //mTextMessage = findViewById(R.id.message);
@@ -119,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.menu_toolbar,menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
 
         MenuItem menuItem = menu.findItem(R.id.action_buscar);
         SearchView searchView = (SearchView) menuItem.getActionView();
@@ -139,8 +132,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
 
-
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.navigation_salir) {
+            openSignOffDialog();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void goLogInScreen() {
@@ -152,6 +156,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private void OpenChatBotActivity() {
         Intent intent = new Intent(this, ChatBotActivity.class);
         startActivity(intent);
+    }
+
+    public void openSignOffDialog() {
+        // Se crea una instancia de la clase DialogSignOffFragement y se la muestra.
+        dialogSignOffFragement = new DialogSignOffFragement();
+        dialogSignOffFragement.show(getSupportFragmentManager(), "NoticeDialogFragment");
     }
 
     // Método para cerrar sesión de la aplicacion.
@@ -203,5 +213,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onDialogSigOffClick(DialogFragment dialog) { logOut(); }
+
+    @Override
+    public void onDialogCancelClick(DialogFragment dialog) { // Para cancelar la acción de cerrar sesión.
+        dialogSignOffFragement.getDialog().cancel();
     }
 }

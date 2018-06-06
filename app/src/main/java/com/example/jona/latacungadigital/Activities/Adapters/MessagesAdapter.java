@@ -2,33 +2,24 @@ package com.example.jona.latacungadigital.Activities.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.example.jona.latacungadigital.Activities.Clases.CharacterClass;
 import com.example.jona.latacungadigital.Activities.Clases.MessageCardMapListItemView;
+import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
+import com.example.jona.latacungadigital.Activities.RecycleMessageHolders.AttractiveMessageHolder;
+import com.example.jona.latacungadigital.Activities.RecycleMessageHolders.ChatBotMessageHolder;
+import com.example.jona.latacungadigital.Activities.RecycleMessageHolders.ChatBotTypingHolder;
+import com.example.jona.latacungadigital.Activities.RecycleMessageHolders.MapMessageHolder;
+import com.example.jona.latacungadigital.Activities.RecycleMessageHolders.UserMessageHolder;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
-import com.github.library.bubbleview.BubbleTextView;
 
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class MessagesAdapter extends RecyclerView.Adapter {
-
-    // Para saber que vista se debe adaptar al RecycleView.
-    private static final int VIEW_TYPE_MESSAGE_USER = 1;
-    private static final int VIEW_TYPE_MESSAGE_CHATBOT = 2;
-    private static final int VIEW_TYPE_MESSAGE_CHATBOT_TYPING = 3;
-    private static final int VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT = 4;
-    private static final int VIEW_TYPE_MESSAGE_CARD_VIEW_MAP = 5;
 
     private List<TextMessageModel> listChatModel;
     private List<MessageCardMapListItemView> listMessageCardMapView;
@@ -44,23 +35,23 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
 
-        if (viewType == VIEW_TYPE_MESSAGE_USER) { // Si el mensaje es del usuario se añade el view de esta al view de la lista de mensajes.
+        if (viewType == ChatBotReferences.VIEW_TYPE_MESSAGE_USER) { // Si el mensaje es del usuario se añade el view de esta al view de la lista de mensajes.
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.message_user, parent, false);
             return new UserMessageHolder(view);
-        } else if (viewType == VIEW_TYPE_MESSAGE_CHATBOT) { // Si el mensaje es del ChatBot se añade el view de esta al view de la lista de mensajes.
+        } else if (viewType == ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT) { // Si el mensaje es del ChatBot se añade el view de esta al view de la lista de mensajes.
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.message_chatbot, parent, false);
-            return new ChatBotMessageHolder(view);
-        } else if (viewType == VIEW_TYPE_MESSAGE_CHATBOT_TYPING) { // Si el mensaje es del ChatBotTyping se añade el view de esta al view de la lista de mensajes.
+            return new ChatBotMessageHolder(view, context);
+        } else if (viewType == ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT_TYPING) { // Si el mensaje es del ChatBotTyping se añade el view de esta al view de la lista de mensajes.
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.chatbot_is_typing, parent, false);
-            return new ChatBotTypingHolder(view);
-        } else if (viewType == VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT) { // Si el mensaje es sobre la informacion de un atractivo turistico.
+            return new ChatBotTypingHolder(view, context);
+        } else if (viewType == ChatBotReferences.VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT) { // Si el mensaje es sobre la informacion de un atractivo turistico.
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.attractive_information, parent, false);
             return new AttractiveMessageHolder(view);
-        } else if (viewType == VIEW_TYPE_MESSAGE_CARD_VIEW_MAP) { // Si el mensaje muestra un mapa se añade el view message_cv_map
+        } else if (viewType == ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP) { // Si el mensaje muestra un mapa se añade el view message_cv_map
             MessageCardMapListItemView messageCardMapListItemView = new MessageCardMapListItemView(parent.getContext());
             messageCardMapListItemView.mapViewOnCreate(null);
             listMessageCardMapView.add(messageCardMapListItemView);
@@ -76,21 +67,21 @@ public class MessagesAdapter extends RecyclerView.Adapter {
         TextMessageModel message = listChatModel.get(position);
 
         switch (holder.getItemViewType()) {
-            case VIEW_TYPE_MESSAGE_USER:
+            case ChatBotReferences.VIEW_TYPE_MESSAGE_USER:
                 ((UserMessageHolder) holder).bind(message);
                 break;
-            case VIEW_TYPE_MESSAGE_CHATBOT:
+            case ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT:
                 ((ChatBotMessageHolder) holder).bind(message);
                 break;
-            case VIEW_TYPE_MESSAGE_CHATBOT_TYPING:
+            case ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT_TYPING:
                 ((ChatBotTypingHolder) holder).bind();
                 break;
-            case VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT:
+            case ChatBotReferences.VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT:
                 AttractiveAdpater attractiveAdpater = new AttractiveAdpater(context, listChatModel.get(position).getListImagesURL());
-                ((AttractiveMessageHolder) holder).viewPager.setAdapter(attractiveAdpater);
+                ((AttractiveMessageHolder) holder).getViewPager().setAdapter(attractiveAdpater);
                 ((AttractiveMessageHolder) holder).bind(message);
                 break;
-            case VIEW_TYPE_MESSAGE_CARD_VIEW_MAP:
+            case ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP:
                 MapMessageHolder mapMessageHolder = (MapMessageHolder) holder;
                 mapMessageHolder.bind(message);
                 break;
@@ -108,137 +99,23 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         if (listChatModel.get(position).getViewTypeMessage() == 1) {
             // Si el usuario mando el mensaje.
-            return VIEW_TYPE_MESSAGE_USER;
+            return ChatBotReferences.VIEW_TYPE_MESSAGE_USER;
         } else if (listChatModel.get(position).getViewTypeMessage() == 2) {
             // Si el ChatBot envio el mensaje.
-            return VIEW_TYPE_MESSAGE_CHATBOT;
+            return ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT;
         } else if (listChatModel.get(position).getViewTypeMessage() == 3) {
             // Si el ChatBot esta escribiendo el mensaje.
-            return VIEW_TYPE_MESSAGE_CHATBOT_TYPING;
+            return ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT_TYPING;
         } else if (listChatModel.get(position).getViewTypeMessage() == 4){
             // El chatbot envia un mensaje con informacion de un atractivo turistico
-            return VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT;
+            return ChatBotReferences.VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT;
         } else {
             // El chatbot envia un mensaje con un mapa
-            return VIEW_TYPE_MESSAGE_CARD_VIEW_MAP;
-        }
-    }
-
-    private class UserMessageHolder extends RecyclerView.ViewHolder {
-        BubbleTextView messageText;
-
-        UserMessageHolder(View itemView) {
-            super(itemView);
-
-            messageText = itemView.findViewById(R.id.textMessageUser);
-        }
-
-        void bind(TextMessageModel message) {
-            messageText.setText(message.getMessage()); // Se envia el mensaje del Usuario.
-        }
-    }
-
-    private class ChatBotMessageHolder extends RecyclerView.ViewHolder {
-        BubbleTextView messageText;
-        CircleImageView circleImageView;
-
-        ChatBotMessageHolder(View itemView) {
-            super(itemView);
-
-            messageText = itemView.findViewById(R.id.textMessageChatBot);
-            circleImageView = itemView.findViewById(R.id.chatBotImage);
-        }
-
-        void bind(TextMessageModel message) {
-            messageText.setText(message.getMessage()); // Se envia el mensaje del ChatBot.
-            // Se coloca la imagen del personaje en el chatbot.
-            CharacterClass characterClass = new CharacterClass();
-            characterClass.ReadCharacterFromDatabase(new CharacterClass.DataOfCharacters() {
-                @Override
-                public void nameCharacter(String nameCharacter, String imageCharacterURL) {
-                    Glide.with(context).load(imageCharacterURL).crossFade().centerCrop().into(circleImageView);
-                }
-            });
+            return ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP;
         }
     }
 
     public List<MessageCardMapListItemView> getListMessageCardMapView() {
         return listMessageCardMapView;
-    }
-
-    private class ChatBotTypingHolder extends RecyclerView.ViewHolder {
-        CircleImageView circleImageViewTyping;
-
-        ChatBotTypingHolder(View itemView) {
-            super(itemView);
-
-            circleImageViewTyping = itemView.findViewById(R.id.chatBotTypingImage);
-        }
-
-        void bind() {
-            // Se coloca la imagen del personaje en el chatbot.
-            CharacterClass characterClass = new CharacterClass();
-            characterClass.ReadCharacterFromDatabase(new CharacterClass.DataOfCharacters() {
-                @Override
-                public void nameCharacter(String nameCharacter, String imageCharacterURL) {
-                    Glide.with(context).load(imageCharacterURL).crossFade().centerCrop().into(circleImageViewTyping);
-                }
-            });
-        }
-    }
-
-    // Clase para manipular la informacion de los atractivos y ponerles en sus respectivos componetes para agregarles en el RecycleView.
-    private class AttractiveMessageHolder extends RecyclerView.ViewHolder {
-        // Declaracion de varaibles de acuerdo a los componentes que comprenden el layout: attractive_information.xml
-        TextView txtNameAttractive, txtDescriptionAttractive, txtCategoryAttractive;
-        ViewPager viewPager;
-
-        AttractiveMessageHolder(View itemView) {
-            super(itemView);
-
-            txtDescriptionAttractive = itemView.findViewById(R.id.txtDescriptionPlacesInformation);
-            txtNameAttractive = itemView.findViewById(R.id.txtTitlePlacesInformation);
-            txtCategoryAttractive = itemView.findViewById(R.id.txtCategoryPlacesInformation);
-            viewPager = itemView.findViewById(R.id.vpPlacesInformation);
-        }
-
-        void bind(TextMessageModel message) { // Se asigna la informacion consultada a los TextViews.
-            // Se envia el nombre del atractivo a su respetivo TextView.
-            txtNameAttractive.setText(message.getNameAttractive());
-
-            // Se envia la descripcion del atractivo a su respetivo TextView.
-            txtDescriptionAttractive.setText(Html.fromHtml("<b>Descripción: </b>" + message.getDescriptionAttractive()));
-
-            // Se envia la categoria del atractivo a su respetivo TextView.
-            txtCategoryAttractive.setText(Html.fromHtml("<b>Categoría: </b>" + message.getCategoryAttactive()));
-        }
-    }
-
-    private class MapMessageHolder extends RecyclerView.ViewHolder {
-        // Declaracion de la clase MessageCardMapListItemView
-        private MessageCardMapListItemView messageCardMapListItemView;
-
-        // Constructor de la clase
-        public MapMessageHolder(MessageCardMapListItemView messageCardMapListItemView) {
-            super(messageCardMapListItemView);
-            this.messageCardMapListItemView = messageCardMapListItemView;
-        }
-
-        private void mapViewListItemViewOnResume() {
-            if (messageCardMapListItemView != null) {
-                messageCardMapListItemView.mapViewOnResume();
-            }
-        }
-
-        private void mapViewListItemViewSetMessage(TextMessageModel message) {
-            if (messageCardMapListItemView != null) {
-                messageCardMapListItemView.setMessage(message);
-            }
-        }
-
-        void bind(TextMessageModel message) { // Se asigna la informacion consultada a los componentes del layout.
-            mapViewListItemViewSetMessage(message);
-            mapViewListItemViewOnResume();
-        }
     }
 }

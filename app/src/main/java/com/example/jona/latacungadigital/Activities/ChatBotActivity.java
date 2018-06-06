@@ -1,5 +1,7 @@
 package com.example.jona.latacungadigital.Activities;
 
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -8,13 +10,15 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.example.jona.latacungadigital.Activities.Clases.CharacterClass;
+import com.example.jona.latacungadigital.Activities.Clases.NetworkReceiverClass;
 import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
-import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
 import com.example.jona.latacungadigital.R;
 
 public class ChatBotActivity extends AppCompatActivity implements ChatTextFragment.OnFragmentInteractionListener {
 
     Toolbar toolBarChatBot;
+    NetworkReceiverClass networkReceiverClass;
+    ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,24 +33,20 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
     }
 
     private void SetupActionBar() {
-        final ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         if (actionBar != null) {
             CharacterClass characterClass = new CharacterClass();
             characterClass.ReadCharacterFromDatabase(new CharacterClass.DataOfCharacters() {
-                // Llamamos a este metodo para obtener el nombre consultado de la base de datos.
                 @Override
                 public void nameCharacter(String nameCharacter, String imageCharacterURL) {
-                    actionBar.setTitle(nameCharacter); // Le asignamos el nombre al Action Bar de la aplicacion.
+                    actionBar.setTitle(nameCharacter);
                 }
             });
 
-            // Para saber si esta conectado a internet.
-            AccesoInternet accesoInternet = new AccesoInternet();
-            if (accesoInternet.isNetDisponible(getApplicationContext())) {
-                actionBar.setSubtitle("Activo(a) ahora");
-            } else {
-                actionBar.setSubtitle("Desconectado");
-            }
+            boolean showMessageToStartActivity = false; // Para no mostrar el mensaje de "Conexión exitosa" al inicio de la actividad.
+            IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+            networkReceiverClass = new NetworkReceiverClass(actionBar, ChatBotActivity.this, showMessageToStartActivity);
+            registerReceiver(networkReceiverClass, filter);
 
         }
     }
@@ -62,7 +62,22 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onFragmentInteraction(Uri uri) {}
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        unregisterReceiver(networkReceiverClass); // Para destruir la comunicacion cuando se cierra la actividad.
     }
 }

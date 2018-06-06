@@ -21,13 +21,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
 import com.example.jona.latacungadigital.Activities.Clases.DialogflowClass;
 import com.example.jona.latacungadigital.Activities.Clases.MessageCardMapListItemView;
+import com.example.jona.latacungadigital.Activities.Clases.SaveListMessageClass;
+import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +65,9 @@ public class ChatTextFragment extends Fragment {
     private FloatingActionButton btnSendMessage;
     private EditText txtMessageUserSend;
     private MessagesAdapter messagesAdapter;
+    private TextView txtMessageWelcome;
+    private boolean shouldRecreate = true; // Variable para controlar el onActivityResult() con onResume().
 
-    private final int SPEECH_RECOGNITION_CODE = 1;
     private DialogflowClass dialogflowClass;
     private View view;
 
@@ -110,6 +116,8 @@ public class ChatTextFragment extends Fragment {
 
         txtMessageUserSend = view.findViewById(R.id.txtUserMessageSend); // Instanciar la varibale con el id del Edit Text.
 
+        txtMessageWelcome = view.findViewById(R.id.txtMessageWelcome); // Instanciar la varibale con el id del Text View.
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         linearLayoutManager.setStackFromEnd(true);
         rvListMessages.setLayoutManager(linearLayoutManager);
@@ -122,6 +130,8 @@ public class ChatTextFragment extends Fragment {
         dialogflowClass = new DialogflowClass(view, listMessagesText, rvListMessages, messagesAdapter, txtMessageUserSend);
         dialogflowClass.ConfigurationDialogflow(); // Para configurar el API de Dialogflow.
 
+        GiveWelcomeMessage(); // Dar el mensaje de Bienvenida al usuario.
+
         ChangeIconButton(); // Se llama al método de cambiar de icono.
 
         // Acción del boton para Enviar Mensaje.
@@ -130,8 +140,10 @@ public class ChatTextFragment extends Fragment {
             public void onClick(View v) {
                 if (!txtMessageUserSend.getText().toString().equals("")) { // Si el mensaje es diferente de nulo significa que es un mensaje de texto.
                     dialogflowClass.CreateMessage(txtMessageUserSend.getText().toString()); // Para enviar un mensaje del usuario o de Dialogflow.
+                    GiveWelcomeMessage();
                 } else { // Caso contrario es un mensaje de voz.
                     startSpeech();
+                    GiveWelcomeMessage();
                 }
 
             }
@@ -180,6 +192,56 @@ public class ChatTextFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    private void ReadListMessageFromSharedPreferences() {
+        // Solo se va a restablecer la lista de mensajes si la varible es verdadera y con ese evitamos problemas cuando el usuario manda un mensaje hablado.
+        if (shouldRecreate) {
+            // Para leer la lista de mensajes del Shared Preferences.
+            SaveListMessageClass saveListMessageClass = new SaveListMessageClass(dialogflowClass.getListMessagesText(), view.getContext());
+            // Asiganamos la lista cargada a la lista de la clase DialogflowClass.
+            dialogflowClass.setListMessagesText(saveListMessageClass.ReadListMessages());
+            // Adaptamos la lista de mensajes leidos al adaptador del Recycle View para poner los mensajes.
+            dialogflowClass.addMessagesAdapter(dialogflowClass.getListMessagesText());
+        }
+
+        GiveWelcomeMessage(); // Verificamos si la lista esta vacia para dar la bienvenida al usuario.
+    }
+
+    private void UpdateListMessageFromSharedPreferences() {
+        // Para guardar la lista de mensajes en el Shared Preferences.
+        SaveListMessageClass saveListMessageClass = new SaveListMessageClass(dialogflowClass.getListMessagesText(), view.getContext());
+        saveListMessageClass.SaveListMessage();
+
+        GiveWelcomeMessage(); // Verificamos si la lista esta vacia para dar la bienvenida al usuario.
+    }
+
+    // Método para obtener el usuario Logeado de la aplicación.
+    private String getCurrentUserSigned() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String nameUser = "";
+
+        if (user != null) { // Si el usuario esta logeado.
+            nameUser = user.getDisplayName(); // Obtenemos el nombre del usuario logeado.
+        }
+
+        return nameUser; // Retornamos el nombre del usuario.
+    }
+
+    // Método para establecer el mensaje de bienvenida.
+    private String setWelcomeMessage() {
+        return "Saludos " + getCurrentUserSigned() + ", aquí usted puede preguntar acerca de los lugares turísticos, " +
+                "relacionados al centro histórico de Latacunga.";
+    }
+
+    // Método para dar el mensaje unicamente cuando recien entra al chat bot.
+    private void GiveWelcomeMessage() {
+        if (dialogflowClass.getListMessagesText().size() == 0) {
+            txtMessageWelcome.setVisibility(View.VISIBLE);
+            txtMessageWelcome.setText(setWelcomeMessage());
+        } else {
+            txtMessageWelcome.setVisibility(View.GONE);
+        }
+    }
+
     // Método para cambiar el icono del boton segun la longitud del texto del usuario.
     private void ChangeIconButton() {
         txtMessageUserSend.addTextChangedListener(new TextWatcher() {
@@ -222,7 +284,7 @@ public class ChatTextFragment extends Fragment {
                 "Escuchando...");
         try {
             // Lanzamos la actividad esperando resultados
-            startActivityForResult(intentGoogleSpeech, SPEECH_RECOGNITION_CODE);
+            startActivityForResult(intentGoogleSpeech, ChatBotReferences.SPEECH_RECOGNITION_CODE);
         } catch (ActivityNotFoundException a) {
             // Caso contrario indicamos que el reconocimiento de voz no es compatible con este dispositivo.
             Toast.makeText(view.getContext(),
@@ -236,7 +298,8 @@ public class ChatTextFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case SPEECH_RECOGNITION_CODE: {
+            case ChatBotReferences.SPEECH_RECOGNITION_CODE: {
+                shouldRecreate = false; // establecemos en false para que se muestre el mensaje del usuario en la lista de mensajes.
                 if (resultCode == Activity.RESULT_OK && null != data) { //Si el reconocimiento a sido exitoso guardamos lo que dice el usuario.
                     //El intent nos envia un ArrayList aunque en este caso solo utilizaremos la posición 0 porque ahi esta el mensaje.
                     ArrayList<String> result = data
@@ -267,6 +330,8 @@ public class ChatTextFragment extends Fragment {
                 view.mapViewOnResume();
             }
         }
+
+        ReadListMessageFromSharedPreferences(); // Leer lista de mensajes.
     }
 
     @Override
@@ -287,6 +352,8 @@ public class ChatTextFragment extends Fragment {
                 view.mapViewOnPause();
             }
         }
+
+        UpdateListMessageFromSharedPreferences(); // Modificamos la lista de mensajes.
     }
 
     @Override
