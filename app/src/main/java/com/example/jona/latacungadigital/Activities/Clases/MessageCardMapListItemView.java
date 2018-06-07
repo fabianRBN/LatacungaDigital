@@ -1,17 +1,19 @@
 package com.example.jona.latacungadigital.Activities.Clases;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.jona.latacungadigital.Activities.MainActivity;
+import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
+import com.example.jona.latacungadigital.Activities.ChatBotActivity;
+import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,6 +28,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 
 public class MessageCardMapListItemView extends LinearLayout implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+    // Variables de la clase
+    private MessagesAdapter messagesAdapter;
+    private TextMessageModel message;
+
     // Variables para editar el mapa
     ArrayList<ServiceClass> listService;
     GoogleMap gMap;
@@ -33,7 +39,6 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
     // Varaibles de acuerdo a los componentes que comprenden el layout: message_cv_map.xml
     protected TextView txtTitle;
     protected MapView mapView;
-    private TextMessageModel message;
 
     // Constructores de la clase
     public MessageCardMapListItemView(@NonNull Context context) {
@@ -65,6 +70,10 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
     public void setMessage(TextMessageModel message) {
         this.message = message;
         setValues();
+    }
+
+    public void setMessagesAdapter(MessagesAdapter messagesAdapter) {
+        this.messagesAdapter = messagesAdapter;
     }
 
     //Metodos de la variable mapView
@@ -145,8 +154,14 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
     }
 
     @Override
-    public void onMapClick(LatLng latLng) {
-        Intent intent = new Intent(getContext(), MainActivity.class);
-        getContext().startActivity(intent);
+    public void onMapClick(LatLng latLng) { // Al dar click llamamos al fragmento del mapa mostrnado solo lo consultado
+        if(this.messagesAdapter != null){
+            ChatBotActivity chatBotActivity = (ChatBotActivity) this.messagesAdapter.getChatTextFragment().getActivity();
+            MapaFragment mapaFragment = new MapaFragment();
+            mapaFragment.setListService(this.listService);
+            chatBotActivity.changeFragmente(mapaFragment);
+        } else {
+            Log.d("messageAdapterNUll", "MessageAdapter es Null");
+        }
     }
 }

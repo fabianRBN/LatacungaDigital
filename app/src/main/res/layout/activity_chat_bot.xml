@@ -2,9 +2,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chatBotContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/chatBotContent"
     tools:context=".Activities.ChatBotActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -16,12 +16,20 @@
             android:id="@+id/toolBarChatBot"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            app:titleMarginStart="30dp"
-            app:titleTextColor="#FFF"
-            app:subtitleTextColor="#FFF"
+            android:background="@color/colorPrimary"
             app:navigationIcon="?attr/homeAsUpIndicator"
-            android:background="@color/colorPrimary" />
+            app:subtitleTextColor="#FFF"
+            app:titleMarginStart="30dp"
+            app:titleTextColor="#FFF" />
 
     </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
+        android:id="@+id/chatScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp">
+
+    </FrameLayout>
 
 </FrameLayout>

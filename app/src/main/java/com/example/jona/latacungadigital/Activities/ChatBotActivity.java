@@ -3,18 +3,20 @@ package com.example.jona.latacungadigital.Activities;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.example.jona.latacungadigital.Activities.Clases.CharacterClass;
 import com.example.jona.latacungadigital.Activities.Clases.NetworkReceiverClass;
 import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
+import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.R;
 
-public class ChatBotActivity extends AppCompatActivity implements ChatTextFragment.OnFragmentInteractionListener {
+public class ChatBotActivity extends AppCompatActivity implements ChatTextFragment.OnFragmentInteractionListener, MapaFragment.OnFragmentInteractionListener {
 
     Toolbar toolBarChatBot;
     NetworkReceiverClass networkReceiverClass;
@@ -55,8 +57,18 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
     private void ChatTextFragment() {
         ChatTextFragment chatFragment = new ChatTextFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.chatBotContent, chatFragment);
+        transaction.replace(R.id.chatScreen, chatFragment);
 
+        // Commit a la transacción
+        transaction.commit();
+    }
+
+    // Métodos para cambiar el fragment
+    public void changeFragmente(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.animation_slide_in_down,R.anim.animation_fade_out,R.anim.animation_fade_in,R.anim.animation_slide_out_down);
+        transaction.replace(R.id.chatScreen, fragment);
+        transaction.addToBackStack(null);
         // Commit a la transacción
         transaction.commit();
     }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.jona.latacungadigital.Activities.Clases.MessageCardMapListItemView;
+import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
 import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
 import com.example.jona.latacungadigital.Activities.RecycleMessageHolders.AttractiveMessageHolder;
 import com.example.jona.latacungadigital.Activities.RecycleMessageHolders.ChatBotMessageHolder;
@@ -23,6 +24,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
 
     private List<TextMessageModel> listChatModel;
     private List<MessageCardMapListItemView> listMessageCardMapView;
+    private ChatTextFragment chatTextFragment;
     private Context context;
 
     public MessagesAdapter(List<TextMessageModel> listChatModels, List<MessageCardMapListItemView> listMessageCardMapView, Context context) {
@@ -53,6 +55,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             return new AttractiveMessageHolder(view);
         } else if (viewType == ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP) { // Si el mensaje muestra un mapa se añade el view message_cv_map
             MessageCardMapListItemView messageCardMapListItemView = new MessageCardMapListItemView(parent.getContext());
+            messageCardMapListItemView.setMessagesAdapter(this);
             messageCardMapListItemView.mapViewOnCreate(null);
             listMessageCardMapView.add(messageCardMapListItemView);
             return new MapMessageHolder(messageCardMapListItemView);
@@ -117,5 +120,13 @@ public class MessagesAdapter extends RecyclerView.Adapter {
 
     public List<MessageCardMapListItemView> getListMessageCardMapView() {
         return listMessageCardMapView;
+    }
+
+    public ChatTextFragment getChatTextFragment() {
+        return chatTextFragment;
+    }
+
+    public void setChatTextFragment(ChatTextFragment chatTextFragment) {
+        this.chatTextFragment = chatTextFragment;
     }
 }

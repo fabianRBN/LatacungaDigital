@@ -159,8 +159,12 @@ public class DialogflowClass {
                 CardDialogflow(attractiveClass, result);
 
             } else if (action.equals("consultarAlojamientoEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
+                String speech = result.getFulfillment().getSpeech();
+                MessageSendToDialogflow(speech);
                 sendServicesToMapMessage(result, "Alojamiento");
             } else if (action.equals("consultarComidaYBebidaEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
+                String speech = result.getFulfillment().getSpeech();
+                MessageSendToDialogflow(speech);
                 sendServicesToMapMessage(result, "Comidas y bebidas");
             } else {
 
@@ -246,6 +250,7 @@ public class DialogflowClass {
     // Método para adaptar la lista de mensajes a la clase MessagesAdapter.
     public void addMessagesAdapter(List<TextMessageModel> listMessages) {
         MessagesAdapter messagesAdapter = new MessagesAdapter(listMessages, this.messagesAdapter.getListMessageCardMapView(),view.getContext());
+        messagesAdapter.setChatTextFragment(this.messagesAdapter.getChatTextFragment());
         rvListMessages.setAdapter(messagesAdapter);
         messagesAdapter.notifyDataSetChanged();
         setScrollbarChat();
