@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvAttractiveHowToGet"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:layout_marginTop="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+        android:id="@+id/txtAttractiveHowToGet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapAttractiveHowToGet"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_below="@+id/txtAttractiveHowToGet"
+            app:mapType="normal"
+            app:cameraZoom="13"/>
+
+        <TextView
+            android:id="@+id/txtAttractiveAddressHowToGet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mapAttractiveHowToGet"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

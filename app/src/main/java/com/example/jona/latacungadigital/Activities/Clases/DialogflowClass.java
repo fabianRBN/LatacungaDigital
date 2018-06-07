@@ -158,6 +158,10 @@ public class DialogflowClass {
                 AttractiveClass attractiveClass = new AttractiveClass();
                 CardDialogflow(attractiveClass, result);
 
+            } else if (action.equals("churchShowLocationAction")) { // Accion para mostrar como llegar al lugar turistico.
+                AttractiveClass attractiveClass = new AttractiveClass();
+                MapAttractiveHowToGet(attractiveClass, result);
+
             } else if (action.equals("consultarAlojamientoEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
                 String speech = result.getFulfillment().getSpeech();
                 MessageSendToDialogflow(speech);
@@ -219,6 +223,23 @@ public class DialogflowClass {
         }
     }
 
+    // Método para mostrar un mapa de como llegar a un lugar turistico.
+    private void MapAttractiveHowToGet(AttractiveClass attractiveModel, Result result) {
+        TextMessageModel textMessageModel = new TextMessageModel();
+        attractiveModel.readJSONDialogflow(result);
+
+        if (attractiveModel.getState()) { // Para saber si el JSON no esta vacio.
+            // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
+            textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_MAP_ATTRACTIVE_HOW_TO_GET);
+            textMessageModel.setNameAttractive(attractiveModel.getNameAttractive());
+            textMessageModel.setAddressAttractive(attractiveModel.getAddress());
+            textMessageModel.setLatitude(attractiveModel.getLatitude());
+            textMessageModel.setLongitude(attractiveModel.getLongitude());
+            listMessagesText.add(textMessageModel);
+            addMessagesAdapter(listMessagesText);
+        }
+    }
+
     // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa
     private void sendServicesToMapMessage(Result result, String categoria){
         Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
@@ -251,6 +272,7 @@ public class DialogflowClass {
     public void addMessagesAdapter(List<TextMessageModel> listMessages) {
         MessagesAdapter messagesAdapter = new MessagesAdapter(listMessages, this.messagesAdapter.getListMessageCardMapView(),view.getContext());
         messagesAdapter.setChatTextFragment(this.messagesAdapter.getChatTextFragment());
+        messagesAdapter.setListMessageAttractiveHowToGet(this.messagesAdapter.getListMessageAttractiveHowToGet());
         rvListMessages.setAdapter(messagesAdapter);
         messagesAdapter.notifyDataSetChanged();
         setScrollbarChat();

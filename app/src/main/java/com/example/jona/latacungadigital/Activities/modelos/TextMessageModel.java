@@ -17,6 +17,9 @@ public class TextMessageModel {
     private String nameAttractive;
     private String categoryAttactive;
     private String descriptionAttractive;
+    private String addressAttractive;
+    private double latitude;
+    private double longitude;
 
     // Declaracion de variables para la consulta de servicios.
     private ArrayList<ServiceClass> listService;
@@ -72,4 +75,16 @@ public class TextMessageModel {
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
+
+    public double getLatitude() { return latitude; }
+
+    public void setLatitude(double latitude) { this.latitude = latitude; }
+
+    public double getLongitude() { return longitude; }
+
+    public void setLongitude(double longitude) { this.longitude = longitude; }
+
+    public String getAddressAttractive() { return addressAttractive; }
+
+    public void setAddressAttractive(String addressAttractive) { this.addressAttractive = addressAttractive; }
 }

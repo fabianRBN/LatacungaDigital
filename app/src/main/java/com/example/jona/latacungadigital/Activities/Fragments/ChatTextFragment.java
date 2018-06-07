@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
 import com.example.jona.latacungadigital.Activities.Clases.DialogflowClass;
 import com.example.jona.latacungadigital.Activities.Clases.MessageCardMapListItemView;
+import com.example.jona.latacungadigital.Activities.Clases.MessageMapAttractiveHowToGet;
 import com.example.jona.latacungadigital.Activities.Clases.SaveListMessageClass;
 import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
@@ -62,6 +63,7 @@ public class ChatTextFragment extends Fragment {
     private RecyclerView rvListMessages;
     private List<TextMessageModel> listMessagesText;
     private List<MessageCardMapListItemView> listMessageCardMapView;
+    private List<MessageMapAttractiveHowToGet> listMessageAttractiveHowToGet;
     private FloatingActionButton btnSendMessage;
     private EditText txtMessageUserSend;
     private MessagesAdapter messagesAdapter;
@@ -107,6 +109,7 @@ public class ChatTextFragment extends Fragment {
                              Bundle savedInstanceState) {
         listMessagesText = new ArrayList<>(); // Incializar la lista de los mensajes de texto.
         listMessageCardMapView = new ArrayList<>();
+        listMessageAttractiveHowToGet = new ArrayList<>();
 
         view = inflater.inflate(R.layout.fragment_chat_text, container, false);
 
@@ -125,8 +128,10 @@ public class ChatTextFragment extends Fragment {
         ValidateAudioRecord(view); // Permitimos la entrada de audio al chat.
 
         messagesAdapter = new MessagesAdapter(listMessagesText, listMessageCardMapView , view.getContext());
+        messagesAdapter.setListMessageAttractiveHowToGet(listMessageAttractiveHowToGet);
         messagesAdapter.setChatTextFragment(this);
         rvListMessages.setAdapter(messagesAdapter); // Adaptamos el Recicle View a al adaptador que contendran los mensajes.
+
         dialogflowClass = new DialogflowClass(view, listMessagesText, rvListMessages, messagesAdapter, txtMessageUserSend);
         dialogflowClass.ConfigurationDialogflow(); // Para configurar el API de Dialogflow.
 
@@ -331,6 +336,12 @@ public class ChatTextFragment extends Fragment {
             }
         }
 
+        if(listMessageAttractiveHowToGet != null){
+            for (MessageMapAttractiveHowToGet view : listMessageAttractiveHowToGet) {
+                view.mapViewOnResume();
+            }
+        }
+
         ReadListMessageFromSharedPreferences(); // Leer lista de mensajes.
     }
 
@@ -342,6 +353,12 @@ public class ChatTextFragment extends Fragment {
                 view.mapViewOnSaveInstanceState(outState);
             }
         }
+
+        if(listMessageAttractiveHowToGet != null){
+            for (MessageMapAttractiveHowToGet view : listMessageAttractiveHowToGet) {
+                view.mapViewOnSaveInstanceState(outState);
+            }
+        }
     }
 
     @Override
@@ -349,6 +366,12 @@ public class ChatTextFragment extends Fragment {
         super.onPause();
         if(listMessageCardMapView != null){
             for (MessageCardMapListItemView view : listMessageCardMapView) {
+                view.mapViewOnPause();
+            }
+        }
+
+        if(listMessageAttractiveHowToGet != null){
+            for (MessageMapAttractiveHowToGet view : listMessageAttractiveHowToGet) {
                 view.mapViewOnPause();
             }
         }
@@ -374,6 +397,12 @@ public class ChatTextFragment extends Fragment {
                 view.mapViewOnLowMemory();
             }
         }
+
+        if(listMessageAttractiveHowToGet != null){
+            for (MessageMapAttractiveHowToGet view : listMessageAttractiveHowToGet) {
+                view.mapViewOnLowMemory();
+            }
+        }
     }
 
     @Override
@@ -381,6 +410,12 @@ public class ChatTextFragment extends Fragment {
         super.onDestroy();
         if(listMessageCardMapView != null){
             for (MessageCardMapListItemView view : listMessageCardMapView) {
+                view.mapViewOnDestroy();
+            }
+        }
+
+        if(listMessageAttractiveHowToGet != null){
+            for (MessageMapAttractiveHowToGet view : listMessageAttractiveHowToGet) {
                 view.mapViewOnDestroy();
             }
         }

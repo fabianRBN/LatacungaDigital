@@ -19,6 +19,7 @@ public class AttractiveClass {
     private String category;
     private String description;
     private List<String> imagenURL;
+    private String address;
     private double latitude;
     private double longitude;
 
@@ -108,6 +109,10 @@ public class AttractiveClass {
         this.imagenURL = imagenURL;
     }
 
+    public String getAddress() { return address; }
+
+    public void setAddress(String address) { this.address = address; }
+
     // Método para leer el JSON de atractivos consultados que se obtiene de Dialogflow.
     public void readJSONDialogflow(Result resultAI) {
         final Map<String, JsonElement> JSONDialogflowResult = resultAI.getFulfillment().getData();
@@ -120,6 +125,7 @@ public class AttractiveClass {
             setDescription(getResult().getAsJsonObject().get("descripcion").toString().replace("\"", ""));
             setNameAttractive(getResult().getAsJsonObject().get("nombre").toString().replace("\"", ""));
             setCategory(getResult().getAsJsonObject().get("categoria").toString().replace("\"", ""));
+            setAddress(getResult().getAsJsonObject().get("direccion").toString().replace("\"", ""));
 
             setGallery(getResult().getAsJsonObject().get("galeria"));
 

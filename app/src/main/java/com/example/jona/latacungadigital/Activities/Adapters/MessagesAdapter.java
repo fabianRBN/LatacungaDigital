@@ -8,7 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.jona.latacungadigital.Activities.Clases.MessageCardMapListItemView;
+import com.example.jona.latacungadigital.Activities.Clases.MessageMapAttractiveHowToGet;
 import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
+import com.example.jona.latacungadigital.Activities.RecycleMessageHolders.AttractiveHowToGetHolder;
 import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
 import com.example.jona.latacungadigital.Activities.RecycleMessageHolders.AttractiveMessageHolder;
 import com.example.jona.latacungadigital.Activities.RecycleMessageHolders.ChatBotMessageHolder;
@@ -24,6 +26,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
 
     private List<TextMessageModel> listChatModel;
     private List<MessageCardMapListItemView> listMessageCardMapView;
+    private List<MessageMapAttractiveHowToGet> listMessageAttractiveHowToGet;
     private ChatTextFragment chatTextFragment;
     private Context context;
 
@@ -32,6 +35,22 @@ public class MessagesAdapter extends RecyclerView.Adapter {
         this.listMessageCardMapView = listMessageCardMapView;
         this.context = context;
     }
+
+    // Getters and Setters.
+    public List<MessageMapAttractiveHowToGet> getListMessageAttractiveHowToGet() { return listMessageAttractiveHowToGet; }
+
+    public void setListMessageAttractiveHowToGet(List<MessageMapAttractiveHowToGet> listMessageAttractiveHowToGet) {
+        this.listMessageAttractiveHowToGet = listMessageAttractiveHowToGet;
+    }
+
+    public List<MessageCardMapListItemView> getListMessageCardMapView() { return listMessageCardMapView; }
+
+    public ChatTextFragment getChatTextFragment() {
+        return chatTextFragment;
+    }
+
+    public void setChatTextFragment(ChatTextFragment chatTextFragment) { this.chatTextFragment = chatTextFragment; }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -59,6 +78,11 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             messageCardMapListItemView.mapViewOnCreate(null);
             listMessageCardMapView.add(messageCardMapListItemView);
             return new MapMessageHolder(messageCardMapListItemView);
+        } else if (viewType == ChatBotReferences.VIEW_TYPE_MESSAGE_MAP_ATTRACTIVE_HOW_TO_GET) { // Si el mensaje es de como llegar a un sitio turistico.
+            MessageMapAttractiveHowToGet messageAttractiveHowToGet = new MessageMapAttractiveHowToGet(parent.getContext());
+            messageAttractiveHowToGet.mapViewOnCreate(null);
+            listMessageAttractiveHowToGet.add(messageAttractiveHowToGet);
+            return new AttractiveHowToGetHolder(messageAttractiveHowToGet);
         }
 
         return null;
@@ -88,6 +112,10 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 MapMessageHolder mapMessageHolder = (MapMessageHolder) holder;
                 mapMessageHolder.bind(message);
                 break;
+            case ChatBotReferences.VIEW_TYPE_MESSAGE_MAP_ATTRACTIVE_HOW_TO_GET:
+                AttractiveHowToGetHolder attractiveHowToGetHolder = (AttractiveHowToGetHolder) holder;
+                attractiveHowToGetHolder.bind(message);
+                break;
         }
     }
 
@@ -112,21 +140,12 @@ public class MessagesAdapter extends RecyclerView.Adapter {
         } else if (listChatModel.get(position).getViewTypeMessage() == 4){
             // El chatbot envia un mensaje con informacion de un atractivo turistico
             return ChatBotReferences.VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT;
-        } else {
+        } else if (listChatModel.get(position).getViewTypeMessage() == 5) {
             // El chatbot envia un mensaje con un mapa
             return ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP;
+        } else {
+            // El chat bot muestra como llegar al lugar turistico.
+            return ChatBotReferences.VIEW_TYPE_MESSAGE_MAP_ATTRACTIVE_HOW_TO_GET;
         }
-    }
-
-    public List<MessageCardMapListItemView> getListMessageCardMapView() {
-        return listMessageCardMapView;
-    }
-
-    public ChatTextFragment getChatTextFragment() {
-        return chatTextFragment;
-    }
-
-    public void setChatTextFragment(ChatTextFragment chatTextFragment) {
-        this.chatTextFragment = chatTextFragment;
     }
 }
