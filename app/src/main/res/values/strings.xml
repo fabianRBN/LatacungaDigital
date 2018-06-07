@@ -21,4 +21,5 @@ El trozo de texto estándar de Lorem Ipsum usado desde el año 1500 es reproduci
 
     <string name="dialog_sign_off_button">Confirmar</string>
     <string name="dialog_cancel_button">Cancelar</string>
+    <string name="title_activity_ar">ARActivity</string>
 </resources>

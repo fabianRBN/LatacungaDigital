@@ -71,11 +71,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 case R.id.navigation_ar:
                     // mTextMessage.setText(R.string.title_notifications);
 
+
+                    actividadAR();
+
                     return true;
             }
             return false;
         }
     };
+
+    public void actividadAR(){
+        Intent intent = new Intent(this, ARActivity.class);
+
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

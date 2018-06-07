@@ -51,8 +51,8 @@ public class ListAtractivosFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list_atractivos, container, false);
 
         listView = (ListView) view.findViewById(R.id.listViewAtractivos);
-        ConsultarAtractivos("");
 
+        ConsultarAtractivos("");
 
         return view;
     }
@@ -81,7 +81,9 @@ public class ListAtractivosFragment extends Fragment {
                     listaAtractivo.add(atractivoModel);
                 }
 
-                listView.setAdapter(new ListAtractivoAdapter(getContext(),listaAtractivo));
+                if(getContext()!= null) {
+                    listView.setAdapter(new ListAtractivoAdapter(getContext(), listaAtractivo));
+                }
 
             }
 
@@ -116,6 +118,8 @@ public class ListAtractivosFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+
 
     /**
      * This interface must be implemented by activities that contain this
