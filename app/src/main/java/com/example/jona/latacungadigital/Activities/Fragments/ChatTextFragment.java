@@ -127,9 +127,10 @@ public class ChatTextFragment extends Fragment {
 
         ValidateAudioRecord(view); // Permitimos la entrada de audio al chat.
 
-        messagesAdapter = new MessagesAdapter(listMessagesText, listMessageCardMapView , view.getContext());
-        messagesAdapter.setListMessageAttractiveHowToGet(listMessageAttractiveHowToGet);
+        messagesAdapter = new MessagesAdapter(listMessagesText, view.getContext());
         messagesAdapter.setChatTextFragment(this);
+        messagesAdapter.setListMessageCardMapView(listMessageCardMapView);
+        messagesAdapter.setListMessageAttractiveHowToGet(listMessageAttractiveHowToGet);
         rvListMessages.setAdapter(messagesAdapter); // Adaptamos el Recicle View a al adaptador que contendran los mensajes.
 
         dialogflowClass = new DialogflowClass(view, listMessagesText, rvListMessages, messagesAdapter, txtMessageUserSend);

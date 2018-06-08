@@ -1,5 +1,6 @@
 package com.example.jona.latacungadigital.Activities.modelos;
 
+import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 
 import java.util.ArrayList;
@@ -21,8 +22,11 @@ public class TextMessageModel {
     private double latitude;
     private double longitude;
 
-    // Declaracion de variables para la consulta de servicios.
+    // Declaracion de variables para la consulta.
     private ArrayList<ServiceClass> listService;
+    private ArrayList<AttractiveClass> listAttractive;
+    private ServiceClass service;
+    private AttractiveClass attractive;
 
     // Constructores.
     public TextMessageModel(String message) {
@@ -66,6 +70,30 @@ public class TextMessageModel {
 
     public void setListService(ArrayList<ServiceClass> listService) {
         this.listService = listService;
+    }
+
+    public ArrayList<AttractiveClass> getListAttractive() {
+        return listAttractive;
+    }
+
+    public void setListAttractive(ArrayList<AttractiveClass> listAttractive) {
+        this.listAttractive = listAttractive;
+    }
+
+    public ServiceClass getService() {
+        return service;
+    }
+
+    public void setService(ServiceClass service) {
+        this.service = service;
+    }
+
+    public AttractiveClass getAttractive() {
+        return attractive;
+    }
+
+    public void setAttractive(AttractiveClass attractive) {
+        this.attractive = attractive;
     }
 
     public String getTitulo() {

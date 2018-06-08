@@ -30,9 +30,8 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     private ChatTextFragment chatTextFragment;
     private Context context;
 
-    public MessagesAdapter(List<TextMessageModel> listChatModels, List<MessageCardMapListItemView> listMessageCardMapView, Context context) {
+    public MessagesAdapter(List<TextMessageModel> listChatModels, Context context) {
         this.listChatModel = listChatModels;
-        this.listMessageCardMapView = listMessageCardMapView;
         this.context = context;
     }
 
@@ -44,6 +43,10 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     }
 
     public List<MessageCardMapListItemView> getListMessageCardMapView() { return listMessageCardMapView; }
+
+    public void setListMessageCardMapView(List<MessageCardMapListItemView> listMessageCardMapView) {
+        this.listMessageCardMapView = listMessageCardMapView;
+    }
 
     public ChatTextFragment getChatTextFragment() {
         return chatTextFragment;
@@ -80,6 +83,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             return new MapMessageHolder(messageCardMapListItemView);
         } else if (viewType == ChatBotReferences.VIEW_TYPE_MESSAGE_MAP_ATTRACTIVE_HOW_TO_GET) { // Si el mensaje es de como llegar a un sitio turistico.
             MessageMapAttractiveHowToGet messageAttractiveHowToGet = new MessageMapAttractiveHowToGet(parent.getContext());
+            messageAttractiveHowToGet.setMessagesAdapter(this);
             messageAttractiveHowToGet.mapViewOnCreate(null);
             listMessageAttractiveHowToGet.add(messageAttractiveHowToGet);
             return new AttractiveHowToGetHolder(messageAttractiveHowToGet);
