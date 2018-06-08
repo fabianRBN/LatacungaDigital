@@ -89,14 +89,13 @@
                     android:layout_weight=".30" />
 
                 <Button
-                    android:text="POST"
+                    android:text="Ruta"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".30" />
             </LinearLayout>
 
             <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -105,7 +104,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:padding="16dp"
+                    android:padding="12dp"
                    >
 
                     <TextView
@@ -137,6 +136,152 @@
                         />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_view3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="75dp"
+                        android:orientation="vertical">
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp">
+                            <ImageView
+                                android:id="@+id/imgUusuario"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:src="@drawable/ic_picture"/>
+
+
+                            <ImageButton
+                                android:id="@+id/btn_submenu"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_weight="1"
+                                android:background="@color/white"
+                                android:src="@drawable/ic_arrow_drop_down_circle_black_24dp" />
+
+
+                        </RelativeLayout>
+
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:id="@+id/txt_nombre_usuario"
+                                android:layout_width="match_parent"
+                                android:layout_height="18dp"
+                                android:text="Fabian Toapanta"
+                                android:gravity="center"/>
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="175dp"
+                       android:orientation="vertical"
+                       android:id="@+id/layout_editar_coemtario"
+                       android:visibility="gone">
+                       <RatingBar
+                           android:id="@+id/ratingBar"
+                           android:layout_gravity="center"
+                           android:theme="@style/RatingBar"
+                           style="?android:attr/ratingBarStyle"
+                           android:layout_width="wrap_content"
+                           android:layout_height="50dp"
+                           android:numStars="5"
+                           android:rating="3.5"
+                           android:stepSize="0.5"
+                           android:layout_marginTop="5dp"/>
+
+                       <EditText
+                           android:layout_width="match_parent"
+                           android:layout_height="60dp"
+                           android:textSize="12dp"
+                           android:ems="10"
+                           android:id="@+id/edit_comentario"
+                           android:inputType="textMultiLine" />
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="50dp"
+                           android:orientation="horizontal">
+                           <Button
+                               android:layout_width="0dp"
+                               android:layout_weight="0.5"
+                               android:id="@+id/btn_guardar"
+                               android:layout_height="40dp"
+                               android:text="Guardar"/>
+                           <Button
+                               android:layout_width="0dp"
+                               android:layout_weight="0.5"
+                               android:id="@+id/btn_cancelar"
+                               android:layout_height="40dp"
+                               android:text="Cancelar"/>
+                       </LinearLayout>
+
+
+
+
+
+                   </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:orientation="vertical"
+                        android:id="@+id/layou_comentario"
+                        android:padding="10dp">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="fecha"
+                            android:id="@+id/txt_fecha"
+                            android:textSize="10dp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="10dp"/>
+                        <RatingBar
+                            android:id="@+id/ratingBar2"
+                            android:layout_gravity="left"
+                            android:theme="@style/RatingBar"
+                            style="?android:attr/ratingBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:numStars="5"
+                            android:rating="3.5"
+                            android:stepSize="0.5"
+                            android:layout_marginBottom="5dp"/>
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/lorem"
+                            android:id="@+id/txt_comentario"
+                            android:textSize="10dp"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -149,7 +294,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:padding="16dp"
+                    android:padding="10dp"
                     >
                 <TextView
                     android:layout_width="wrap_content"
@@ -176,7 +321,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
                             android:orientation="vertical"
-                            android:padding="16dp">
+                            android:padding="10dp">
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"

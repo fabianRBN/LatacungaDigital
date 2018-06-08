@@ -8,20 +8,29 @@ public class Cliente {
     public String nombre;
     public String email;
     public String idcliente;
+    public String pathImagen;
 
     public Cliente() {
     }
 
-    public Cliente(String nombre, String email, String idcliente) {
+    public Cliente(String nombre, String email, String idcliente, String pathImagen) {
 
         Calendar fecha = Calendar.getInstance();
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         this.fecha_Afiliacion = formato.format(fecha.getTime());
+        this.pathImagen = pathImagen;
         this.nombre = nombre;
         this.email=email;
         this.idcliente=idcliente;
     }
 
+    public String getPathImagen() {
+        return pathImagen;
+    }
+
+    public void setPathImagen(String pathImagen) {
+        this.pathImagen = pathImagen;
+    }
 
     public String getIdcliente() {
         return idcliente;
