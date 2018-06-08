@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.example.jona.latacungadigital.Activities.Adapters.MyOnInfoWindowsClic
 import com.example.jona.latacungadigital.Activities.Adapters.OnMarkerClickListenerAdapter;
 import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
+import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,13 +40,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-
 public class MapaFragment extends Fragment implements OnMapReadyCallback{
 
     // Variables de la clase
     private boolean isSerchFromChatBot = false;
     private ArrayList<ServiceClass> listService;
     private AttractiveClass attractive;
+    private LatLng pointDestination;
 
     // Variables de mapa
     MapView mMapView;
@@ -63,6 +65,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
     public MapaFragment() {
         // Required empty public constructor
     }
+
+    // Getters and Setters para dibujar el punto de destino del atractivo turistico.
+    public LatLng getPointDestination() { return pointDestination; }
+
+    public void setPointDestination(LatLng pointDestination) { this.pointDestination = pointDestination; }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -161,13 +168,13 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
         markerOptions.title(attractive.getNameAttractive());
         markerOptions.snippet(attractive.getAddress());
         markerOptions.draggable(false);
-        if(attractive.getIcon() != 0){ // Validar si existe un icono predefinido del atractivo
+        if (attractive.getIcon() != 0) { // Validar si existe un icono predefinido del atractivo
             markerOptions.icon(BitmapDescriptorFactory.fromResource(attractive.getIcon()));
         }
         googleMap.addMarker(markerOptions);
     }
 
-    private void createMarkerForUser(LatLng location) {
+    private void createMarkerForUser(LatLng location, String address) {
         if (location == null)
             return;
 
@@ -176,6 +183,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(new LatLng(location.latitude, location.longitude));
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_user_dark_blue));
+            markerOptions.title("Mi Ubicación");
+            markerOptions.snippet(address);
             myPositionMarker = googleMap.addMarker(markerOptions);
         }
     }
@@ -207,9 +216,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap mMap) {
         googleMap = mMap;
+        EstadoGPS estadoGPS = new EstadoGPS(getContext(), googleMap); // Variable para obtener la locacion donde se encuentra el usuario.
+        estadoGPS.getCurrentLocation(); // Leer las coordenadas actuales de donde se encunetra el usuario y almacenarlo en un metodo Setter.
 
         // Validar si la aplicacion tiene el permiso de Localizacion
-        if ( ContextCompat.checkSelfPermission( getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+        if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
             return;
         }
@@ -218,31 +229,44 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
         // Definir la posicion de la camara en el map
         LatLngBounds centroHistorico = new LatLngBounds(
                 new LatLng(-0.9364, -78.6163), new LatLng(-0.9301, -78.6129));
-        if(!isSerchFromChatBot){
+        if (!isSerchFromChatBot) {
             CameraPosition cameraPosition = new CameraPosition.Builder().target(centroHistorico.getCenter()).zoom(15).build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         } else {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centroHistorico.getCenter(), 15));
         }
 
-        if(!isSerchFromChatBot){
-            // Habilitar las ventanas de información sobre los marcadores
-            MyOnInfoWindowsClickListener myOnInfoWindowsClickListener= new MyOnInfoWindowsClickListener(getContext(),googleMap);
+        // Habilitar las ventanas de información sobre los marcadores
+        MyOnInfoWindowsClickListener myOnInfoWindowsClickListener= new MyOnInfoWindowsClickListener(getContext(),googleMap);
+
+        if (!isSerchFromChatBot) {
             googleMap.setInfoWindowAdapter(new CustomInfoWindowsAdapter(getContext()));
             googleMap.setOnInfoWindowClickListener( myOnInfoWindowsClickListener);
             googleMap.setOnInfoWindowLongClickListener(myOnInfoWindowsClickListener);
+        } else {
+            // Para dibjuar la ruta en el mapa.
+            if (getPointDestination() != null) {
+                myOnInfoWindowsClickListener.distanciaGoogle(estadoGPS.getCurrentLatLng(), getPointDestination()); // Dibujar la ruta en el mapa.
+            }
         }
 
         // Agregar marcadores en puntos del mapa
-        if(!isSerchFromChatBot){
+        if (!isSerchFromChatBot) {
             dataFirebase(); // Agregar marcadores de atractivos
         } else {
-            if(listService != null){
+            if (listService != null) {
                 for (int cont=0; cont < listService.size(); cont++ ){ // Agregar un marcadores de servicios
                     createMarkerForService(listService.get(cont));
                 }
-            } else if (attractive != null){
+            } else if (attractive != null) {
                 createMarkerForAttractive(attractive);
+
+                if (getPointDestination() != null) {
+                    // Se dibuja los puntos del usuario.
+                    createMarkerForUser(estadoGPS.getCurrentLatLng(),
+                            myOnInfoWindowsClickListener.getCompleteAddressString(estadoGPS.getCurrentLatLng().latitude,
+                                    estadoGPS.getCurrentLatLng().longitude)); // Para obtener la direccion en donde se encuentra el usuario.
+                }
             }
         }
     }
