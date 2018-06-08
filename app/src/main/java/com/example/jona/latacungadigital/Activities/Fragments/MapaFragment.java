@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.example.jona.latacungadigital.Activities.Adapters.CustomInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.MyOnInfoWindowsClickListener;
 import com.example.jona.latacungadigital.Activities.Adapters.OnMarkerClickListenerAdapter;
+import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.R;
@@ -41,7 +42,9 @@ import java.util.ArrayList;
 public class MapaFragment extends Fragment implements OnMapReadyCallback{
 
     // Variables de la clase
+    private boolean isSerchFromChatBot = false;
     private ArrayList<ServiceClass> listService;
+    private AttractiveClass attractive;
 
     // Variables de mapa
     MapView mMapView;
@@ -84,8 +87,16 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
         return rootView;
     }
 
+    public void setSerchFromChatBot(boolean serchFromChatBot) {
+        isSerchFromChatBot = serchFromChatBot;
+    }
+
     public void setListService(ArrayList<ServiceClass> listService) {
         this.listService = listService;
+    }
+
+    public void setAttractive(AttractiveClass attractive) {
+        this.attractive = attractive;
     }
 
     public void dataFirebase(){
@@ -110,7 +121,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
                     LatLng punto = new LatLng( coordenada.getLat(), coordenada.getLng());
                     MarkerOptions markerOptions = new  MarkerOptions().position(punto)
                             .title(nombreAtractivo)
-                            .snippet(snippit);
+                            .snippet(snippit)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_building_blue));
                     listaMarkadores.add(markerOptions);
                     googleMap.addMarker(markerOptions);
 
@@ -138,6 +150,19 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
         markerOptions.draggable(false);
         if(service.getIcon() != 0){ // Validar si existe un icono predefinido del servicio
             markerOptions.icon(BitmapDescriptorFactory.fromResource(service.getIcon()));
+        }
+        googleMap.addMarker(markerOptions);
+    }
+
+    // Crear un marcador en el mapa de acuerdo a un atraactivo
+    private void createMarkerForAttractive(AttractiveClass attractive){
+        MarkerOptions markerOptions =  new MarkerOptions();
+        markerOptions.position(new LatLng(attractive.getLatitude(),attractive.getLongitude()));
+        markerOptions.title(attractive.getNameAttractive());
+        markerOptions.snippet(attractive.getAddress());
+        markerOptions.draggable(false);
+        if(attractive.getIcon() != 0){ // Validar si existe un icono predefinido del atractivo
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(attractive.getIcon()));
         }
         googleMap.addMarker(markerOptions);
     }
@@ -193,14 +218,14 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
         // Definir la posicion de la camara en el map
         LatLngBounds centroHistorico = new LatLngBounds(
                 new LatLng(-0.9364, -78.6163), new LatLng(-0.9301, -78.6129));
-        if(listService == null){
+        if(!isSerchFromChatBot){
             CameraPosition cameraPosition = new CameraPosition.Builder().target(centroHistorico.getCenter()).zoom(15).build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         } else {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centroHistorico.getCenter(), 15));
         }
 
-        if(listService == null){
+        if(!isSerchFromChatBot){
             // Habilitar las ventanas de información sobre los marcadores
             MyOnInfoWindowsClickListener myOnInfoWindowsClickListener= new MyOnInfoWindowsClickListener(getContext(),googleMap);
             googleMap.setInfoWindowAdapter(new CustomInfoWindowsAdapter(getContext()));
@@ -209,11 +234,15 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
         }
 
         // Agregar marcadores en puntos del mapa
-        if(listService == null){
+        if(!isSerchFromChatBot){
             dataFirebase(); // Agregar marcadores de atractivos
         } else {
-            for (int cont=0; cont < listService.size(); cont++ ){ // Agregar un marcadores de servicios
-                createMarkerForService(listService.get(cont));
+            if(listService != null){
+                for (int cont=0; cont < listService.size(); cont++ ){ // Agregar un marcadores de servicios
+                    createMarkerForService(listService.get(cont));
+                }
+            } else if (attractive != null){
+                createMarkerForAttractive(attractive);
             }
         }
     }

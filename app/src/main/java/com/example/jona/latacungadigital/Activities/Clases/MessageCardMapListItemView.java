@@ -49,7 +49,6 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
     public MessageCardMapListItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setView(context);
-
     }
 
     // Instanciar y dar valores a los componetes de la vista
@@ -158,6 +157,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
         if(this.messagesAdapter != null){
             ChatBotActivity chatBotActivity = (ChatBotActivity) this.messagesAdapter.getChatTextFragment().getActivity();
             MapaFragment mapaFragment = new MapaFragment();
+            mapaFragment.setSerchFromChatBot(true);
             mapaFragment.setListService(this.listService);
             chatBotActivity.changeFragmente(mapaFragment);
         } else {

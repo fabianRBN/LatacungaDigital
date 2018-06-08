@@ -158,6 +158,9 @@ public class DialogflowClass {
                 AttractiveClass attractiveClass = new AttractiveClass();
                 CardDialogflow(attractiveClass, result);
 
+            } else if (action.equals("churchShowLocationAction")) { // Accion para mostrar como llegar al lugar turistico.
+                MapAttractiveHowToGet(result);
+
             } else if (action.equals("consultarAlojamientoEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
                 String speech = result.getFulfillment().getSpeech();
                 MessageSendToDialogflow(speech);
@@ -219,6 +222,20 @@ public class DialogflowClass {
         }
     }
 
+    // Método para mostrar un mapa de como llegar a un lugar turistico.
+    private void MapAttractiveHowToGet(Result result) {
+        AttractiveClass attractive = new AttractiveClass();
+        TextMessageModel textMessageModel = new TextMessageModel();
+        attractive.readJSONDialogflow(result); // Asignamos los valores del Json al objeto atractivo
+        if (attractive.getState()) { // Para saber si el JSON no esta vacio.
+            // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
+            textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_MAP_ATTRACTIVE_HOW_TO_GET);
+            textMessageModel.setAttractive(attractive);
+            listMessagesText.add(textMessageModel);
+            addMessagesAdapter(listMessagesText);
+        }
+    }
+
     // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa
     private void sendServicesToMapMessage(Result result, String categoria){
         Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
@@ -249,8 +266,10 @@ public class DialogflowClass {
 
     // Método para adaptar la lista de mensajes a la clase MessagesAdapter.
     public void addMessagesAdapter(List<TextMessageModel> listMessages) {
-        MessagesAdapter messagesAdapter = new MessagesAdapter(listMessages, this.messagesAdapter.getListMessageCardMapView(),view.getContext());
+        MessagesAdapter messagesAdapter = new MessagesAdapter(listMessages,view.getContext());
         messagesAdapter.setChatTextFragment(this.messagesAdapter.getChatTextFragment());
+        messagesAdapter.setListMessageCardMapView(this.messagesAdapter.getListMessageCardMapView());
+        messagesAdapter.setListMessageAttractiveHowToGet(this.messagesAdapter.getListMessageAttractiveHowToGet());
         rvListMessages.setAdapter(messagesAdapter);
         messagesAdapter.notifyDataSetChanged();
         setScrollbarChat();
