@@ -34,4 +34,9 @@
         <item name="windowActionBarOverlay">true</item>
     </style>
 
+
+    <style name="generalnotitle" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
 </resources>
