@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             }else {
                                 //Como no esta registrado el cliente procede al registro en firebase
                                 //idUsuario = mFirebaseDatabase.push().getKey();//genera la key unica de cada cliente
-                                Cliente cliente = new Cliente( user.getDisplayName(),user.getEmail(),user.getUid()); //instancia de cliente
+                                Cliente cliente = new Cliente( user.getDisplayName(),user.getEmail(),user.getUid(),user.getPhotoUrl().toString()); //instancia de cliente
                                 mFirebaseDatabase.child("cliente").child(user.getUid()).setValue(cliente);//guarda la informacion en firebase
                             }
                         }

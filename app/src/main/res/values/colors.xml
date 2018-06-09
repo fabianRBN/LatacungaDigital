@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="button">#2397f3</color>
+    <color name="indigo">#9784ec</color>
+    <color name="pink">#9784ec</color>
 </resources>

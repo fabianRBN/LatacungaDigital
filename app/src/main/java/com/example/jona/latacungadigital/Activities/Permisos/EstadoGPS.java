@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,7 +25,6 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class EstadoGPS {
 
-
     Context context;
     private GoogleMap googleMap;
     LocationManager locationManager;
@@ -32,7 +32,7 @@ public class EstadoGPS {
     boolean network_enabled = false;
     double longitudeGPS, latitudeGPS;
     public LatLng puntoOrigen = new LatLng(-0.9337192,-78.6174786);
-
+    private LatLng currentLatLng;
 
     public EstadoGPS(Context context, GoogleMap googleMap) {
         this.context = context;
@@ -41,14 +41,42 @@ public class EstadoGPS {
         PuntodeOrigenGoogleMap();
     }
 
+    // Getters and Setters.
+    public LatLng getCurrentLatLng() { return currentLatLng; }
+
+    public void setCurrentLatLng(LatLng currentLatLng) { this.currentLatLng = currentLatLng; }
+
     public void PuntodeOrigenGoogleMap(){
         googleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
             @Override
             public void onMyLocationChange(Location location) {
                 puntoOrigen = new LatLng(location.getLatitude(),location.getLongitude());
+                getCurrentLocation();
             }
         });
     }
+
+    // Obtener la locacion actual del usuario.
+    public void getCurrentLocation() {
+        Criteria criteria = new Criteria();
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        String provider = locationManager.getBestProvider(criteria, false);
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        Location location = locationManager.getLastKnownLocation(provider);
+        if (location != null) {
+            float latitude = (float) location.getLatitude();
+            float longitude = (float) location.getLongitude();
+            LatLng currentUser = new LatLng(latitude, longitude);
+            setCurrentLatLng(currentUser);
+        }
+    }
+
     public boolean GpsStado() {
         gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if(!gps_enabled){
