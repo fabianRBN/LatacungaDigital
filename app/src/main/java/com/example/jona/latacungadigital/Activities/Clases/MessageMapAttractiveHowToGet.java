@@ -144,6 +144,7 @@ public class MessageMapAttractiveHowToGet extends LinearLayout implements OnMapR
         gMap = googleMap;
         gMap.clear();
         EstadoGPS estadoGPS = new EstadoGPS(context, gMap); // Variable para obtener la locacion donde se encuentra el usuario.
+        estadoGPS.getCurrentLocation(); // Leer las coordenadas actuales de donde se encunetra el usuario y almacenarlo en un metodo Setter.
 
         // Validar si la aplicacion tiene el permiso de Localizacion
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -153,14 +154,21 @@ public class MessageMapAttractiveHowToGet extends LinearLayout implements OnMapR
 
         gMap.setMyLocationEnabled(true); // Habilitar el boton de "Mover a mi ubicacion"
 
+        LatLng currentUserLatLng;
+
+        if (estadoGPS.getCurrentLatLng() != null) { // Si esta permitido la ubicacion del usuario se pone las coordenadas de donde se encuentra.
+            currentUserLatLng = estadoGPS.getCurrentLatLng();
+        } else { // Si no esta permitido la ubicacion actual del usario se pone un punto preestablecido.
+            currentUserLatLng = estadoGPS.puntoOrigen;
+        }
+
         // Dibujar la ruta de como llegar al lugar turistico.
-        estadoGPS.getCurrentLocation(); // Leer las coordenadas actuales de donde se encunetra el usuario y almacenarlo en un metodo Setter.
         MyOnInfoWindowsClickListener myOnInfoWindowsClickListener = new MyOnInfoWindowsClickListener(context, gMap);
-        myOnInfoWindowsClickListener.distanciaGoogle(estadoGPS.getCurrentLatLng(), new LatLng(attractive.getLatitude(), attractive.getLongitude()));
+        myOnInfoWindowsClickListener.distanciaGoogle(currentUserLatLng, new LatLng(attractive.getLatitude(), attractive.getLongitude()));
 
         // Crear un marcador para la posicion del usuario
         MarkerOptions markerUser = new MarkerOptions()
-                .position(estadoGPS.getCurrentLatLng()) // Coordenadas actuales de donde se encunetra el usuario.
+                .position(currentUserLatLng) // Coordenadas actuales de donde se encunetra el usuario.
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_user_dark_blue));
         gMap.addMarker(markerUser);
 
@@ -169,7 +177,7 @@ public class MessageMapAttractiveHowToGet extends LinearLayout implements OnMapR
 
         // Posicionar la camara segun la ruta de donde se encuentre el usuario con el punto de destino.
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(estadoGPS.getCurrentLatLng());
+        builder.include(currentUserLatLng);
         builder.include(new LatLng(attractive.getLatitude(), attractive.getLongitude()));
         gMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
 

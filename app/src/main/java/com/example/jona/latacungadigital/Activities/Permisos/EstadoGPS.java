@@ -69,10 +69,12 @@ public class EstadoGPS {
         }
 
         Location location = locationManager.getLastKnownLocation(provider);
-        float latitude = (float) location.getLatitude();
-        float longitude = (float) location.getLongitude();
-        LatLng currentUser = new LatLng(latitude, longitude);
-        setCurrentLatLng(currentUser);
+        if (location != null) {
+            float latitude = (float) location.getLatitude();
+            float longitude = (float) location.getLongitude();
+            LatLng currentUser = new LatLng(latitude, longitude);
+            setCurrentLatLng(currentUser);
+        }
     }
 
     public boolean GpsStado() {

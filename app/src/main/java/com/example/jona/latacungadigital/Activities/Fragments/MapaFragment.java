@@ -246,7 +246,13 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
         } else {
             // Para dibjuar la ruta en el mapa.
             if (getPointDestination() != null) {
-                myOnInfoWindowsClickListener.distanciaGoogle(estadoGPS.getCurrentLatLng(), getPointDestination()); // Dibujar la ruta en el mapa.
+
+                if (estadoGPS.getCurrentLatLng() != null) { // Si esta permitido la ubicacion del usuario se pone las coordenadas de donde se encuentra.
+                    myOnInfoWindowsClickListener.distanciaGoogle(estadoGPS.getCurrentLatLng(), getPointDestination()); // Dibujar la ruta en el mapa.
+                } else { // Si no esta permitido la ubicacion actual del usario se pone un punto preestablecido.
+                    myOnInfoWindowsClickListener.distanciaGoogle(estadoGPS.puntoOrigen, getPointDestination()); // Dibujar la ruta en el mapa.
+                }
+
             }
         }
 
@@ -261,11 +267,20 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
             } else if (attractive != null) {
                 createMarkerForAttractive(attractive);
 
+                // Se dibuja los puntos del usuario.
                 if (getPointDestination() != null) {
-                    // Se dibuja los puntos del usuario.
-                    createMarkerForUser(estadoGPS.getCurrentLatLng(),
-                            myOnInfoWindowsClickListener.getCompleteAddressString(estadoGPS.getCurrentLatLng().latitude,
-                                    estadoGPS.getCurrentLatLng().longitude)); // Para obtener la direccion en donde se encuentra el usuario.
+
+                    // Si esta permitido la ubicacion del usuario se pone las coordenadas de donde se encuentra.
+                    if (estadoGPS.getCurrentLatLng() != null) {
+                        createMarkerForUser(estadoGPS.getCurrentLatLng(),
+                                myOnInfoWindowsClickListener.getCompleteAddressString(estadoGPS.getCurrentLatLng().latitude,
+                                        estadoGPS.getCurrentLatLng().longitude)); // Para obtener la direccion en donde se encuentra el usuario.
+                    } else { // Si no esta permitido la ubicacion actual del usario se pone un punto preestablecido.
+                        createMarkerForUser(estadoGPS.puntoOrigen,
+                                myOnInfoWindowsClickListener.getCompleteAddressString(estadoGPS.puntoOrigen.latitude,
+                                        estadoGPS.puntoOrigen.longitude)); // Para obtener la direccion en donde se encuentra el usuario.
+                    }
+
                 }
             }
         }
