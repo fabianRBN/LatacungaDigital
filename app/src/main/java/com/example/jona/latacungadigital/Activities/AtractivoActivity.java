@@ -8,6 +8,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Layout;
@@ -20,10 +21,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.jona.latacungadigital.Activities.Adapters.ListaComentariosAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.ViewPagerAdapter;
 import com.example.jona.latacungadigital.Activities.Parser.CircleTransform;
 import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
@@ -80,6 +83,9 @@ public class AtractivoActivity extends AppCompatActivity {
 
     Calendar fecha = new GregorianCalendar();
 
+    private ListView listView;
+    public ArrayList<ComentarioModel> listaComentarios = new ArrayList<>();
+
 
     public double getValor_ratinf_bar() {
         return valor_ratinf_bar;
@@ -99,6 +105,9 @@ public class AtractivoActivity extends AppCompatActivity {
         CoolToolbar = (CollapsingToolbarLayout)findViewById(R.id.ctolbar);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        NestedScrollView nestedScrollView = (NestedScrollView)findViewById(R.id.nested);
+
 
         layout_comentario = (LinearLayout) findViewById(R.id.layou_comentario);
         layout_editar_comentario = (LinearLayout ) findViewById(R.id.layout_editar_coemtario);
@@ -157,6 +166,9 @@ public class AtractivoActivity extends AppCompatActivity {
         });
 
 
+        listView = (ListView) findViewById(R.id.listViewComentarios);
+        nestedScrollView.scrollTo(0,300);
+
 
         txtTitulo = (TextView) findViewById(R.id.txtTituloAtractivo);
         txtCategoria= (TextView) findViewById(R.id.txtCategoriaAtractivo);
@@ -183,6 +195,7 @@ public class AtractivoActivity extends AppCompatActivity {
 
         setComentario();
         comentarioUsuario();
+        getComentarios();  
 
 
 
@@ -208,7 +221,6 @@ public class AtractivoActivity extends AppCompatActivity {
 
         }
     }
-
 
     public void  getAtractivo(){
         listaImagenes.clear();
@@ -269,6 +281,7 @@ public class AtractivoActivity extends AppCompatActivity {
         comentarioUsuario();
 
 
+
     }
 
     public void comentarioUsuario(){
@@ -308,6 +321,36 @@ public class AtractivoActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void getComentarios(){
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("comentario").child(this.atractivoKey);
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null){
+                    for(DataSnapshot child: dataSnapshot.getChildren()){
+                        ComentarioModel comentarioModel = child.getValue(ComentarioModel.class);
+                           System.out.println("coementarios:"+ comentarioModel.getUidUsuario());
+                        listaComentarios.add(comentarioModel);
+
+
+                    }
+
+
+                    listView.setAdapter(new ListaComentariosAdapter(getApplicationContext(), listaComentarios));
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 }

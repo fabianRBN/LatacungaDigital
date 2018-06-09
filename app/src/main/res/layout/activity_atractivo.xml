@@ -59,6 +59,7 @@
         android:layout_width="match_parent"
         android:id="@+id/nested"
         android:fitsSystemWindows="true"
+
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_height="wrap_content">
 
@@ -69,7 +70,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_margin="10dp">
+            android:layout_margin="10dp"
+            >
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -146,7 +148,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="250dp"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="10dp"
                     >
@@ -246,7 +248,7 @@
                    </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:id="@+id/layou_comentario"
                         android:padding="10dp">
@@ -289,6 +291,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+
                 >
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -304,42 +307,18 @@
                     android:layout_marginBottom="10dp"
                     />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:orientation="horizontal">
-                        <LinearLayout
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:padding="5dp">
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/ic_picture"/>
-                        </LinearLayout>
-                        <LinearLayout
+
+
+                        <ListView
                             android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            android:orientation="vertical"
-                            android:padding="10dp">
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="fecha"
-                                android:textSize="10dp"
-                                android:textStyle="bold"
-                                android:layout_marginBottom="10dp"/>
+                            android:layout_height="match_parent"
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/lorem"
-                                android:textSize="10dp"/>
+                            android:id="@+id/listViewComentarios">
+                        </ListView>
 
-                        </LinearLayout>
-                    </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
+
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
