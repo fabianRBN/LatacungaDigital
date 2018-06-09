@@ -1,10 +1,13 @@
 package com.example.jona.latacungadigital.Activities.Clases;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -131,6 +134,12 @@ public class MessageMapAttractiveHowToGet extends LinearLayout implements OnMapR
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
         gMap.clear();
+
+        // Validar si la aplicacion tiene el permiso de Localizacion
+        if ( ContextCompat.checkSelfPermission(this.messagesAdapter.getChatTextFragment().getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(this.messagesAdapter.getChatTextFragment().getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+            return;
+        }
 
         // Definir la posicion de la camara en el map
         LatLngBounds centroHistorico = new LatLngBounds(
