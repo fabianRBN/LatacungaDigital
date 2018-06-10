@@ -151,6 +151,25 @@ public class AttractiveClass {
         }
     }
 
+    // Método para leer el JSON de atractivos consultados que se obtiene de Dialogflow.
+    public void readJSONDialogflow(String key, JsonElement values) {
+        if (!values.isJsonNull() && !key.isEmpty()) {
+            setState(true);
+            setResult(values);
+            setDescription(getResult().getAsJsonObject().get("descripcion").toString().replace("\"", ""));
+            setNameAttractive(getResult().getAsJsonObject().get("nombre").toString().replace("\"", ""));
+            setCategory(getResult().getAsJsonObject().get("categoria").toString().replace("\"", ""));
+            setAddress(getResult().getAsJsonObject().get("direccion").toString().replace("\"", ""));
+            setGallery(getResult().getAsJsonObject().get("galeria"));
+            setPosition(getResult().getAsJsonObject().get("posicion"));
+            setLatitude(Double.parseDouble(getPosition().getAsJsonObject().get("lat").toString()));
+            setLongitude(Double.parseDouble(getPosition().getAsJsonObject().get("lng").toString()));
+            setIcon();
+        } else {
+            setState(false); // Para saber si el JSON esta vacio.
+        }
+    }
+
     // Método para guardar todas las imagenes en un ArrayList.
     public List<String> getListImages() {
         try {

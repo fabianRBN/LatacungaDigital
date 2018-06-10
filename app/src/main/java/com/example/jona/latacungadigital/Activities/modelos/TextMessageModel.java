@@ -23,6 +23,7 @@ public class TextMessageModel {
     private double longitude;
 
     // Declaracion de variables para la consulta.
+    private String action;
     private ArrayList<ServiceClass> listService;
     private ArrayList<AttractiveClass> listAttractive;
     private ServiceClass service;
@@ -63,6 +64,14 @@ public class TextMessageModel {
     public String getDescriptionAttractive() { return descriptionAttractive; }
 
     public void setDescriptionAttractive(String descriptionAttractive) { this.descriptionAttractive = descriptionAttractive; }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
 
     public ArrayList<ServiceClass> getListService() {
         return listService;

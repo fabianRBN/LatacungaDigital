@@ -2,6 +2,7 @@ package com.example.jona.latacungadigital.Activities.Clases;
 
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -159,16 +160,19 @@ public class DialogflowClass {
                 CardDialogflow(attractiveClass, result);
 
             } else if (action.equals("churchShowLocationAction")) { // Accion para mostrar como llegar al lugar turistico.
-                MapAttractiveHowToGet(result);
-
+                sendAttractiveToMapMessage(result);
+            } else if (action.equals("consultarAtractivoEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
+                String speech = result.getFulfillment().getSpeech();
+                MessageSendToDialogflow(speech);
+                sendAttractiveListToMapMessage(result, "Atractivos");
             } else if (action.equals("consultarAlojamientoEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
                 String speech = result.getFulfillment().getSpeech();
                 MessageSendToDialogflow(speech);
-                sendServicesToMapMessage(result, "Alojamiento");
+                sendServicesListToMapMessage(result, "Alojamiento");
             } else if (action.equals("consultarComidaYBebidaEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
                 String speech = result.getFulfillment().getSpeech();
                 MessageSendToDialogflow(speech);
-                sendServicesToMapMessage(result, "Comidas y bebidas");
+                sendServicesListToMapMessage(result, "Comidas y bebidas");
             } else {
 
                 String speech = result.getFulfillment().getSpeech();
@@ -212,6 +216,7 @@ public class DialogflowClass {
             textMessageModel.setCategoryAttactive(attractiveModel.getCategory());
             textMessageModel.setDescriptionAttractive(attractiveModel.getDescription());
             textMessageModel.setListImagesURL(attractiveModel.getListImages());
+            textMessageModel.setAction(result.getAction());
             listMessagesText.add(textMessageModel);
             addMessagesAdapter(listMessagesText);
 
@@ -222,22 +227,57 @@ public class DialogflowClass {
         }
     }
 
-    // Método para mostrar un mapa de como llegar a un lugar turistico.
-    private void MapAttractiveHowToGet(Result result) {
+    // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa
+    private void sendAttractiveToMapMessage(Result result) {
         AttractiveClass attractive = new AttractiveClass();
         TextMessageModel textMessageModel = new TextMessageModel();
         attractive.readJSONDialogflow(result); // Asignamos los valores del Json al objeto atractivo
         if (attractive.getState()) { // Para saber si el JSON no esta vacio.
             // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
-            textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_MAP_ATTRACTIVE_HOW_TO_GET);
+            textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP);
             textMessageModel.setAttractive(attractive);
+            textMessageModel.setTitulo(attractive.getNameAttractive());
+            textMessageModel.setAction(result.getAction());
             listMessagesText.add(textMessageModel);
             addMessagesAdapter(listMessagesText);
         }
     }
 
     // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa
-    private void sendServicesToMapMessage(Result result, String categoria){
+    private void sendAttractiveListToMapMessage(Result result, String titulo){
+        Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
+        ArrayList<AttractiveClass> listAttractive =  new ArrayList<AttractiveClass>(); // Lista de atractivos
+        TextMessageModel textMessageModel = new TextMessageModel();
+        // Recorremos el resultado obtenido de dialogflow
+        Set mapDialogFlowResult = JSONDialogflowResult.entrySet();
+        Iterator iterator = mapDialogFlowResult.iterator();
+        while(iterator.hasNext()){
+            AttractiveClass tempAttractive = new AttractiveClass();
+            Map.Entry mapService = (Map.Entry) iterator.next(); // Obtenemos el atractivo dentro del JSon del mapa
+            Gson gson = new Gson();
+            JsonParser jsonParser = new JsonParser();
+            String key = mapService.getKey().toString(); // Obtenemos la clave del servicio
+            JsonElement values = jsonParser.parse(gson.toJson(mapService.getValue())); // Obtenemos los valores del atractivo
+            tempAttractive.readJSONDialogflow(key,values); // Asignamos los valores del Json al objeto atractivo
+            if(tempAttractive.getState()){
+                listAttractive.add(tempAttractive); // Añadimo el objeto atractivo a la lista
+            }else{
+                Log.e("ERROR DE LECTURA JSON","Error al transformar Json a AttractiveClass");
+            }
+        }
+        if(!listAttractive.isEmpty()){
+            // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
+            textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP);
+            textMessageModel.setListAttractive(listAttractive);
+            textMessageModel.setTitulo(titulo);
+            textMessageModel.setAction(result.getAction());
+            listMessagesText.add(textMessageModel);
+            addMessagesAdapter(listMessagesText);
+        }
+    }
+
+    // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa
+    private void sendServicesListToMapMessage(Result result, String titulo){
         Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
         ArrayList<ServiceClass> listService =  new ArrayList<ServiceClass>(); // Lista de servicios
         TextMessageModel textMessageModel = new TextMessageModel();
@@ -252,13 +292,18 @@ public class DialogflowClass {
             String key = mapService.getKey().toString(); // Obtenemos la clave del servicio
             JsonElement values = jsonParser.parse(gson.toJson(mapService.getValue())); // Obtenemos los valores del servicio
             tempService.readJSONDialogflow(key,values); // Asignamos los valores del Json al objeto servicio
-            listService.add(tempService); // Añadimo el objeto servicio a la lista
+            if(tempService.getState()){
+                listService.add(tempService); // Añadimo el objeto servicio a la lista
+            }else{
+                Log.e("ERROR DE LECTURA JSON","Error al transformar Json a ServiceClass");
+            }
         }
         if(!listService.isEmpty()){
             // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
             textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP);
             textMessageModel.setListService(listService);
-            textMessageModel.setTitulo(categoria);
+            textMessageModel.setTitulo(titulo);
+            textMessageModel.setAction(result.getAction());
             listMessagesText.add(textMessageModel);
             addMessagesAdapter(listMessagesText);
         }
