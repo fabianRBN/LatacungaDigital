@@ -4,22 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context="com.example.jona.latacungadigital.Activities.AtractivoActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
+        android:layout_height="200dp"
         android:background="@color/black"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/ctolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
+            android:layout_height="200dp"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -27,18 +24,10 @@
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-                android:layout_height="200dp">
+                android:layout_height="200dp"
+                >
 
             </android.support.v4.view.ViewPager>
-
-            <!--       <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_picture"
-                app:layout_collapseMode="parallax"
-                android:id="@+id/imgAtractivo"/>-->
-
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolAtractivo"
@@ -58,17 +47,12 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:id="@+id/nested"
-        android:fitsSystemWindows="true"
-
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_height="wrap_content">
-
-
-
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_margin="10dp"
             >
@@ -296,8 +280,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:minHeight="100dp"
                     android:orientation="vertical"
                     android:padding="10dp"
+                    android:id="@+id/layout_lista_comentarios"
                     >
                 <TextView
                     android:layout_width="wrap_content"
@@ -312,7 +298,6 @@
                         <ListView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-
                             android:id="@+id/listViewComentarios">
                         </ListView>
 
