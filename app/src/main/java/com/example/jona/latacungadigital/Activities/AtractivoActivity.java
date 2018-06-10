@@ -53,7 +53,7 @@ public class AtractivoActivity extends AppCompatActivity {
     public ImageView imgAtractivo;
     public ViewPager viewPager;
 
-    public LinearLayout layout_comentario, layout_editar_comentario;
+    public LinearLayout layout_comentario, layout_editar_comentario, layout_lista_comentarios;
 
     String atractivoKey;
     String usuarioKey;
@@ -102,15 +102,18 @@ public class AtractivoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_atractivo);
 
         Appbar = (AppBarLayout)findViewById(R.id.appbar);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+
+
         CoolToolbar = (CollapsingToolbarLayout)findViewById(R.id.ctolbar);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        NestedScrollView nestedScrollView = (NestedScrollView)findViewById(R.id.nested);
 
 
         layout_comentario = (LinearLayout) findViewById(R.id.layou_comentario);
         layout_editar_comentario = (LinearLayout ) findViewById(R.id.layout_editar_coemtario);
+
 
         txt_nombre_usuario = (TextView) findViewById(R.id.txt_nombre_usuario);
         txt_comentario = (TextView) findViewById(R.id.txt_comentario);
@@ -166,8 +169,9 @@ public class AtractivoActivity extends AppCompatActivity {
         });
 
 
+        layout_lista_comentarios = (LinearLayout) findViewById(R.id.layout_lista_comentarios);
         listView = (ListView) findViewById(R.id.listViewComentarios);
-        nestedScrollView.scrollTo(0,300);
+
 
 
         txtTitulo = (TextView) findViewById(R.id.txtTituloAtractivo);
@@ -177,7 +181,7 @@ public class AtractivoActivity extends AppCompatActivity {
             txtDescripcion.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
         }
 
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
+
 
 
 
@@ -338,7 +342,10 @@ public class AtractivoActivity extends AppCompatActivity {
                     }
 
 
+
                     listView.setAdapter(new ListaComentariosAdapter(getApplicationContext(), listaComentarios));
+                    layout_lista_comentarios.getLayoutParams().height = listaComentarios.size()* 200;
+
 
 
                 }
