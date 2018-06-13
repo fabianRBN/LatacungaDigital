@@ -456,7 +456,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                         .fillColor(0x220000FF)
                         .strokeWidth(5.0f)
                 );
-                //Add GeoQuery here
+                //Equivalencias de distancia de GeoFire
                 //0.1f = 0.1km = 100m
                 GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(dangerousArea.latitude, dangerousArea.longitude), 0.1f);
                 geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
