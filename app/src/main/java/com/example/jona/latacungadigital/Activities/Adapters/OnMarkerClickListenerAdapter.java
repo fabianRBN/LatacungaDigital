@@ -1,26 +1,11 @@
 package com.example.jona.latacungadigital.Activities.Adapters;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
-import android.widget.Toast;
 
-import com.example.jona.latacungadigital.Activities.AsyncTask.TaskRequestDirections;
-import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
-import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-
-import java.util.ArrayList;
 
 /**
  * Created by fabia on 27/05/2018.
@@ -60,13 +45,16 @@ public class OnMarkerClickListenerAdapter implements GoogleMap.OnMarkerClickList
     @Override
     public boolean onMarkerClick(final Marker marker) {
 
+        //Mover la camara a la posicion del marcador
+        googleMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
 
-
+        // Mostrar y ocultar la ventana de informacion sobre el marcador
         marker.showInfoWindow();
         if(marker.isInfoWindowShown()){
             marker.hideInfoWindow();
             marker.showInfoWindow();
         }
+
         // Delay para dibujar la imagen en el lienso de infowindows google maps
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

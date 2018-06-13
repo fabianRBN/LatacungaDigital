@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/white_border"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="500px"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="5px">
+
+        <TextView
+            android:id="@+id/str_titulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:ellipsize="end"
+            android:text="Hostal Cotopaxi"
+            android:textColor="#000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/str_categoria"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:ellipsize="end"
+            android:text="Hostal"
+            android:textColor="@color/grey_700"
+            android:textSize="18sp" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/str_direccion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5px"
+            android:text="Padre Salcedo 5-61 y Sanchez de Orellana"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/str_contacto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ositasimon@yahoo.com"
+            android:textColor="@android:color/black" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
