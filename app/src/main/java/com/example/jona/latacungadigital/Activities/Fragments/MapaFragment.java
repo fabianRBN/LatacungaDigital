@@ -31,7 +31,7 @@ import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.EstructuraDatos.AreaPeligrosa;
 import com.example.jona.latacungadigital.EstructuraDatos.Cliente;
-import com.example.jona.latacungadigital.Manifest;
+
 import com.example.jona.latacungadigital.R;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
