@@ -457,7 +457,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                         .strokeWidth(5.0f)
                 );
                 //Equivalencias de distancia de GeoFire
-                //0.1f = 0.1km = 100m
+                // 0.1f = 0.1km = 100m
                 GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(dangerousArea.latitude, dangerousArea.longitude), 0.1f);
                 geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
                     @Override
