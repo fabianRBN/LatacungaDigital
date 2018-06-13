@@ -1,16 +1,26 @@
 package com.example.jona.latacungadigital.Activities.Fragments;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.CustomInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.MyOnInfoWindowsClickListener;
@@ -19,7 +29,22 @@ import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
+import com.example.jona.latacungadigital.EstructuraDatos.AreaPeligrosa;
+import com.example.jona.latacungadigital.EstructuraDatos.Cliente;
+
 import com.example.jona.latacungadigital.R;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -27,19 +52,27 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Random;
 
-public class MapaFragment extends Fragment implements OnMapReadyCallback{
+public class MapaFragment extends Fragment implements OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener{
 
     // Variables de la clase
     private boolean isSerchFromChatBot = false;
@@ -52,14 +85,36 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
     // Variables de mapa
     MapView mMapView;
     private GoogleMap googleMap;
-    private LocationManager locationManager;
     private Marker myPositionMarker;
+
+    //Variables de posicion
+    private static final int MY_PERMISSION_REQUEST_CODE = 7192;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 7193;
+    private LocationRequest mLocationRequest;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+
+    private static int UPDATE_INTERVAL = 5000;
+    private static int FATEST_INTERVAL = 3000;
+    private static int DISPLACEMENT = 10;
+
+    GeoFire geoFire;
+
 
 
     // Variables de firebase
     private DatabaseReference mDatabase;
+    private FirebaseUser userFirebase = FirebaseAuth.getInstance().getCurrentUser();
     private static ArrayList<MarkerOptions> listaMarkadores = new ArrayList<MarkerOptions>();
+    private static ArrayList<AreaPeligrosa> listaAreaPeligrosa = new ArrayList<AreaPeligrosa>();
 
+    public static ArrayList<AreaPeligrosa> getListaAreaPeligrosa() {
+        return listaAreaPeligrosa;
+    }
+
+    public static void setListaAreaPeligrosa(ArrayList<AreaPeligrosa> listaAreaPeligrosa) {
+        MapaFragment.listaAreaPeligrosa = listaAreaPeligrosa;
+    }
 
     private OnFragmentInteractionListener mListener;
 
@@ -92,7 +147,120 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
         }
 
         mMapView.getMapAsync(this);
+
+        //obtener permisos de ubicacion
+
+        /*System.out.println("empezo1");
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        String key = mDatabase.child("areaPeligrosa").push().getKey();
+        AreaPeligrosa arePe= new AreaPeligrosa("La Estacion",key, 100, -0.932349, -78.620495);
+        //Cliente cliente = new Cliente( user.getDisplayName(),user.getEmail(),user.getUid(),user.getPhotoUrl().toString()); //instancia de cliente
+        FirebaseDatabase mFirebaseInstance = FirebaseDatabase.getInstance();
+        final DatabaseReference mFirebaseDatabase = mFirebaseInstance.getReference();
+        mFirebaseDatabase.child("areaPeligrosa").child(key).setValue(arePe);//guarda la informacion en firebase
+        System.out.println("empezo2");*/
+        setUpLocation();
+        mDatabase = FirebaseDatabase.getInstance().getReference("cliente").child(userFirebase.getUid());
+        geoFire = new GeoFire(mDatabase);
+
         return rootView;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case MY_PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    if (checkPlayServices()){
+                        buildGoogleApiClient();
+                        createLocationRequest();
+                        displayLocation();
+                    }
+                }
+                break;
+
+
+        }
+    }
+
+    private void setUpLocation() {
+        if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED){
+            //Request runtime Location
+            ActivityCompat.requestPermissions(getActivity(), new String[]{
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+            }, MY_PERMISSION_REQUEST_CODE);
+        }
+        else if (checkPlayServices()){
+            buildGoogleApiClient();
+            createLocationRequest();
+            displayLocation();
+        }
+
+    }
+
+    private void displayLocation() {
+        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if(mLastLocation != null){
+            final double latitude = mLastLocation.getLatitude();
+            final double longitude = mLastLocation.getLongitude();
+
+            //Actualizar GeoFire
+            mDatabase = FirebaseDatabase.getInstance().getReference().child("cliente");
+            geoFire = new GeoFire(mDatabase.child(userFirebase.getUid()));
+            geoFire.setLocation("GeoFire",new GeoLocation(latitude, longitude));
+
+            /*geoFire.setLocation("GeoFire", new GeoLocation(latitude, longitude),
+                    new GeoFire.CompletionListener() {
+                        @Override
+                        public void onComplete(String key, DatabaseError error) {
+                            //Add Marker
+                            if (mCurrent != null)
+                                mCurrent.remove(); //Remueve los marcadores anteriores
+                            mCurrent = googleMap.addMarker(new MarkerOptions()
+                                                .position(new LatLng(latitude, longitude))
+                                                .title("Tu"));
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude),15.0f));
+                        }
+                    });*/
+
+        }
+    }
+
+    private void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FATEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(DISPLACEMENT);
+    }
+
+    private void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
+        if(resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode))
+                GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(), PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            else {
+                Toast.makeText(getActivity(), "This device es not supported", Toast.LENGTH_SHORT).show();
+                getActivity().finish();
+            }
+            return false;
+        }
+        return true;
     }
 
     public void setSerchFromChatBot(boolean serchFromChatBot) {
@@ -117,13 +285,28 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
 
     public void dataFirebase(){
         final OnMarkerClickListenerAdapter onMarkerClickListenerAdapter = new OnMarkerClickListenerAdapter(getContext(),googleMap);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("atractivo");
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.keepSynced(true);
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //Recupera lista de Areas Peligrosas
+                for (DataSnapshot child: dataSnapshot.child("areaPeligrosa").getChildren()){
 
-                for (DataSnapshot child: dataSnapshot.getChildren()){
+                    String nombreArea = child.child("nombre").getValue().toString();
+                    String idArea = child.child("id").getValue().toString();
+                    Double radio = Double.parseDouble(child.child("radio").getValue().toString());
+                    Double latitud = Double.parseDouble(child.child("latitud").getValue().toString());
+                    Double longitud = Double.parseDouble(child.child("longitud").getValue().toString());
+                    AreaPeligrosa areaPeligrosa = new AreaPeligrosa(nombreArea, idArea, radio, latitud, longitud);
+                    System.out.println("empezo"+areaPeligrosa.getNombre());
+                    listaAreaPeligrosa.add(areaPeligrosa);
+
+
+                }
+                setListaAreaPeligrosa(listaAreaPeligrosa);
+
+                for (DataSnapshot child: dataSnapshot.child("atractivo").getChildren()){
 
                     String nombreAtractivo = child.child("nombre").getValue().toString();
                     String descripcionAtractivo = child.child("descripcion").getValue().toString();
@@ -141,9 +324,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_building_blue));
                     listaMarkadores.add(markerOptions);
                     googleMap.addMarker(markerOptions);
-
                 }
-
             }
 
             @Override
@@ -170,7 +351,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
         googleMap.addMarker(markerOptions);
     }
 
-    // Crear un marcador en el mapa de acuerdo a un atraactivo
+    // Crear un marcador en el mapa de acuerdo a un atractivo
     private void createMarkerForAttractive(AttractiveClass attractive){
         MarkerOptions markerOptions =  new MarkerOptions();
         markerOptions.position(new LatLng(attractive.getLatitude(),attractive.getLongitude()));
@@ -181,6 +362,12 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
             markerOptions.icon(BitmapDescriptorFactory.fromResource(attractive.getIcon()));
         }
         googleMap.addMarker(markerOptions);
+    }
+
+    //Crear un area Peligrosa en el mapa
+    private void crearAreaPeligrosa(AreaPeligrosa area){
+        //Crear una Area Peligrosa
+
     }
 
     // Crear un marcador en el mapa de acuerdo al usuario
@@ -258,6 +445,48 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
             googleMap.setOnInfoWindowLongClickListener(myOnInfoWindowsClickListener);
 
             dataFirebase(); // Agregar marcadores de atractivos
+
+            //Instanciar las areas de peligro
+            for (AreaPeligrosa areaP: getListaAreaPeligrosa()) {
+                LatLng dangerousArea = new LatLng(areaP.getLatitud(), areaP.getLongitud());
+                googleMap.addCircle(new CircleOptions()
+                        .center(dangerousArea)
+                        .radius(areaP.getRadio())
+                        .strokeColor(Color.RED)
+                        .fillColor(0x220000FF)
+                        .strokeWidth(5.0f)
+                );
+                //Equivalencias de distancia de GeoFire
+                // 0.1f = 0.1km = 100m
+                GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(dangerousArea.latitude, dangerousArea.longitude), 0.1f);
+                geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                    @Override
+                    public void onKeyEntered(String key, GeoLocation location) {
+                        sendNotification("Alerta", String.format("Entraste en un área Peligrosa"));
+                    }
+
+                    @Override
+                    public void onKeyExited(String key) {
+                        sendNotification("Alerta", String.format(" Esta cerca un área Peligrosa"));
+
+                    }
+
+                    @Override
+                    public void onKeyMoved(String key, GeoLocation location) {
+                        Log.d("Alerta", String.format(" moved within the dangerous area "));
+                    }
+
+                    @Override
+                    public void onGeoQueryReady() {
+
+                    }
+
+                    @Override
+                    public void onGeoQueryError(DatabaseError error) {
+                        Log.e("ERROR", ""+error);
+                    }
+                });
+            }
         } else { // SI es una solicitud de consulta del chatbot
             switch (chatBotAction){
                 case "consultarAtractivoEnElArea":
@@ -305,6 +534,52 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback{
                     break;
             }
         }
+    }
+
+    private void sendNotification(String title, String content) {
+        Notification.Builder builder = new Notification.Builder(getActivity())
+                                    .setSmallIcon(R.mipmap.ic_launcher_round)
+                                    .setContentTitle(title)
+                                    .setContentText(content);
+        NotificationManager manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent intent = new Intent(getActivity(),MapaFragment.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(getActivity(),0,intent,PendingIntent.FLAG_IMMUTABLE);
+        builder.setContentIntent(contentIntent);
+        Notification notification = builder.build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notification.defaults |= Notification.DEFAULT_SOUND;
+
+        manager.notify(new Random().nextInt(),notification);
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        displayLocation();
+        startLocationUpdates();
+    }
+
+    private void startLocationUpdates() {
+        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        displayLocation();
     }
 
     /**

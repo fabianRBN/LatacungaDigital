@@ -5,28 +5,25 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Layout;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.example.jona.latacungadigital.Activities.Adapters.ListaComentariosAdapter;
+import com.example.jona.latacungadigital.Activities.Adapters.ListaComentarioAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.ViewPagerAdapter;
 import com.example.jona.latacungadigital.Activities.Parser.CircleTransform;
 import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
@@ -40,8 +37,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -83,7 +78,7 @@ public class AtractivoActivity extends AppCompatActivity {
 
     Calendar fecha = new GregorianCalendar();
 
-    private ListView listView;
+    private RecyclerView listView;
     public ArrayList<ComentarioModel> listaComentarios = new ArrayList<>();
 
 
@@ -170,7 +165,8 @@ public class AtractivoActivity extends AppCompatActivity {
 
 
         layout_lista_comentarios = (LinearLayout) findViewById(R.id.layout_lista_comentarios);
-        listView = (ListView) findViewById(R.id.listViewComentarios);
+        listView = (RecyclerView) findViewById(R.id.listViewComentarios);
+        listView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
 
 
 
@@ -328,14 +324,16 @@ public class AtractivoActivity extends AppCompatActivity {
     }
 
     public void getComentarios(){
+
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("comentario").child(this.atractivoKey);
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() != null){
+                    listaComentarios.clear();
+
                     for(DataSnapshot child: dataSnapshot.getChildren()){
                         ComentarioModel comentarioModel = child.getValue(ComentarioModel.class);
-                           System.out.println("coementarios:"+ comentarioModel.getUidUsuario());
                         listaComentarios.add(comentarioModel);
 
 
@@ -343,8 +341,8 @@ public class AtractivoActivity extends AppCompatActivity {
 
 
 
-                    listView.setAdapter(new ListaComentariosAdapter(getApplicationContext(), listaComentarios));
-                    layout_lista_comentarios.getLayoutParams().height = listaComentarios.size()* 200;
+                    listView.setAdapter(new ListaComentarioAdapter(getApplicationContext(), listaComentarios));
+
 
 
 
