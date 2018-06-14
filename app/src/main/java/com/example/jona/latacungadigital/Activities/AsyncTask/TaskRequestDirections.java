@@ -3,6 +3,7 @@ package com.example.jona.latacungadigital.Activities.AsyncTask;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
@@ -24,9 +25,12 @@ public class TaskRequestDirections  extends AsyncTask<String,Void,String> implem
     Context context;
     Polyline polyline;
 
+    AccesoInternet accesoInternet;
+
     public TaskRequestDirections(GoogleMap googleMap, Context context) {
         this.googleMap = googleMap;
         this.context = context;
+        accesoInternet = new AccesoInternet();
     }
 
     public Polyline getPolyline() {
@@ -60,9 +64,14 @@ public class TaskRequestDirections  extends AsyncTask<String,Void,String> implem
     protected String doInBackground(String... strings) {
         String responseString = "";
         try {
-            responseString = requestDirection(strings[0]);
+            if (accesoInternet.isNetDisponible(context)) { // Proceso solo cuando exista internet.
+                responseString = requestDirection(strings[0]);
+            } else {
+                this.cancel(true); // Cancelamos el hilo si no hay internet existe un error.
+            }
         } catch (IOException e) {
             e.printStackTrace();
+            this.cancel(true); // Cancelamos el hilo si existe un error.
         }
         return  responseString;
     }
@@ -72,44 +81,42 @@ public class TaskRequestDirections  extends AsyncTask<String,Void,String> implem
         super.onPostExecute(s);
         TaskParser taskParser = new TaskParser(googleMap,context,this);
         taskParser.execute(s);
-
-
-
     }
 
     public String requestDirection(String reqUrl) throws IOException {
         String responseString="";
         InputStream inputStream = null;
         HttpURLConnection httpURLConnection = null;
-        try{
-            URL url = new URL(reqUrl);
-            httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.connect();
+        try {
+            if (accesoInternet.isNetDisponible(context)) { // Proceso solo cuando exista internet.
+                URL url = new URL(reqUrl);
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.connect();
 
-            // Get request
-            inputStream = httpURLConnection.getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                // Get request
+                inputStream = httpURLConnection.getInputStream();
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-            StringBuffer  stringBuffer = new StringBuffer();
-            String line = "";
-            while((line = bufferedReader.readLine())!= null){
-                stringBuffer.append(line);
+                StringBuffer  stringBuffer = new StringBuffer();
+                String line = "";
+                while((line = bufferedReader.readLine())!= null){
+                    stringBuffer.append(line);
+                }
+                responseString = stringBuffer.toString();
+                bufferedReader.close();
+                inputStreamReader.close();
             }
-            responseString = stringBuffer.toString();
-            bufferedReader.close();
-            inputStreamReader.close();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            if(inputStream != null){
+        } finally {
+            if (inputStream != null) {
                 inputStream.close();
             }
             httpURLConnection.disconnect();
-
         }
-        return  responseString;
+        return responseString;
     }
 
     @Override
@@ -117,10 +124,8 @@ public class TaskRequestDirections  extends AsyncTask<String,Void,String> implem
         super.onCancelled();
     }
 
-
     @Override
     public void processFinish(Polyline output) {
-
-            setPolyline(output);
+        setPolyline(output);
     }
 }

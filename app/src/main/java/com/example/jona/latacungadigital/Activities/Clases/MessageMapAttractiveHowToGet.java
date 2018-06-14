@@ -1,16 +1,10 @@
 package com.example.jona.latacungadigital.Activities.Clases;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
@@ -143,11 +137,11 @@ public class MessageMapAttractiveHowToGet extends LinearLayout implements OnMapR
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
         gMap.clear();
-        EstadoGPS estadoGPS = new EstadoGPS(context, gMap); // Variable para obtener la locacion donde se encuentra el usuario.
+        EstadoGPS estadoGPS = new EstadoGPS(this.messagesAdapter.getChatTextFragment().getActivity(), gMap); // Variable para obtener la locacion donde se encuentra el usuario.
         estadoGPS.getCurrentLocation(); // Leer las coordenadas actuales de donde se encunetra el usuario y almacenarlo en un metodo Setter.
 
         // Validar si la aplicacion tiene el permiso de Localizacion
-         if ( ContextCompat.checkSelfPermission(this.messagesAdapter.getChatTextFragment().getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+         if (ContextCompat.checkSelfPermission(this.messagesAdapter.getChatTextFragment().getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
             ActivityCompat.requestPermissions(this.messagesAdapter.getChatTextFragment().getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
             return;
         }
@@ -163,7 +157,7 @@ public class MessageMapAttractiveHowToGet extends LinearLayout implements OnMapR
         }
 
         // Dibujar la ruta de como llegar al lugar turistico.
-        MyOnInfoWindowsClickListener myOnInfoWindowsClickListener = new MyOnInfoWindowsClickListener(context, gMap);
+        MyOnInfoWindowsClickListener myOnInfoWindowsClickListener = new MyOnInfoWindowsClickListener(this.messagesAdapter.getChatTextFragment().getActivity(), gMap);
         myOnInfoWindowsClickListener.distanciaGoogle(currentUserLatLng, new LatLng(attractive.getLatitude(), attractive.getLongitude()));
 
         // Crear un marcador para la posicion del usuario

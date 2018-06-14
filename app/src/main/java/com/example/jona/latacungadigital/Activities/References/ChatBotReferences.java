@@ -15,4 +15,10 @@ public class ChatBotReferences {
 
     // Codigo del cliente de Dialogflow.
     public static final String ACCESS_CLIENT_TOKEN = "70cabdb5e2594ff0b81f86520564fbd6";
+
+    // API del Clima.
+    public static final String APIXU_API_CLIENT = "0b65639864ea4bbdb93195540182604";
+
+    // Para saber a que dialogo llamar en la actividad.
+    public static final int DIALOG_DELETE_MESSAGE = 2;
 }

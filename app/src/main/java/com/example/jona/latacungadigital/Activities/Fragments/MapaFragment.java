@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,26 +24,23 @@ import android.widget.Toast;
 import com.example.jona.latacungadigital.Activities.Adapters.CustomInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.MyOnInfoWindowsClickListener;
 import com.example.jona.latacungadigital.Activities.Adapters.OnMarkerClickListenerAdapter;
+import com.example.jona.latacungadigital.Activities.Adapters.ServiceInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.EstructuraDatos.AreaPeligrosa;
-import com.example.jona.latacungadigital.EstructuraDatos.Cliente;
-
 import com.example.jona.latacungadigital.R;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -63,7 +59,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -201,8 +196,13 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void displayLocation() {
-        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+        /*if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }*/
+        //Validar si la aplicacion tiene el permiso de Localizacion
+        if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
             return;
         }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -348,7 +348,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         if(service.getIcon() != 0){ // Validar si existe un icono predefinido del servicio
             markerOptions.icon(BitmapDescriptorFactory.fromResource(service.getIcon()));
         }
-        googleMap.addMarker(markerOptions);
+        googleMap.addMarker(markerOptions).setTag(service);
     }
 
     // Crear un marcador en el mapa de acuerdo a un atractivo
@@ -361,7 +361,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         if (attractive.getIcon() != 0) { // Validar si existe un icono predefinido del atractivo
             markerOptions.icon(BitmapDescriptorFactory.fromResource(attractive.getIcon()));
         }
-        googleMap.addMarker(markerOptions);
+        googleMap.addMarker(markerOptions).setTag(attractive);
     }
 
     //Crear un area Peligrosa en el mapa
@@ -497,10 +497,18 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     break;
                 case "consultarAlojamientoEnElArea":
                 case "consultarComidaYBebidaEnElArea":
-                    // Agregar un marcadores de servicios
+                    // Establecer la venta de informacion info_window_service
+                    ServiceInfoWindowsAdapter serviceInfoWindowsAdapter = new ServiceInfoWindowsAdapter(getContext(),googleMap);
+                    serviceInfoWindowsAdapter.setFragmentManager(getActivity().getSupportFragmentManager());
+                    googleMap.setInfoWindowAdapter(serviceInfoWindowsAdapter);
+                    googleMap.setOnInfoWindowClickListener(serviceInfoWindowsAdapter);
+                    googleMap.setOnInfoWindowLongClickListener(serviceInfoWindowsAdapter);
+
+                    // Agregar marcadores de servicios
                     for (int cont=0; cont < listService.size(); cont++ ){
                         createMarkerForService(listService.get(cont));
                     }
+                    googleMap.setOnMarkerClickListener(new OnMarkerClickListenerAdapter(getContext(),googleMap));
                     break;
                 case "churchShowLocationAction":
                     // Dibjuar la ruta en el mapa.
@@ -527,8 +535,16 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     }
 
                     // Posicionar la camara segun la ruta de donde se encuentre el usuario con el punto de destino.
+                    LatLng currentUserLatLng;
+
+                    if (estadoGPS.getCurrentLatLng() != null) { // Si esta permitido la ubicacion del usuario se pone las coordenadas de donde se encuentra.
+                        currentUserLatLng = estadoGPS.getCurrentLatLng();
+                    } else { // Si no esta permitido la ubicacion actual del usario se pone un punto preestablecido.
+                        currentUserLatLng = estadoGPS.puntoOrigen;
+                    }
+
                     LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                    builder.include(estadoGPS.getCurrentLatLng());
+                    builder.include(currentUserLatLng);
                     builder.include(new LatLng(attractive.getLatitude(), attractive.getLongitude()));
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
                     break;
