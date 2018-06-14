@@ -21,6 +21,7 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
     Toolbar toolBarChatBot;
     NetworkReceiverClass networkReceiverClass;
     ActionBar actionBar;
+    ChatTextFragment chatFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
 
     // Métodos para abrir el fragmento del chatbot.
     private void ChatTextFragment() {
-        ChatTextFragment chatFragment = new ChatTextFragment();
+        chatFragment = new ChatTextFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.chatScreen, chatFragment);
 
@@ -67,7 +68,7 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
     public void changeFragmente(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.animation_slide_in_down,R.anim.animation_fade_out,R.anim.animation_fade_in,R.anim.animation_slide_out_down);
-        transaction.replace(R.id.chatScreen, fragment);
+        transaction.add(R.id.chatScreen, fragment);
         transaction.addToBackStack(null);
         // Commit a la transacción
         transaction.commit();

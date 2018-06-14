@@ -70,7 +70,7 @@ public class ChatTextFragment extends Fragment {
     private TextView txtMessageWelcome;
     private boolean shouldRecreate = true; // Variable para controlar el onActivityResult() con onResume().
 
-    private DialogflowClass dialogflowClass;
+    public static DialogflowClass dialogflowClass;
     private View view;
 
     public ChatTextFragment() {

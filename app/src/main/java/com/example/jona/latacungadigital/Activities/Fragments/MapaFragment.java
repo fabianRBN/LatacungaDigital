@@ -494,6 +494,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                 case "consultarComidaYBebidaEnElArea":
                     // Establecer la venta de informacion info_window_service
                     ServiceInfoWindowsAdapter serviceInfoWindowsAdapter = new ServiceInfoWindowsAdapter(getContext(),googleMap);
+                    serviceInfoWindowsAdapter.setFragmentManager(getActivity().getSupportFragmentManager());
                     googleMap.setInfoWindowAdapter(serviceInfoWindowsAdapter);
                     googleMap.setOnInfoWindowClickListener(serviceInfoWindowsAdapter);
                     googleMap.setOnInfoWindowLongClickListener(serviceInfoWindowsAdapter);
