@@ -44,8 +44,7 @@ import java.util.GregorianCalendar;
 
 public class AtractivoActivity extends AppCompatActivity {
 
-    public TextView txtTitulo, txtDescripcion, txtCategoria;
-    public ImageView imgAtractivo;
+    public TextView txtTitulo, txtDescripcion, txtCategoria, txtRatingTotal;
     public ViewPager viewPager;
 
     public LinearLayout layout_comentario, layout_editar_comentario, layout_lista_comentarios;
@@ -72,7 +71,7 @@ public class AtractivoActivity extends AppCompatActivity {
 
     private boolean atractivoComentado = false;
 
-    private RatingBar mBar,mBar2;
+    private RatingBar mBar,mBar2, mBarTotal;
 
     private double valor_ratinf_bar = 0;
 
@@ -113,6 +112,7 @@ public class AtractivoActivity extends AppCompatActivity {
         txt_nombre_usuario = (TextView) findViewById(R.id.txt_nombre_usuario);
         txt_comentario = (TextView) findViewById(R.id.txt_comentario);
         txt_fecha = (TextView) findViewById(R.id.txt_fecha);
+        txtRatingTotal = (TextView) findViewById(R.id.txtRatingToatal);
 
         imageView_usuario = (ImageView) findViewById(R.id.imgUusuario);
 
@@ -125,6 +125,7 @@ public class AtractivoActivity extends AppCompatActivity {
 
         mBar = (RatingBar) findViewById(R.id.ratingBar);
         mBar2 = (RatingBar) findViewById(R.id.ratingBar2);
+
         mBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
@@ -133,6 +134,8 @@ public class AtractivoActivity extends AppCompatActivity {
 
             }
         });
+
+        mBarTotal = (RatingBar) findViewById(R.id.ratingBar_total);
 
         btn_cancelar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -331,13 +334,18 @@ public class AtractivoActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() != null){
                     listaComentarios.clear();
-
+                    double ratingTotal = 0;
+                    int contador = 0;
                     for(DataSnapshot child: dataSnapshot.getChildren()){
+                        contador++;
                         ComentarioModel comentarioModel = child.getValue(ComentarioModel.class);
                         listaComentarios.add(comentarioModel);
 
+                        ratingTotal = ratingTotal + comentarioModel.getCalificacion();
 
                     }
+                    mBarTotal.setRating((float) (ratingTotal/contador));
+                    txtRatingTotal.setText((ratingTotal/contador)+"");
 
 
 
