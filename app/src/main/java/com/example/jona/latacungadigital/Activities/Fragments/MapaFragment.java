@@ -31,7 +31,7 @@ import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.EstructuraDatos.AreaPeligrosa;
 import com.example.jona.latacungadigital.EstructuraDatos.Cliente;
-import com.example.jona.latacungadigital.Manifest;
+
 import com.example.jona.latacungadigital.R;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -205,7 +205,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                 ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }*/
-        // Validar si la aplicacion tiene el permiso de Localizacion
+        //Validar si la aplicacion tiene el permiso de Localizacion
         if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
             return;
