@@ -141,6 +141,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
 
+        MenuItem menuRastreo = menu.findItem(R.id.navigation_rastrear);
+
         return true;
     }
 
@@ -166,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         Intent intent = new Intent(this, ChatBotActivity.class);
         startActivity(intent);
     }
+
 
     public void openSignOffDialog() {
         // Se crea una instancia de la clase DialogSignOffFragement y se la muestra.
