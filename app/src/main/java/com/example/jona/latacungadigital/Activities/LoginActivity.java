@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.jona.latacungadigital.EstructuraDatos.Cliente;
+import com.example.jona.latacungadigital.Activities.Clases.Cliente;
 import com.example.jona.latacungadigital.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;

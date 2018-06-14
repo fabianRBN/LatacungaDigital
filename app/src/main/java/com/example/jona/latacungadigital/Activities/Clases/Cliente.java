@@ -1,4 +1,4 @@
-package com.example.jona.latacungadigital.EstructuraDatos;
+package com.example.jona.latacungadigital.Activities.Clases;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

@@ -1,4 +1,4 @@
-package com.example.jona.latacungadigital.EstructuraDatos;
+package com.example.jona.latacungadigital.Activities.Clases;
 
 public class AreaPeligrosa {
     private String nombre, id;
