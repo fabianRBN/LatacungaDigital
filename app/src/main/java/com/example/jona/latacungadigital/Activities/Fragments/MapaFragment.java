@@ -29,7 +29,7 @@ import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
-import com.example.jona.latacungadigital.EstructuraDatos.AreaPeligrosa;
+import com.example.jona.latacungadigital.Activities.Clases.AreaPeligrosa;
 import com.example.jona.latacungadigital.R;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
