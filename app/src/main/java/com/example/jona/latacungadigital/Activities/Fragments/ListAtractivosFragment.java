@@ -63,7 +63,7 @@ public class ListAtractivosFragment extends Fragment {
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("atractivo");
         mDatabase.keepSynced(true);
-        Query query = mDatabase.orderByChild("nombre").startAt(arg);
+        Query query = mDatabase.orderByChild("nombre").startAt(arg).endAt(arg+"\uf8ff");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
