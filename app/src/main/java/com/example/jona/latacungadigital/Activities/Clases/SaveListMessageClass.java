@@ -22,6 +22,10 @@ public class SaveListMessageClass {
         this.context = context;
     }
 
+    public SaveListMessageClass(Context context) {
+        this.context = context;
+    }
+
     public void SaveListMessage() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editorPreferences = sharedPreferences.edit();
@@ -29,6 +33,15 @@ public class SaveListMessageClass {
         Gson gson = new Gson();
         String json = gson.toJson(listMessagesText);
         editorPreferences.putString("Lista_De_Mensajes", json);
+        editorPreferences.apply();
+    }
+
+    public void DeleteListMessages() {
+        // Eliminamos la lista de mensajes del Shared Preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editorPreferences = sharedPreferences.edit();
+
+        editorPreferences.remove("Lista_De_Mensajes");
         editorPreferences.apply();
     }
 

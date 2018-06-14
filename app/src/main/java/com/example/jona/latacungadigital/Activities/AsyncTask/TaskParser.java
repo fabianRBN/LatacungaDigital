@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Parser.DirectionsParser;
+import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
@@ -29,12 +30,15 @@ public class TaskParser extends AsyncTask<String, Void, List<List<HashMap<String
 
     Polyline polyline;
 
+    AccesoInternet accesoInternet;
+
     public AsyncResponse delegate = null;
 
     public TaskParser(GoogleMap googleMap, Context context, AsyncResponse delegate) {
         this.googleMap = googleMap;
         this.context = context;
         this.delegate = delegate;
+        accesoInternet = new AccesoInternet();
     }
 
 
@@ -49,14 +53,20 @@ public class TaskParser extends AsyncTask<String, Void, List<List<HashMap<String
 
     @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... strings) {
-            JSONObject jsonObject = null;
+            JSONObject jsonObject;
             List<List<HashMap<String, String>>> routes = null;
             try {
-                jsonObject = new JSONObject(strings[0]);
-                DirectionsParser directionsParser = new DirectionsParser();
-                routes = directionsParser.parse(jsonObject);
+                if (accesoInternet.isNetDisponible(context)) {
+                    jsonObject = new JSONObject(strings[0]);
+                    DirectionsParser directionsParser = new DirectionsParser();
+                    routes = directionsParser.parse(jsonObject);
+                } else {
+                    this.cancel(true); // Cancelamos el hilo si no hay internet existe un error.
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
+                this.cancel(true); // Cancelamos el hilo si hay un error un error.
             }
             return routes;
         }
@@ -69,21 +79,23 @@ public class TaskParser extends AsyncTask<String, Void, List<List<HashMap<String
 
             PolylineOptions polylineOptions = null;
 
-            for (List<HashMap<String, String>> path : lists) {
-                points = new ArrayList();
-                polylineOptions = new PolylineOptions();
+            if (lists != null) {
+                for (List<HashMap<String, String>> path : lists) {
+                    points = new ArrayList();
+                    polylineOptions = new PolylineOptions();
 
-                for (HashMap<String, String> point : path) {
-                    double lat = Double.parseDouble(point.get("lat"));
+                    for (HashMap<String, String> point : path) {
+                        double lat = Double.parseDouble(point.get("lat"));
 
-                    double lon = Double.parseDouble(point.get("lon"));
-                    System.out.println("Punto añadido:"+ lon+" "+lat);
-                    points.add(new LatLng(lat,lon));
+                        double lon = Double.parseDouble(point.get("lon"));
+                        System.out.println("Punto añadido:"+ lon+" "+lat);
+                        points.add(new LatLng(lat,lon));
+                    }
+                    polylineOptions.addAll(points);
+                    polylineOptions.width(15);
+                    polylineOptions.color(Color.BLUE);
+                    polylineOptions.geodesic(true);
                 }
-                polylineOptions.addAll(points);
-                polylineOptions.width(15);
-                polylineOptions.color(Color.BLUE);
-                polylineOptions.geodesic(true);
             }
 
             if (polylineOptions!=null) {

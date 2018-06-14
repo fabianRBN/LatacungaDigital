@@ -535,8 +535,16 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     }
 
                     // Posicionar la camara segun la ruta de donde se encuentre el usuario con el punto de destino.
+                    LatLng currentUserLatLng;
+
+                    if (estadoGPS.getCurrentLatLng() != null) { // Si esta permitido la ubicacion del usuario se pone las coordenadas de donde se encuentra.
+                        currentUserLatLng = estadoGPS.getCurrentLatLng();
+                    } else { // Si no esta permitido la ubicacion actual del usario se pone un punto preestablecido.
+                        currentUserLatLng = estadoGPS.puntoOrigen;
+                    }
+
                     LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                    builder.include(estadoGPS.getCurrentLatLng());
+                    builder.include(currentUserLatLng);
                     builder.include(new LatLng(attractive.getLatitude(), attractive.getLongitude()));
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
                     break;

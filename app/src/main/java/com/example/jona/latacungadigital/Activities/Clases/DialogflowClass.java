@@ -1,10 +1,12 @@
 package com.example.jona.latacungadigital.Activities.Clases;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
 import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
@@ -17,6 +19,7 @@ import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,18 +35,21 @@ public class DialogflowClass {
     // Declaración de variables para interactuar con Dialogflow.
     private AIDataService aiDataService;
 
+    // Declaración de variables para hacer hablar al Chat Bot.
+    private TextToSpeech toSpeechChatBot;
+
     // Declaración de variables para inicializar este modelo.
-    private View view;
+    private Context context;
     private List<TextMessageModel> listMessagesText;
-    private List<MessageCardMapListItemView> listMessageCardMapView;
     private RecyclerView rvListMessages;
     private MessagesAdapter messagesAdapter;
     private EditText txtMessageUserSend;
+    private boolean isTextToSpeech = false;
 
     private AccesoInternet accesoInternet; // Variable para controlar que el usuario este conectado a Internet.
 
-    public DialogflowClass(View view, List<TextMessageModel> listMessagesText, RecyclerView rvListMessages, MessagesAdapter messagesAdapter, EditText txtMessageUserSend) {
-        this.view = view;
+    public DialogflowClass(Context context, List<TextMessageModel> listMessagesText, RecyclerView rvListMessages, MessagesAdapter messagesAdapter, EditText txtMessageUserSend) {
+        this.context = context;
         this.listMessagesText = listMessagesText;
         this.rvListMessages = rvListMessages;
         this.messagesAdapter = messagesAdapter;
@@ -55,6 +61,10 @@ public class DialogflowClass {
     public List<TextMessageModel> getListMessagesText() { return listMessagesText; }
 
     public void setListMessagesText(List<TextMessageModel> listMessagesText) { this.listMessagesText = listMessagesText; }
+
+    public boolean isTextToSpeech() { return isTextToSpeech; }
+
+    public void setTextToSpeech(boolean textToSpeech) { isTextToSpeech = textToSpeech; }
 
     // Metodo de configuración para conectarse con Dialogflow.
     public void ConfigurationDialogflow() {
@@ -77,7 +87,7 @@ public class DialogflowClass {
             @Override
             protected void onPreExecute() {
                 // Se envia el mensaje solo si hay internet.
-                if (accesoInternet.isNetDisponible(view.getContext())) {
+                if (accesoInternet.isNetDisponible(context)) {
                     MessageTypingToDialogflow();
                 }
             }
@@ -87,7 +97,7 @@ public class DialogflowClass {
             @Override
             protected AIResponse doInBackground(AIRequest... aiRequests) {
                 //final AIRequest request = aiRequests[0];
-                if (accesoInternet.isNetDisponible(view.getContext())) { // Se envia el mensaje cuando haya solo internet en la aplicacion.
+                if (accesoInternet.isNetDisponible(context)) { // Se envia el mensaje cuando haya solo internet en la aplicacion.
                     try {
                         final AIResponse response = aiDataService.request(aiRequest);
                         return response;
@@ -148,7 +158,7 @@ public class DialogflowClass {
 
             if(action.equals("weatherAction")) { // Accion cuando es del clima
 
-                final WeatherClass weatherModel = new WeatherClass(view);
+                final WeatherClass weatherModel = new WeatherClass(context);
                 weatherModel.CurrentWeather(new WeatherClass.WeatherCallback() {
                     @Override
                     public void getResponseWeather(String response) {
@@ -191,6 +201,10 @@ public class DialogflowClass {
         TextMessageModel textMessageModel = new TextMessageModel(message);
         textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT);
         listMessagesText.add(textMessageModel);
+
+        if (isTextToSpeech()) { // Si el usuario inidica que el Chat Bot deba hablar.
+            TextToSpeechChatBot(message);
+        }
 
         addMessagesAdapter(listMessagesText);
     }
@@ -311,12 +325,41 @@ public class DialogflowClass {
 
     // Método para adaptar la lista de mensajes a la clase MessagesAdapter.
     public void addMessagesAdapter(List<TextMessageModel> listMessages) {
-        MessagesAdapter messagesAdapter = new MessagesAdapter(listMessages,view.getContext());
+        MessagesAdapter messagesAdapter = new MessagesAdapter(listMessages, context);
         messagesAdapter.setChatTextFragment(this.messagesAdapter.getChatTextFragment());
         messagesAdapter.setListMessageCardMapView(this.messagesAdapter.getListMessageCardMapView());
         messagesAdapter.setListMessageAttractiveHowToGet(this.messagesAdapter.getListMessageAttractiveHowToGet());
+
         rvListMessages.setAdapter(messagesAdapter);
         messagesAdapter.notifyDataSetChanged();
         setScrollbarChat();
+    }
+
+    // Método para hacer hbalar al Chat Bot.
+    private void TextToSpeechChatBot(final String speech) {
+        toSpeechChatBot = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+
+                    int result = toSpeechChatBot.setLanguage(Locale.getDefault());
+
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Toast.makeText(context, "Este idioma no es compatible.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        toSpeechChatBot.speak(speech, TextToSpeech.QUEUE_FLUSH,null);
+                    }
+                } else {
+                    Toast.makeText(context, "Esta característica no está admitida en su dispositivo", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, "com.google.android.tts");
+    }
+
+    public void onDestroyToSpeech() {
+        if (toSpeechChatBot != null) {
+            toSpeechChatBot.stop();
+            toSpeechChatBot.shutdown();
+        }
     }
 }
