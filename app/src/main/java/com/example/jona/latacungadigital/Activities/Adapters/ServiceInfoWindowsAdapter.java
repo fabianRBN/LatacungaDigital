@@ -68,7 +68,7 @@ public class ServiceInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter, G
     // Metodo llamado al dar click en la ventana de informacion
     @Override
     public void onInfoWindowClick(Marker marker) {
-        ChatTextFragment.dialogflowClass.CreateMessage("hola");
+        ChatTextFragment.dialogflowClass.CreateMessage("Buscar hotel " + service.getAlias());
         fragmentManager.popBackStack();
     }
 

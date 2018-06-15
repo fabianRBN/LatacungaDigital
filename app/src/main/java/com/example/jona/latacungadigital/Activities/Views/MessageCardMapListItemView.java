@@ -1,4 +1,4 @@
-package com.example.jona.latacungadigital.Activities.Clases;
+package com.example.jona.latacungadigital.Activities.Views;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.MyOnInfoWindowsClickListener;
 import com.example.jona.latacungadigital.Activities.ChatBotActivity;
+import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
+import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;

@@ -9,6 +9,7 @@ public class ChatBotReferences {
     public static final int VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT = 4;
     public static final int VIEW_TYPE_MESSAGE_CARD_VIEW_MAP = 5;
     public static final int VIEW_TYPE_MESSAGE_MAP_ATTRACTIVE_HOW_TO_GET = 6;
+    public static final int VIEW_TYPE_MESSAGE_CARD_VIEW_DETAIL_SERVICE = 7;
 
     // Codigo de confirmacion del usuario cuando habla.
     public static final int SPEECH_RECOGNITION_CODE = 1;

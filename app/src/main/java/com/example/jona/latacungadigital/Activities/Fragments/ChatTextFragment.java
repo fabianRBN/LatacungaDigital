@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
 import com.example.jona.latacungadigital.Activities.Clases.DialogflowClass;
-import com.example.jona.latacungadigital.Activities.Clases.MessageCardMapListItemView;
+import com.example.jona.latacungadigital.Activities.Views.MessageCardMapListItemView;
 import com.example.jona.latacungadigital.Activities.Clases.MessageMapAttractiveHowToGet;
 import com.example.jona.latacungadigital.Activities.Clases.SaveListMessageClass;
 import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;

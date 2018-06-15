@@ -9,6 +9,7 @@ import android.widget.EditText;
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
 import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
 import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
+import com.example.jona.latacungadigital.Activities.Views.MessageCardMapListItemView;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -158,7 +159,8 @@ public class DialogflowClass {
             } else if (action.equals("churchInformationAction")) { // Accion cuando es una consulta de un atractivo turistico
                 AttractiveClass attractiveClass = new AttractiveClass();
                 CardDialogflow(attractiveClass, result);
-
+            } else if (action.equals("hotelInformationAction")) { // Accion cuando es una consulta de un servicio
+                sendServiceToDatailServiceMessage(result);
             } else if (action.equals("churchShowLocationAction")) { // Accion para mostrar como llegar al lugar turistico.
                 sendAttractiveToMapMessage(result);
             } else if (action.equals("consultarAtractivoEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
@@ -224,6 +226,41 @@ public class DialogflowClass {
         } else { // Si el JSON esta vacio enviamos la respuesta por defecto de Dialogflow.
             String speech = result.getFulfillment().getSpeech();
             MessageSendToDialogflow(speech);
+        }
+    }
+
+    // Método para enviar la respuesta de la informacion del servicio al usuario.
+    private void sendServiceToDatailServiceMessage(Result result) {
+        Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
+        ArrayList<ServiceClass> listService =  new ArrayList<ServiceClass>(); // Lista de servicios
+        TextMessageModel textMessageModel = new TextMessageModel();
+        // Recorremos el resultado obtenido de dialogflow
+        Set mapDialogFlowResult = JSONDialogflowResult.entrySet();
+        Iterator iterator = mapDialogFlowResult.iterator();
+        while(iterator.hasNext()){
+            ServiceClass tempService = new ServiceClass();
+            Map.Entry mapService = (Map.Entry) iterator.next(); // Obtenemos el servicio dentro del JSon del mapa
+            Gson gson = new Gson();
+            JsonParser jsonParser = new JsonParser();
+            String key = mapService.getKey().toString(); // Obtenemos la clave del servicio
+            JsonElement values = jsonParser.parse(gson.toJson(mapService.getValue())); // Obtenemos los valores del servicio
+            tempService.readJSONDialogflow(key,values); // Asignamos los valores del Json al objeto servicio
+            if(tempService.getState()){
+                listService.add(tempService); // Añadimo el objeto servicio a la lista
+            }else{
+                Log.e("ERROR DE LECTURA JSON","Error al transformar Json a ServiceClass");
+            }
+        }
+        // Enviamos la respuesta obtenida de Dialogflow
+        String speech = result.getFulfillment().getSpeech();
+        MessageSendToDialogflow(speech);
+        if(!listService.isEmpty()){ // Si la lista no esta vacia se envia el tipo de mensaje designado
+            // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
+            textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_DETAIL_SERVICE);
+            textMessageModel.setService(listService.get(0));
+            textMessageModel.setAction(result.getAction());
+            listMessagesText.add(textMessageModel);
+            addMessagesAdapter(listMessagesText);
         }
     }
 
