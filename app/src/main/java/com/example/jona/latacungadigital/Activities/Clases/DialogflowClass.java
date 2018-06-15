@@ -1,11 +1,11 @@
 package com.example.jona.latacungadigital.Activities.Clases;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
 import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
@@ -20,7 +20,6 @@ import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,6 +66,10 @@ public class DialogflowClass {
 
     public void setTextToSpeech(boolean textToSpeech) { isTextToSpeech = textToSpeech; }
 
+    public RecyclerView getRvListMessages() {return rvListMessages; }
+
+    public MessagesAdapter getMessagesAdapter() { return messagesAdapter; }
+
     // Metodo de configuración para conectarse con Dialogflow.
     public void ConfigurationDialogflow() {
         final AIConfiguration configurationAI = new AIConfiguration(ChatBotReferences.ACCESS_CLIENT_TOKEN,
@@ -78,6 +81,7 @@ public class DialogflowClass {
     }
 
     // Método para enviar el mensaje a Dialogflow.
+    @SuppressLint("StaticFieldLeak")
     private void SendMessageTextToDialogflow(final String message) {
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery(message); // Enviamos la pregunta del usuario a Dialogflow.
@@ -370,9 +374,9 @@ public class DialogflowClass {
         setScrollbarChat();
     }
 
-    // Método para hacer hbalar al Chat Bot.
+    // Método para hacer hablar al Chat Bot.
     private void TextToSpeechChatBot(final String message) {
-        Thread thread = new Thread(new Runnable() {
+        Thread threadSpeakChatBot = new Thread(new Runnable() {
             @Override
             public void run() {
                 toSpeechChatBot = new TextToSpeech();
@@ -380,9 +384,8 @@ public class DialogflowClass {
                 toSpeechChatBot.setEndPoint(ChatBotReferences.END_POINT_API_WATSON);
                 StreamPlayerClass streamPlayerClass = new StreamPlayerClass();
                 streamPlayerClass.playStream(toSpeechChatBot.synthesize(message, Voice.ES_ENRIQUE).execute());
-
             }
         });
-        thread.start();
+        threadSpeakChatBot.start();
     }
 }

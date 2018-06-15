@@ -10,7 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.DialogAppFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
+import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
+
+import java.util.ArrayList;
 
 public class ChatBotActivity extends AppCompatActivity implements ChatTextFragment.OnFragmentInteractionListener, MapaFragment.OnFragmentInteractionListener,
         DialogAppFragment.NoticeDialogListener {
@@ -66,9 +69,15 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
 
     @Override
     public void onDialogConfirmClick(DialogFragment dialog) {
+        // Para eliminar los mensajes del Chat Bot.
+        chatFragment.getDialogflowClass().getRvListMessages().removeAllViewsInLayout();
+        chatFragment.getDialogflowClass().getMessagesAdapter().notifyDataSetChanged();
+        chatFragment.getDialogflowClass().setListMessagesText(new ArrayList<TextMessageModel>());
+        chatFragment.getDialogflowClass().addMessagesAdapter(new ArrayList<TextMessageModel>());
     }
 
     @Override
     public void onDialogCancelClick(DialogFragment dialog) {
+        dialog.getDialog().cancel();
     }
 }

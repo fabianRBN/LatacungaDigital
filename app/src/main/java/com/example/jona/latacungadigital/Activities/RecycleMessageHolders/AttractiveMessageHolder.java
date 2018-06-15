@@ -9,11 +9,14 @@ import android.widget.TextView;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
 
+import me.relex.circleindicator.CircleIndicator;
+
 // Clase para manipular la informacion de los atractivos y ponerles en sus respectivos componetes para agregarles en el RecycleView.
 public class AttractiveMessageHolder extends RecyclerView.ViewHolder {
     // Declaracion de varaibles de acuerdo a los componentes que comprenden el layout: attractive_information.xml
-    TextView txtNameAttractive, txtDescriptionAttractive, txtCategoryAttractive;
-    ViewPager viewPager;
+    private TextView txtNameAttractive, txtDescriptionAttractive, txtCategoryAttractive;
+    private ViewPager viewPager;
+    private CircleIndicator circleIndicator;
 
     public AttractiveMessageHolder(View itemView) {
         super(itemView);
@@ -22,9 +25,12 @@ public class AttractiveMessageHolder extends RecyclerView.ViewHolder {
         txtNameAttractive = itemView.findViewById(R.id.txtTitlePlacesInformation);
         txtCategoryAttractive = itemView.findViewById(R.id.txtCategoryPlacesInformation);
         viewPager = itemView.findViewById(R.id.vpPlacesInformation);
+        circleIndicator = itemView.findViewById(R.id.ciViewPagerImages);
     }
 
     public ViewPager getViewPager() { return viewPager; }
+
+    public CircleIndicator getCircleIndicator() { return circleIndicator; }
 
     public void bind(TextMessageModel message) { // Se asigna la informacion consultada a los TextViews.
         // Se envia el nombre del atractivo a su respetivo TextView.

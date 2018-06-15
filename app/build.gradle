@@ -71,6 +71,9 @@ dependencies {
     // Para el asistente de voz IBM Watson.
     implementation 'com.ibm.watson.developer_cloud:text-to-speech:4.2.1'
 
+    // Para el indicador del View Pager.
+    implementation 'me.relex:circleindicator:1.2.2@aar'
+
     //Librerias para la realidad aumentada
 
     compile fileTree(dir: 'libs', include: ['*.jar'])

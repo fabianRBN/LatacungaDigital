@@ -98,6 +98,8 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             case ChatBotReferences.VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT:
                 AttractiveAdpater attractiveAdpater = new AttractiveAdpater(context, listChatModel.get(position).getListImagesURL());
                 ((AttractiveMessageHolder) holder).getViewPager().setAdapter(attractiveAdpater);
+                ((AttractiveMessageHolder) holder).getCircleIndicator().setViewPager(((AttractiveMessageHolder) holder).getViewPager());
+                attractiveAdpater.registerDataSetObserver(((AttractiveMessageHolder) holder).getCircleIndicator().getDataSetObserver());
                 ((AttractiveMessageHolder) holder).bind(message);
                 break;
             case ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP:
