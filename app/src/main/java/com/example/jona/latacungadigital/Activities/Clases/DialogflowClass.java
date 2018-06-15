@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
 import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
@@ -20,7 +19,6 @@ import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -154,41 +152,42 @@ public class DialogflowClass {
     private void ResponseToDialogflow(AIResponse response) {
         if (response != null) {
             Result result = response.getResult();
-
             String action = result.getAction(); // Variable para reconocer la acción según la pregunta del usuario.
-
-            if(action.equals("weatherAction")) { // Accion cuando es del clima
-
-                final WeatherClass weatherModel = new WeatherClass(context);
-                weatherModel.CurrentWeather(new WeatherClass.WeatherCallback() {
-                    @Override
-                    public void getResponseWeather(String response) {
-                        MessageSendToDialogflow(response);
-                    }
-                });
-            } else if (action.equals("churchInformationAction")) { // Accion cuando es una consulta de un atractivo turistico
-                AttractiveClass attractiveClass = new AttractiveClass();
-                CardDialogflow(attractiveClass, result);
-            } else if (action.equals("hotelInformationAction")) { // Accion cuando es una consulta de un servicio
-                sendServiceToDatailServiceMessage(result);
-            } else if (action.equals("churchShowLocationAction")) { // Accion para mostrar como llegar al lugar turistico.
-                sendAttractiveToMapMessage(result);
-            } else if (action.equals("consultarAtractivoEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
-                String speech = result.getFulfillment().getSpeech();
-                MessageSendToDialogflow(speech);
-                sendAttractiveListToMapMessage(result, "Atractivos");
-            } else if (action.equals("consultarAlojamientoEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
-                String speech = result.getFulfillment().getSpeech();
-                MessageSendToDialogflow(speech);
-                sendServicesListToMapMessage(result, "Alojamiento");
-            } else if (action.equals("consultarComidaYBebidaEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
-                String speech = result.getFulfillment().getSpeech();
-                MessageSendToDialogflow(speech);
-                sendServicesListToMapMessage(result, "Comidas y bebidas");
-            } else {
-
-                String speech = result.getFulfillment().getSpeech();
-                MessageSendToDialogflow(speech);
+            switch (action){
+                case "weatherAction":
+                    final WeatherClass weatherModel = new WeatherClass(context);
+                    weatherModel.CurrentWeather(new WeatherClass.WeatherCallback() {
+                        @Override
+                        public void getResponseWeather(String response) {
+                            MessageSendToDialogflow(response);
+                        }
+                    });
+                    break;
+                case "churchInformationAction":
+                    CardDialogflow(new AttractiveClass(), result);
+                    break;
+                case "hotelInformationAction":
+                    sendServiceToDatailServiceMessage(result);
+                    break;
+                case "churchShowLocationAction":
+                    sendAttractiveToMapMessage(result);
+                    break;
+                case "consultarAtractivoEnElArea":
+                    MessageSendToDialogflow(result.getFulfillment().getSpeech());
+                    sendServicesListToMapMessage(result, "Alojamiento");
+                    break;
+                case "consultarAlojamientoEnElArea":
+                    MessageSendToDialogflow(result.getFulfillment().getSpeech());
+                    sendServicesListToMapMessage(result, "Alojamiento");
+                    break;
+                case "consultarComidaYBebidaEnElArea":
+                    MessageSendToDialogflow(result.getFulfillment().getSpeech());
+                    sendServicesListToMapMessage(result, "Comidas y bebidas");
+                    break;
+                default:
+                    String speech = result.getFulfillment().getSpeech();
+                    MessageSendToDialogflow(speech);
+                    break;
             }
         }
     }
