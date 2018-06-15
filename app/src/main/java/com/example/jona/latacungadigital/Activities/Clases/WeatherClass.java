@@ -1,6 +1,6 @@
 package com.example.jona.latacungadigital.Activities.Clases;
 
-import android.view.View;
+import android.content.Context;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -8,25 +8,25 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class WeatherClass {
 
-    private static final String APIXU_API_CLIENT = "0b65639864ea4bbdb93195540182604";
-    private View view;
+    private Context context;
     private RequestQueue queue;
     private String resultCurrentWeather;
 
-    public WeatherClass(View view) {
-        this.view = view;
-        queue = Volley.newRequestQueue(this.view.getContext());
+    public WeatherClass(Context context) {
+        this.context = context;
+        queue = Volley.newRequestQueue(this.context);
     }
 
     public void CurrentWeather(final WeatherCallback weatherCallback) {
 
-        String url = "https://api.apixu.com/v1/current.json?key=" + APIXU_API_CLIENT + "&q=Latacunga&lang=es";
+        String url = "https://api.apixu.com/v1/current.json?key=" + ChatBotReferences.APIXU_API_CLIENT + "&q=Latacunga&lang=es";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override

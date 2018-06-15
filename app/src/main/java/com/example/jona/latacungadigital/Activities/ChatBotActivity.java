@@ -1,26 +1,20 @@
 package com.example.jona.latacungadigital.Activities;
 
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
-import com.example.jona.latacungadigital.Activities.Clases.CharacterClass;
-import com.example.jona.latacungadigital.Activities.Clases.NetworkReceiverClass;
 import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
+import com.example.jona.latacungadigital.Activities.Fragments.DialogAppFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.R;
 
-public class ChatBotActivity extends AppCompatActivity implements ChatTextFragment.OnFragmentInteractionListener, MapaFragment.OnFragmentInteractionListener {
+public class ChatBotActivity extends AppCompatActivity implements ChatTextFragment.OnFragmentInteractionListener, MapaFragment.OnFragmentInteractionListener,
+        DialogAppFragment.NoticeDialogListener {
 
-    Toolbar toolBarChatBot;
-    NetworkReceiverClass networkReceiverClass;
-    ActionBar actionBar;
     ChatTextFragment chatFragment;
 
     @Override
@@ -28,30 +22,7 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_bot);
 
-        toolBarChatBot = findViewById(R.id.toolBarChatBot);
-        setSupportActionBar(toolBarChatBot);
-
-        SetupActionBar(); // Para dar el titulo y el subtitulo que va a tener el Action Bar.
         ChatTextFragment(); // Inicializamos la actividad con el fragmento que tiene para interactuar con el chatbot.
-    }
-
-    private void SetupActionBar() {
-        actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            CharacterClass characterClass = new CharacterClass();
-            characterClass.ReadCharacterFromDatabase(new CharacterClass.DataOfCharacters() {
-                @Override
-                public void nameCharacter(String nameCharacter, String imageCharacterURL) {
-                    actionBar.setTitle(nameCharacter);
-                }
-            });
-
-            boolean showMessageToStartActivity = false; // Para no mostrar el mensaje de "Conexión exitosa" al inicio de la actividad.
-            IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-            networkReceiverClass = new NetworkReceiverClass(actionBar, ChatBotActivity.this, showMessageToStartActivity);
-            registerReceiver(networkReceiverClass, filter);
-
-        }
     }
 
     // Métodos para abrir el fragmento del chatbot.
@@ -75,7 +46,8 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {}
+    public void onFragmentInteraction(Uri uri) {
+    }
 
     @Override
     protected void onPause() {
@@ -90,7 +62,13 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
 
-        unregisterReceiver(networkReceiverClass); // Para destruir la comunicacion cuando se cierra la actividad.
+    @Override
+    public void onDialogConfirmClick(DialogFragment dialog) {
+    }
+
+    @Override
+    public void onDialogCancelClick(DialogFragment dialog) {
     }
 }

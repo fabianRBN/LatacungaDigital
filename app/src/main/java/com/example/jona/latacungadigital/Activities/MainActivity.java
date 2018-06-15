@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
-import com.example.jona.latacungadigital.Activities.Fragments.DialogSignOffFragement;
+import com.example.jona.latacungadigital.Activities.Fragments.DialogAppFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.ListAtractivosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.R;
@@ -29,14 +29,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.common.api.ResultCallback;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener,
-        ListAtractivosFragment.OnFragmentInteractionListener, DialogSignOffFragement.NoticeDialogListener {
+        ListAtractivosFragment.OnFragmentInteractionListener, DialogAppFragment.NoticeDialogListener {
 
     private GoogleApiClient googleApiClient; // Variable para manejar los datos de Google.
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
-    private DialogSignOffFragement dialogSignOffFragement; // Varibale para controlar el Dialogo de cerrar sesion.
+    private DialogAppFragment dialogAppFragment; // Varibale para controlar el Dialogo de cerrar sesion.
+    private static final int DIALOG_SIGN_OFF = 1; // Para saber que tipo de Dialogo es.
 
     private MapaFragment mapaFragment = new MapaFragment();
     private ListAtractivosFragment listAtractivosFragment = new ListAtractivosFragment();
@@ -171,9 +172,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
     public void openSignOffDialog() {
-        // Se crea una instancia de la clase DialogSignOffFragement y se la muestra.
-        dialogSignOffFragement = new DialogSignOffFragement();
-        dialogSignOffFragement.show(getSupportFragmentManager(), "NoticeDialogFragment");
+        // Se crea una instancia de la clase DialogAppFragement y se la muestra.
+        dialogAppFragment = new DialogAppFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("Type_Dialog", DIALOG_SIGN_OFF);
+        dialogAppFragment.setArguments(bundle);
+
+        dialogAppFragment.show(getSupportFragmentManager(), "NoticeDialogFragment");
     }
 
     // Método para cerrar sesión de la aplicacion.
@@ -228,10 +234,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     @Override
-    public void onDialogSigOffClick(DialogFragment dialog) { logOut(); }
+    public void onDialogConfirmClick(DialogFragment dialog) { logOut(); }
 
     @Override
     public void onDialogCancelClick(DialogFragment dialog) { // Para cancelar la acción de cerrar sesión.
-        dialogSignOffFragement.getDialog().cancel();
+        dialogAppFragment.getDialog().cancel();
     }
 }

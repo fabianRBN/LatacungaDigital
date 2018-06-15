@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -13,21 +15,31 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
+import com.example.jona.latacungadigital.Activities.Clases.CharacterClass;
 import com.example.jona.latacungadigital.Activities.Clases.DialogflowClass;
 import com.example.jona.latacungadigital.Activities.Views.MessageCardMapListItemView;
 import com.example.jona.latacungadigital.Activities.Clases.MessageMapAttractiveHowToGet;
+import com.example.jona.latacungadigital.Activities.Clases.NetworkReceiverClass;
 import com.example.jona.latacungadigital.Activities.Clases.SaveListMessageClass;
 import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
@@ -39,23 +51,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ChatTextFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ChatTextFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ChatTextFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -68,7 +64,11 @@ public class ChatTextFragment extends Fragment {
     private EditText txtMessageUserSend;
     private MessagesAdapter messagesAdapter;
     private TextView txtMessageWelcome;
+    private DialogAppFragment dialogAppFragment; // Variable para controlar el Dialogo de eliminar mensajes.
     private boolean shouldRecreate = true; // Variable para controlar el onActivityResult() con onResume().
+
+    private NetworkReceiverClass networkReceiverClass;
+    private ActionBar actionBar;
 
     public static DialogflowClass dialogflowClass;
     private View view;
@@ -77,41 +77,22 @@ public class ChatTextFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ChatTextFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ChatTextFragment newInstance(String param1, String param2) {
-        ChatTextFragment fragment = new ChatTextFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         listMessagesText = new ArrayList<>(); // Incializar la lista de los mensajes de texto.
         listMessageCardMapView = new ArrayList<>();
         listMessageAttractiveHowToGet = new ArrayList<>();
 
         view = inflater.inflate(R.layout.fragment_chat_text, container, false);
+
+        Toolbar toolBarChatBot = view.findViewById(R.id.toolBarChatBot); // Instanciar la variable con el Id del Toolbar.
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolBarChatBot);
 
         rvListMessages = view.findViewById(R.id.listOfMessages); // Instanciar la variable con el Id del RecicleView.
 
@@ -133,10 +114,15 @@ public class ChatTextFragment extends Fragment {
         messagesAdapter.setListMessageAttractiveHowToGet(listMessageAttractiveHowToGet);
         rvListMessages.setAdapter(messagesAdapter); // Adaptamos el Recicle View a al adaptador que contendran los mensajes.
 
-        dialogflowClass = new DialogflowClass(view, listMessagesText, rvListMessages, messagesAdapter, txtMessageUserSend);
+        dialogflowClass = new DialogflowClass(view.getContext(), listMessagesText, rvListMessages, messagesAdapter, txtMessageUserSend);
         dialogflowClass.ConfigurationDialogflow(); // Para configurar el API de Dialogflow.
 
+        dialogAppFragment = new DialogAppFragment();
+
         GiveWelcomeMessage(); // Dar el mensaje de Bienvenida al usuario.
+
+        SetupActionBar(); // Para dar el titulo y el subtitulo que va a tener el Action Bar.
+        setHasOptionsMenu(true); // Para habilitar las opciones del Toolbar.
 
         ChangeIconButton(); // Se llama al método de cambiar de icono.
 
@@ -183,6 +169,53 @@ public class ChatTextFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Se infla el menu_chatbot.
+        inflater.inflate(R.menu.menu_chatbot, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem menuItem = menu.findItem(R.id.navChatbotTextToSpeech);
+        menuItem.setActionView(R.layout.switch_text_to_speech);
+
+        Switch switchTextToSpeech = menuItem.getActionView().findViewById(R.id.swicthTextToSpeech);
+        switchTextToSpeech.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    dialogflowClass.setTextToSpeech(true);
+                } else {
+                    dialogflowClass.setTextToSpeech(false);
+                }
+            }
+        });
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.navChatbotDeleteMessages:
+                openDialogDeleteMessages();
+
+                rvListMessages.removeAllViewsInLayout();
+                messagesAdapter.notifyDataSetChanged();
+                DeleteListMessageFromSharedPreferences(view.getContext());
+                dialogflowClass.setListMessagesText(new ArrayList<TextMessageModel>());
+                return true;
+
+            case R.id.navChatbotChangeCharacter:
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -193,11 +226,41 @@ public class ChatTextFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
+    private void openDialogDeleteMessages() {
+        // Se crea una instancia de la clase DialogAppFragement y se la muestra.
+        Bundle bundle = new Bundle();
+        bundle.putInt("Type_Dialog", ChatBotReferences.DIALOG_DELETE_MESSAGE);
+        dialogAppFragment.setArguments(bundle);
+
+        dialogAppFragment.show(getFragmentManager(), "NoticeDialogFragment");
+    }
+
+    // Método para establecer el nombre del personaje y si esta activo de acuerdo a la conexión a internet.
+    private void SetupActionBar() {
+        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            CharacterClass characterClass = new CharacterClass();
+            characterClass.ReadCharacterFromDatabase(new CharacterClass.DataOfCharacters() {
+                @Override
+                public void nameCharacter(String nameCharacter, String imageCharacterURL) {
+                    actionBar.setTitle(nameCharacter);
+                }
+            });
+
+            boolean showMessageToStartActivity = false; // Para no mostrar el mensaje de "Conexión exitosa" al inicio de la actividad.
+            IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+            networkReceiverClass = new NetworkReceiverClass(actionBar, getActivity(), showMessageToStartActivity);
+            getActivity().registerReceiver(networkReceiverClass, filter);
+        }
+    }
+
+    // Método para leer la lista de mensajes del Shared Preferences.
     private void ReadListMessageFromSharedPreferences() {
         // Solo se va a restablecer la lista de mensajes si la varible es verdadera y con ese evitamos problemas cuando el usuario manda un mensaje hablado.
         if (shouldRecreate) {
@@ -212,12 +275,19 @@ public class ChatTextFragment extends Fragment {
         GiveWelcomeMessage(); // Verificamos si la lista esta vacia para dar la bienvenida al usuario.
     }
 
+    // Método para actualizar la lista de mensajes del Shared Preferences.
     private void UpdateListMessageFromSharedPreferences() {
         // Para guardar la lista de mensajes en el Shared Preferences.
         SaveListMessageClass saveListMessageClass = new SaveListMessageClass(dialogflowClass.getListMessagesText(), view.getContext());
         saveListMessageClass.SaveListMessage();
 
         GiveWelcomeMessage(); // Verificamos si la lista esta vacia para dar la bienvenida al usuario.
+    }
+
+    // Método para eliminar la lista de mensajes del Shared Preferences.
+    private void DeleteListMessageFromSharedPreferences(Context context) {
+        SaveListMessageClass saveListMessageClass = new SaveListMessageClass(context);
+        saveListMessageClass.DeleteListMessages();
     }
 
     // Método para obtener el usuario Logeado de la aplicación.
@@ -420,5 +490,9 @@ public class ChatTextFragment extends Fragment {
                 view.mapViewOnDestroy();
             }
         }
+
+        getActivity().unregisterReceiver(networkReceiverClass); // Para destruir la comunicacion cuando se cierra la actividad.
+
+        dialogflowClass.onDestroyToSpeech(); // Para destruir el Text To Speech cuando se cierra la actividad.
     }
 }
