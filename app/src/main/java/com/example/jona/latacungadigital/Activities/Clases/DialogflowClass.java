@@ -11,7 +11,6 @@ import android.widget.Toast;
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
 import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
 import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
-import com.example.jona.latacungadigital.Activities.Views.MessageCardMapListItemView;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -365,8 +364,6 @@ public class DialogflowClass {
         MessagesAdapter messagesAdapter = new MessagesAdapter(listMessages, context);
         messagesAdapter.setChatTextFragment(this.messagesAdapter.getChatTextFragment());
         messagesAdapter.setListMessageCardMapView(this.messagesAdapter.getListMessageCardMapView());
-        messagesAdapter.setListMessageAttractiveHowToGet(this.messagesAdapter.getListMessageAttractiveHowToGet());
-
         rvListMessages.setAdapter(messagesAdapter);
         messagesAdapter.notifyDataSetChanged();
         setScrollbarChat();
