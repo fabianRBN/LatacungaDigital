@@ -68,6 +68,9 @@ dependencies {
     // Para mostrar un snack bar debjo del toolbar.
     implementation 'com.androidadvance:topsnackbar:1.1.1'
 
+    // Para el asistente de voz IBM Watson.
+    implementation 'com.ibm.watson.developer_cloud:text-to-speech:4.2.1'
+
     //Librerias para la realidad aumentada
 
     compile fileTree(dir: 'libs', include: ['*.jar'])

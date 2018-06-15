@@ -2,7 +2,6 @@ package com.example.jona.latacungadigital.Activities.Clases;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.speech.tts.TextToSpeech;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.EditText;
@@ -15,6 +14,8 @@ import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.ibm.watson.developer_cloud.text_to_speech.v1.TextToSpeech;
+import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -198,7 +199,7 @@ public class DialogflowClass {
     }
 
     // Método para enviar la respuesta al usuario.
-    private void MessageSendToDialogflow(String message) {
+    private void MessageSendToDialogflow(final String message) {
         TextMessageModel textMessageModel = new TextMessageModel(message);
         textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT);
         listMessagesText.add(textMessageModel);
@@ -370,30 +371,18 @@ public class DialogflowClass {
     }
 
     // Método para hacer hbalar al Chat Bot.
-    private void TextToSpeechChatBot(final String speech) {
-        toSpeechChatBot = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+    private void TextToSpeechChatBot(final String message) {
+        Thread thread = new Thread(new Runnable() {
             @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
+            public void run() {
+                toSpeechChatBot = new TextToSpeech();
+                toSpeechChatBot.setUsernameAndPassword(ChatBotReferences.USERNAME_API_WATSON, ChatBotReferences.PASSWORD_API_WATSON);
+                toSpeechChatBot.setEndPoint(ChatBotReferences.END_POINT_API_WATSON);
+                StreamPlayerClass streamPlayerClass = new StreamPlayerClass();
+                streamPlayerClass.playStream(toSpeechChatBot.synthesize(message, Voice.ES_ENRIQUE).execute());
 
-                    int result = toSpeechChatBot.setLanguage(Locale.getDefault());
-
-                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        Toast.makeText(context, "Este idioma no es compatible.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        toSpeechChatBot.speak(speech, TextToSpeech.QUEUE_FLUSH,null);
-                    }
-                } else {
-                    Toast.makeText(context, "Esta característica no está admitida en su dispositivo", Toast.LENGTH_SHORT).show();
-                }
             }
-        }, "com.google.android.tts");
-    }
-
-    public void onDestroyToSpeech() {
-        if (toSpeechChatBot != null) {
-            toSpeechChatBot.stop();
-            toSpeechChatBot.shutdown();
-        }
+        });
+        thread.start();
     }
 }

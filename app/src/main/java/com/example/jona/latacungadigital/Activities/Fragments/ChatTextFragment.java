@@ -455,7 +455,5 @@ public class ChatTextFragment extends Fragment {
             }
         }
         getActivity().unregisterReceiver(networkReceiverClass); // Para destruir la comunicacion cuando se cierra la actividad.
-
-        dialogflowClass.onDestroyToSpeech(); // Para destruir el Text To Speech cuando se cierra la actividad.
     }
 }

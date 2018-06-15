@@ -21,4 +21,9 @@ public class ChatBotReferences {
 
     // Para saber a que dialogo llamar en la actividad.
     public static final int DIALOG_DELETE_MESSAGE = 2;
+
+    // Autentificacion a la API de IBM Watson para el asistente de voz.
+    public static final String USERNAME_API_WATSON = "49e24466-6ffb-4c0d-9c8f-45d2963cd742";
+    public static final String PASSWORD_API_WATSON = "4zAPrpNm41L0";
+    public static final String END_POINT_API_WATSON = "https://stream.watsonplatform.net/text-to-speech/api";
 }
