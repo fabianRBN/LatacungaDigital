@@ -36,15 +36,6 @@ public class SaveListMessageClass {
         editorPreferences.apply();
     }
 
-    public void DeleteListMessages() {
-        // Eliminamos la lista de mensajes del Shared Preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editorPreferences = sharedPreferences.edit();
-
-        editorPreferences.remove("Lista_De_Mensajes");
-        editorPreferences.apply();
-    }
-
     public List<TextMessageModel> ReadListMessages() {
         List<TextMessageModel> messageModel;
 
