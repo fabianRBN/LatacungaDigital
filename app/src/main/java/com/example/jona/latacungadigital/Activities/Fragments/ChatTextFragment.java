@@ -64,11 +64,13 @@ public class ChatTextFragment extends Fragment {
     private TextView txtMessageWelcome;
     private DialogAppFragment dialogAppFragment; // Variable para controlar el Dialogo de eliminar mensajes.
     private boolean shouldRecreate = true; // Variable para controlar el onActivityResult() con onResume().
+    private boolean isMessageToSend = false;
+    private String messageToSend;
 
     private NetworkReceiverClass networkReceiverClass;
     private ActionBar actionBar;
 
-    public static DialogflowClass dialogflowClass;
+    public  DialogflowClass dialogflowClass;
     private View view;
 
     public ChatTextFragment() {
@@ -76,6 +78,22 @@ public class ChatTextFragment extends Fragment {
     }
 
     public DialogflowClass getDialogflowClass() { return dialogflowClass; }
+
+    public boolean getIsMessageToSend() {
+        return isMessageToSend;
+    }
+
+    public void setIsMessageToSend(boolean isMessageToSend) {
+        this.isMessageToSend = isMessageToSend;
+    }
+
+    public String getMessageToSend() {
+        return messageToSend;
+    }
+
+    public void setMessageToSend(String messageToSend) {
+        this.messageToSend = messageToSend;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -386,12 +404,16 @@ public class ChatTextFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        ReadListMessageFromSharedPreferences(); // Leer lista de mensajes.
         if(listMessageCardMapView !=null){
             for (MessageCardMapListItemView view : listMessageCardMapView) {
                 view.mapViewOnResume();
             }
         }
-        ReadListMessageFromSharedPreferences(); // Leer lista de mensajes.
+        if(isMessageToSend){
+            getDialogflowClass().CreateMessage(messageToSend);
+            isMessageToSend = false;
+        }
     }
 
     @Override

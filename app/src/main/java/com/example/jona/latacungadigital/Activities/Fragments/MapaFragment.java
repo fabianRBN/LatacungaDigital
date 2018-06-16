@@ -75,6 +75,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     private ArrayList<AttractiveClass> listAttractive;
     private ArrayList<ServiceClass> listService;
     private AttractiveClass attractive;
+    private ServiceClass service;
+    private LatLng currentUserLatLng;
     private LatLng pointDestination;
 
     // Variables de mapa
@@ -201,9 +203,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             return;
         }*/
         //Validar si la aplicacion tiene el permiso de Localizacion
-        if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
-            return;
+        if(getActivity() != null){
+            if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+                return;
+            }
         }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if(mLastLocation != null){
@@ -281,6 +285,10 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
 
     public void setAttractive(AttractiveClass attractive) {
         this.attractive = attractive;
+    }
+
+    public void setService(ServiceClass service) {
+        this.service = service;
     }
 
     public void dataFirebase(){
@@ -413,6 +421,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap mMap) {
         googleMap = mMap;
+        googleMap.clear();
 
         // Validar si la aplicacion tiene el permiso de Localizacion
         if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
@@ -420,10 +429,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             return;
         }
 
-        googleMap.setMyLocationEnabled(true); // Habilitar el boton de "Mover a mi ubicacion"
-
-        EstadoGPS estadoGPS = new EstadoGPS(getContext(), googleMap); // Variable para obtener la locacion donde se encuentra el usuario.
-        estadoGPS.getCurrentLocation(); // Leer las coordenadas actuales de donde se encunetra el usuario y almacenarlo en un metodo Setter.
+        // Habilitar el boton de "Mover a mi ubicacion"
+        googleMap.setMyLocationEnabled(true);
 
         // Definir la posicion de la camara en el map
         LatLngBounds centroHistorico = new LatLngBounds(
@@ -437,6 +444,19 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
 
         // Habilitar las ventanas de información sobre los marcadores
         MyOnInfoWindowsClickListener myOnInfoWindowsClickListener= new MyOnInfoWindowsClickListener(getContext(),googleMap);
+
+        // Encontrar la posicion del usuario
+        EstadoGPS estadoGPS = new EstadoGPS(getContext(), googleMap); // Variable para obtener la locacion donde se encuentra el usuario.
+        estadoGPS.getCurrentLocation(); // Leer las coordenadas actuales de donde se encunetra el usuario y almacenarlo en un metodo Setter.
+        if (estadoGPS.getCurrentLatLng() != null) { // Si esta permitido la ubicacion del usuario se pone las coordenadas de donde se encuentra.
+            currentUserLatLng = estadoGPS.getCurrentLatLng();
+        } else { // Si no esta permitido la ubicacion actual del usario se pone un punto preestablecido.
+            currentUserLatLng = estadoGPS.puntoOrigen;
+        }
+
+        // Crear un marcador para la posicion del usuario
+        createMarkerForUser(currentUserLatLng,
+                myOnInfoWindowsClickListener.getCompleteAddressString(currentUserLatLng.latitude, currentUserLatLng.longitude)); // Para obtener la direccion en donde se encuentra el usuario.
 
         if (!isSerchFromChatBot) { // Si NO es una solicitud de consulta del chatbot
             // Habilitar las ventanas de información sobre los marcadores
@@ -487,7 +507,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     }
                 });
             }
-        } else { // SI es una solicitud de consulta del chatbot
+        } else { // Si es una solicitud de consulta del chatbot
             switch (chatBotAction){
                 case "consultarAtractivoEnElArea":
                     // Agregar un marcadores de atractivos
@@ -499,7 +519,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                 case "consultarComidaYBebidaEnElArea":
                     // Establecer la venta de informacion info_window_service
                     ServiceInfoWindowsAdapter serviceInfoWindowsAdapter = new ServiceInfoWindowsAdapter(getContext(),googleMap);
-                    serviceInfoWindowsAdapter.setFragmentManager(getActivity().getSupportFragmentManager());
+                    serviceInfoWindowsAdapter.setMapaFragment(this);
                     googleMap.setInfoWindowAdapter(serviceInfoWindowsAdapter);
                     googleMap.setOnInfoWindowClickListener(serviceInfoWindowsAdapter);
                     googleMap.setOnInfoWindowLongClickListener(serviceInfoWindowsAdapter);
@@ -511,41 +531,23 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     googleMap.setOnMarkerClickListener(new OnMarkerClickListenerAdapter(getContext(),googleMap));
                     break;
                 case "churchShowLocationAction":
+                case "hotel_information_intent.hotel_information_intent-yes":
+                    // Crear el marcador del punto Destino
+                    if(attractive != null){
+                        // Crear marcador para la posicion del atractivo de destino
+                        createMarkerForAttractive(attractive);
+                    }else {
+                        // Crear marcador para la posicion del servicio de destino
+                        createMarkerForService(service);
+                    }
+
                     // Dibjuar la ruta en el mapa.
-                    if (getPointDestination() != null) {
-                        if (estadoGPS.getCurrentLatLng() != null) { // Si esta permitido la ubicacion del usuario se pone las coordenadas de donde se encuentra.
-                            myOnInfoWindowsClickListener.distanciaGoogle(estadoGPS.getCurrentLatLng(), getPointDestination()); // Dibujar la ruta en el mapa.
-                        } else { // Si no esta permitido la ubicacion actual del usario se pone un punto preestablecido.
-                            myOnInfoWindowsClickListener.distanciaGoogle(estadoGPS.puntoOrigen, getPointDestination()); // Dibujar la ruta en el mapa.
-                        }
-                    }
-                    createMarkerForAttractive(attractive); // Crear el marcador del punto Destino
-                    // Crear un marcador en la posicion del usuario
-                    if (getPointDestination() != null) {
-                        // Si esta permitido la ubicacion del usuario se pone las coordenadas de donde se encuentra.
-                        if (estadoGPS.getCurrentLatLng() != null) {
-                            createMarkerForUser(estadoGPS.getCurrentLatLng(),
-                                    myOnInfoWindowsClickListener.getCompleteAddressString(estadoGPS.getCurrentLatLng().latitude,
-                                            estadoGPS.getCurrentLatLng().longitude)); // Para obtener la direccion en donde se encuentra el usuario.
-                        } else { // Si no esta permitido la ubicacion actual del usario se pone un punto preestablecido.
-                            createMarkerForUser(estadoGPS.puntoOrigen,
-                                    myOnInfoWindowsClickListener.getCompleteAddressString(estadoGPS.puntoOrigen.latitude,
-                                            estadoGPS.puntoOrigen.longitude)); // Para obtener la direccion en donde se encuentra el usuario.
-                        }
-                    }
+                    myOnInfoWindowsClickListener.distanciaGoogle(currentUserLatLng, getPointDestination());
 
                     // Posicionar la camara segun la ruta de donde se encuentre el usuario con el punto de destino.
-                    LatLng currentUserLatLng;
-
-                    if (estadoGPS.getCurrentLatLng() != null) { // Si esta permitido la ubicacion del usuario se pone las coordenadas de donde se encuentra.
-                        currentUserLatLng = estadoGPS.getCurrentLatLng();
-                    } else { // Si no esta permitido la ubicacion actual del usario se pone un punto preestablecido.
-                        currentUserLatLng = estadoGPS.puntoOrigen;
-                    }
-
                     LatLngBounds.Builder builder = new LatLngBounds.Builder();
                     builder.include(currentUserLatLng);
-                    builder.include(new LatLng(attractive.getLatitude(), attractive.getLongitude()));
+                    builder.include(pointDestination);
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
                     break;
             }

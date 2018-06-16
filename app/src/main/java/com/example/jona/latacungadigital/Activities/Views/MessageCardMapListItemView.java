@@ -266,7 +266,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                     if(attractive != null){
                         mapaFragment.setAttractive(this.attractive);
                     }else {
-                        //mapaFragment.setService(this.service);
+                        mapaFragment.setService(this.service);
                     }
                     break;
             }

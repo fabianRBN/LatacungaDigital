@@ -1,13 +1,13 @@
 package com.example.jona.latacungadigital.Activities.Adapters;
 
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.jona.latacungadigital.Activities.ChatBotActivity;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
-import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
+import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
@@ -19,7 +19,7 @@ public class ServiceInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter, G
     private Context mContext;
     private GoogleMap googleMap;
     private ServiceClass service;
-    private android.support.v4.app.FragmentManager fragmentManager;
+    private MapaFragment mapaFragment;
 
     // Constructor
     public ServiceInfoWindowsAdapter(Context mContext, GoogleMap googleMap) {
@@ -29,8 +29,8 @@ public class ServiceInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter, G
     }
 
     // Metodos get and ser
-    public void setFragmentManager(FragmentManager fragmentManager) {
-        this.fragmentManager = fragmentManager;
+    public void setMapaFragment(MapaFragment mapaFragment) {
+        this.mapaFragment = mapaFragment;
     }
 
     private void renderWindow(Marker marker, View view){
@@ -68,8 +68,10 @@ public class ServiceInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter, G
     // Metodo llamado al dar click en la ventana de informacion
     @Override
     public void onInfoWindowClick(Marker marker) {
-        ChatTextFragment.dialogflowClass.CreateMessage("Buscar hotel " + service.getAlias());
-        fragmentManager.popBackStack();
+        if(mapaFragment.getActivity() instanceof ChatBotActivity){
+            ChatBotActivity chatBotActivity = (ChatBotActivity) mapaFragment.getActivity();
+            chatBotActivity.changeFragmentToChatbotAndSendMessage("Buscar hotel " + service.getAlias());
+        }
     }
 
     // Metodo llamado al mantener el click en la ventana de informacion

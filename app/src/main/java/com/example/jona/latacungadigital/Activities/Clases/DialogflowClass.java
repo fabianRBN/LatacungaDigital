@@ -173,7 +173,7 @@ public class DialogflowClass {
                     CardDialogflow(new AttractiveClass(), result);
                     break;
                 case "hotelInformationAction":
-                    sendServiceToDatailServiceMessage(result);
+                    sendServiceToDatailServiceMessage(result, true);
                     MessageSendToDialogflow(result.getFulfillment().getSpeech().split("\\. ")[1]);
                     break;
                 case "hotel_information_intent.hotel_information_intent-yes":
@@ -250,7 +250,7 @@ public class DialogflowClass {
     }
 
     // Método para enviar la respuesta de la informacion del servicio al usuario.
-    private void sendServiceToDatailServiceMessage(Result result) {
+    private void sendServiceToDatailServiceMessage(Result result, boolean splitSpeech) {
         Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
         ArrayList<ServiceClass> listService =  new ArrayList<ServiceClass>(); // Lista de servicios
         TextMessageModel textMessageModel = new TextMessageModel();
@@ -272,7 +272,12 @@ public class DialogflowClass {
             }
         }
         // Enviamos la respuesta obtenida de Dialogflow
-        String speech = result.getFulfillment().getSpeech();
+        String speech;
+        if(splitSpeech){
+            speech = result.getFulfillment().getSpeech().split("\\. ")[0];
+        }else {
+            speech = result.getFulfillment().getSpeech();
+        }
         MessageSendToDialogflow(speech);
         if(!listService.isEmpty()){ // Si la lista no esta vacia se envia el tipo de mensaje designado
             // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
