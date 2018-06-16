@@ -19,6 +19,7 @@ import com.example.jona.latacungadigital.Activities.Views.MessageCardDetailServi
 import com.example.jona.latacungadigital.Activities.Views.MessageCardMapListItemView;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
+import com.github.florent37.expansionpanel.viewgroup.ExpansionLayoutCollection;
 
 import java.util.List;
 
@@ -97,9 +98,11 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 break;
             case ChatBotReferences.VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT:
                 AttractiveAdpater attractiveAdpater = new AttractiveAdpater(context, listChatModel.get(position).getListImagesURL());
+                ExpansionLayoutCollection expansionLayoutCollection = new ExpansionLayoutCollection();
                 ((AttractiveMessageHolder) holder).getViewPager().setAdapter(attractiveAdpater);
                 ((AttractiveMessageHolder) holder).getCircleIndicator().setViewPager(((AttractiveMessageHolder) holder).getViewPager());
                 attractiveAdpater.registerDataSetObserver(((AttractiveMessageHolder) holder).getCircleIndicator().getDataSetObserver());
+                expansionLayoutCollection.add(((AttractiveMessageHolder) holder).getExpansionLayout());
                 ((AttractiveMessageHolder) holder).bind(message);
                 break;
             case ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP:
