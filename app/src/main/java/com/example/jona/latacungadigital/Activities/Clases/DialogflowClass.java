@@ -174,20 +174,21 @@ public class DialogflowClass {
                     break;
                 case "hotelInformationAction":
                     sendServiceToDatailServiceMessage(result);
+                    MessageSendToDialogflow(result.getFulfillment().getSpeech().split("\\. ")[1]);
+                    break;
+                case "hotel_information_intent.hotel_information_intent-yes":
+                    sendServiceToMapMessage(result);
                     break;
                 case "churchShowLocationAction":
                     sendAttractiveToMapMessage(result);
                     break;
                 case "consultarAtractivoEnElArea":
-                    MessageSendToDialogflow(result.getFulfillment().getSpeech());
-                    sendServicesListToMapMessage(result, "Alojamiento");
+                    sendAttractiveListToMapMessage(result, "Alojamiento");
                     break;
                 case "consultarAlojamientoEnElArea":
-                    MessageSendToDialogflow(result.getFulfillment().getSpeech());
                     sendServicesListToMapMessage(result, "Alojamiento");
                     break;
                 case "consultarComidaYBebidaEnElArea":
-                    MessageSendToDialogflow(result.getFulfillment().getSpeech());
                     sendServicesListToMapMessage(result, "Comidas y bebidas");
                     break;
                 default:
@@ -300,6 +301,42 @@ public class DialogflowClass {
     }
 
     // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa
+    private void sendServiceToMapMessage(Result result) {
+        Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
+        ArrayList<ServiceClass> listService =  new ArrayList<ServiceClass>(); // Lista de servicios
+        TextMessageModel textMessageModel = new TextMessageModel();
+        // Recorremos el resultado obtenido de dialogflow
+        Set mapDialogFlowResult = JSONDialogflowResult.entrySet();
+        Iterator iterator = mapDialogFlowResult.iterator();
+        while(iterator.hasNext()){
+            ServiceClass tempService = new ServiceClass();
+            Map.Entry mapService = (Map.Entry) iterator.next(); // Obtenemos el servicio dentro del JSon del mapa
+            Gson gson = new Gson();
+            JsonParser jsonParser = new JsonParser();
+            String key = mapService.getKey().toString(); // Obtenemos la clave del servicio
+            JsonElement values = jsonParser.parse(gson.toJson(mapService.getValue())); // Obtenemos los valores del servicio
+            tempService.readJSONDialogflow(key,values); // Asignamos los valores del Json al objeto servicio
+            if(tempService.getState()){
+                listService.add(tempService); // Añadimo el objeto servicio a la lista
+            }else{
+                Log.e("ERROR DE LECTURA JSON","Error al transformar Json a ServiceClass");
+            }
+        }
+        // Enviamos la respuesta obtenida de Dialogflow
+        String speech = result.getFulfillment().getSpeech();
+        MessageSendToDialogflow(speech);
+        if (!listService.isEmpty()) { // Para saber si el JSON no esta vacio.
+            // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
+            textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP);
+            textMessageModel.setService(listService.get(0));
+            textMessageModel.setTitulo(listService.get(0).getName());
+            textMessageModel.setAction(result.getAction());
+            listMessagesText.add(textMessageModel);
+            addMessagesAdapter(listMessagesText);
+        }
+    }
+
+    // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa
     private void sendAttractiveListToMapMessage(Result result, String titulo){
         Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
         ArrayList<AttractiveClass> listAttractive =  new ArrayList<AttractiveClass>(); // Lista de atractivos
@@ -321,6 +358,9 @@ public class DialogflowClass {
                 Log.e("ERROR DE LECTURA JSON","Error al transformar Json a AttractiveClass");
             }
         }
+        // Enviamos la respuesta obtenida de Dialogflow
+        String speech = result.getFulfillment().getSpeech();
+        MessageSendToDialogflow(speech);
         if(!listAttractive.isEmpty()){
             // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
             textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP);
@@ -354,6 +394,9 @@ public class DialogflowClass {
                 Log.e("ERROR DE LECTURA JSON","Error al transformar Json a ServiceClass");
             }
         }
+        // Enviamos la respuesta obtenida de Dialogflow
+        String speech = result.getFulfillment().getSpeech();
+        MessageSendToDialogflow(speech);
         if(!listService.isEmpty()){
             // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
             textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP);
