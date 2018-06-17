@@ -17,6 +17,19 @@
         android:iconTint="@color/white"/>
 
     <item
+        android:id="@+id/navigation_prefrencia"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="Preferencia"
+        app:showAsAction="never"
+        android:iconTint="@color/white"/>
+    <item
+        android:id="@+id/navigation_configuraciones"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="Configuraciones"
+        app:showAsAction="never"
+        android:iconTint="@color/white"/>
+
+    <item
         android:id="@+id/navigation_rastrear"
         android:icon="@drawable/ic_settings_black_24dp"
         android:title="Rastrear"

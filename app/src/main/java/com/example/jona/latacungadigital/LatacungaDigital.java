@@ -24,5 +24,9 @@ public class LatacungaDigital  extends Application {
         built.setIndicatorsEnabled(false);
         built.setLoggingEnabled(true);
         Picasso.setSingletonInstance(built);
+
+
     }
+
+
 }

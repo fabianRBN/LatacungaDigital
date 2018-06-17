@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Opciones Atractivos" >
+
+        <CheckBoxPreference
+            android:key="notificacionAtractivo"
+            android:title="Notificacion de Atractivos"
+            android:summary="Activar o desactivar notificaciones de atractivos cercanos al usuario"
+            >
+        </CheckBoxPreference>
+
+
+        <CheckBoxPreference
+            android:key="databaselocal"
+            android:title="Datos sin conexio a internet"
+            android:summary="Permite guardar informacion de los atractivos en la memoria de su dispositivo para "
+            >
+        </CheckBoxPreference>
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Opciones de mapa" >
+
+        <ListPreference
+            android:key="opcion2"
+            android:title="Medio de transporte"
+            android:summary="Determina el medio de transporque en el cual viajas, esto servira para calcular la trayectoria al atractivo"
+            android:dialogTitle="Indica medio de Transporte"
+            android:entries="@array/transportes"
+            android:entryValues="@array/codigoTransporte"
+            >
+
+        </ListPreference>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
