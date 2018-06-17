@@ -23,4 +23,18 @@ El trozo de texto estándar de Lorem Ipsum usado desde el año 1500 es reproduci
     <string name="dialog_cancel_button">Cancelar</string>
     <string name="title_activity_ar">ARActivity</string>
     <string name="provider_new_status">Ubicacion Actual : %2$s</string>
+
+
+    <string-array name="transportes">
+        <item>Carro</item>
+        <item>Bicicleta</item>
+        <item>Caminando</item>
+    </string-array>
+
+    <string-array name="codigoTransporte">
+        <item>Car</item>
+        <item>Bic</item>
+        <item>Cam</item>
+    </string-array>
+
 </resources>
