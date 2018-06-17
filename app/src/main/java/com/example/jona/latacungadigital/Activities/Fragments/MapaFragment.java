@@ -391,6 +391,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             markerOptions.title("Mi Ubicación");
             markerOptions.snippet(address);
             myPositionMarker = googleMap.addMarker(markerOptions);
+            myPositionMarker.setTag("userMarker");
         }
     }
 
@@ -515,8 +516,10 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                         createMarkerForAttractive(listAttractive.get(cont));
                     }
                     break;
+                case "consultarAgenciasDeViajeEnElArea":
                 case "consultarAlojamientoEnElArea":
                 case "consultarComidaYBebidaEnElArea":
+                case "consultarRecreacionDiversionEsparcimientoEnElArea":
                     // Establecer la venta de informacion info_window_service
                     ServiceInfoWindowsAdapter serviceInfoWindowsAdapter = new ServiceInfoWindowsAdapter(getContext(),googleMap);
                     serviceInfoWindowsAdapter.setMapaFragment(this);
@@ -537,6 +540,9 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                         // Crear marcador para la posicion del atractivo de destino
                         createMarkerForAttractive(attractive);
                     }else {
+                        // Establecer la venta de informacion info_window_service
+                        ServiceInfoWindowsAdapter serviceInfoWindows = new ServiceInfoWindowsAdapter(getContext(),googleMap);
+                        googleMap.setInfoWindowAdapter(serviceInfoWindows);
                         // Crear marcador para la posicion del servicio de destino
                         createMarkerForService(service);
                     }

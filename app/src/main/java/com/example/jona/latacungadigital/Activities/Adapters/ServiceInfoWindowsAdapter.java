@@ -55,12 +55,18 @@ public class ServiceInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter, G
 
     @Override
     public View getInfoWindow(Marker marker) {
+        if(marker.getTag().equals("userMarker")){
+            return null;
+        }
         renderWindow(marker,mWindow);
         return mWindow;
     }
 
     @Override
     public View getInfoContents(Marker marker) {
+        if(marker.getTag().equals("userMarker")){
+            return null;
+        }
         renderWindow(marker,mWindow);
         return mWindow;
     }

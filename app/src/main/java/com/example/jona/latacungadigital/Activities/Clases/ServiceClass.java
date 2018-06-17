@@ -1,5 +1,7 @@
 package com.example.jona.latacungadigital.Activities.Clases;
 
+import android.util.Log;
+
 import com.example.jona.latacungadigital.R;
 import com.google.gson.JsonElement;
 
@@ -126,12 +128,19 @@ public class ServiceClass {
     }
 
     public void setIcon() {
+        Log.d("Categoria de servicio", ": "+ this.category);
         switch (this.category){
+            case "Agencia de viajes":
+                this.icon = R.drawable.ic_marker_travel_purple;
+                break;
             case "Alojamiento":
                 this.icon = R.drawable.ic_marker_hotel_red;
                 break;
             case "Comidas y bebidas":
                 this.icon = R.drawable.ic_marker_restaurant_orange;
+                break;
+            case "Recreación, diversión, esparcimiento":
+                this.icon = R.drawable.ic_marker_star_yellow;
                 break;
             default:
                 this.icon = 0;

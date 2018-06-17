@@ -3,7 +3,6 @@ package com.example.jona.latacungadigital.Activities.Adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,10 +13,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.example.jona.latacungadigital.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 /**
  * Created by fabia on 25/05/2018.
@@ -87,6 +82,9 @@ public class CustomInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter  {
 
     @Override
     public View getInfoWindow(Marker marker) {
+        if(marker.getTag() != null){
+            return null;
+        }
         rendowWindowsText(marker,mWindow);
         System.out.println("GetInfo windows");
         return mWindow;
@@ -94,6 +92,9 @@ public class CustomInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter  {
 
     @Override
     public View getInfoContents(Marker marker) {
+        if (marker.getTag() != null){
+            return null;
+        }
         rendowWindowsText(marker,mWindow);
         System.out.println("GetInfoConten windows");
         return mWindow;

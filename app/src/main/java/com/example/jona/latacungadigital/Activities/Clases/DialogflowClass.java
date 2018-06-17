@@ -183,13 +183,19 @@ public class DialogflowClass {
                     sendAttractiveToMapMessage(result);
                     break;
                 case "consultarAtractivoEnElArea":
-                    sendAttractiveListToMapMessage(result, "Alojamiento");
+                    sendAttractiveListToMapMessage(result, "");
+                    break;
+                case "consultarAgenciasDeViajeEnElArea":
+                    sendServicesListToMapMessage(result, "Agencia de viajes");
                     break;
                 case "consultarAlojamientoEnElArea":
                     sendServicesListToMapMessage(result, "Alojamiento");
                     break;
                 case "consultarComidaYBebidaEnElArea":
                     sendServicesListToMapMessage(result, "Comidas y bebidas");
+                    break;
+                case "consultarRecreacionDiversionEsparcimientoEnElArea":
+                    sendServicesListToMapMessage(result, "Recreación, diversión, esparcimiento");
                     break;
                 default:
                     String speech = result.getFulfillment().getSpeech();
