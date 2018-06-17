@@ -1,12 +1,11 @@
 package com.example.jona.latacungadigital.Activities.Clases;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.speech.tts.TextToSpeech;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
 import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
@@ -15,11 +14,12 @@ import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.ibm.watson.developer_cloud.text_to_speech.v1.TextToSpeech;
+import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -66,6 +66,10 @@ public class DialogflowClass {
 
     public void setTextToSpeech(boolean textToSpeech) { isTextToSpeech = textToSpeech; }
 
+    public RecyclerView getRvListMessages() {return rvListMessages; }
+
+    public MessagesAdapter getMessagesAdapter() { return messagesAdapter; }
+
     // Metodo de configuración para conectarse con Dialogflow.
     public void ConfigurationDialogflow() {
         final AIConfiguration configurationAI = new AIConfiguration(ChatBotReferences.ACCESS_CLIENT_TOKEN,
@@ -77,6 +81,7 @@ public class DialogflowClass {
     }
 
     // Método para enviar el mensaje a Dialogflow.
+    @SuppressLint("StaticFieldLeak")
     private void SendMessageTextToDialogflow(final String message) {
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery(message); // Enviamos la pregunta del usuario a Dialogflow.
@@ -153,40 +158,43 @@ public class DialogflowClass {
     private void ResponseToDialogflow(AIResponse response) {
         if (response != null) {
             Result result = response.getResult();
-
             String action = result.getAction(); // Variable para reconocer la acción según la pregunta del usuario.
-
-            if(action.equals("weatherAction")) { // Accion cuando es del clima
-
-                final WeatherClass weatherModel = new WeatherClass(context);
-                weatherModel.CurrentWeather(new WeatherClass.WeatherCallback() {
-                    @Override
-                    public void getResponseWeather(String response) {
-                        MessageSendToDialogflow(response);
-                    }
-                });
-            } else if (action.equals("churchInformationAction")) { // Accion cuando es una consulta de un atractivo turistico
-                AttractiveClass attractiveClass = new AttractiveClass();
-                CardDialogflow(attractiveClass, result);
-
-            } else if (action.equals("churchShowLocationAction")) { // Accion para mostrar como llegar al lugar turistico.
-                sendAttractiveToMapMessage(result);
-            } else if (action.equals("consultarAtractivoEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
-                String speech = result.getFulfillment().getSpeech();
-                MessageSendToDialogflow(speech);
-                sendAttractiveListToMapMessage(result, "Atractivos");
-            } else if (action.equals("consultarAlojamientoEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
-                String speech = result.getFulfillment().getSpeech();
-                MessageSendToDialogflow(speech);
-                sendServicesListToMapMessage(result, "Alojamiento");
-            } else if (action.equals("consultarComidaYBebidaEnElArea")) { // Accion cuando es una consulta sobre servicios de alojamiento cercanos
-                String speech = result.getFulfillment().getSpeech();
-                MessageSendToDialogflow(speech);
-                sendServicesListToMapMessage(result, "Comidas y bebidas");
-            } else {
-
-                String speech = result.getFulfillment().getSpeech();
-                MessageSendToDialogflow(speech);
+            switch (action){
+                case "weatherAction":
+                    final WeatherClass weatherModel = new WeatherClass(context);
+                    weatherModel.CurrentWeather(new WeatherClass.WeatherCallback() {
+                        @Override
+                        public void getResponseWeather(String response) {
+                            MessageSendToDialogflow(response);
+                        }
+                    });
+                    break;
+                case "churchInformationAction":
+                    CardDialogflow(new AttractiveClass(), result);
+                    break;
+                case "hotelInformationAction":
+                    sendServiceToDatailServiceMessage(result, true);
+                    MessageSendToDialogflow(result.getFulfillment().getSpeech().split("\\. ")[1]);
+                    break;
+                case "hotel_information_intent.hotel_information_intent-yes":
+                    sendServiceToMapMessage(result);
+                    break;
+                case "churchShowLocationAction":
+                    sendAttractiveToMapMessage(result);
+                    break;
+                case "consultarAtractivoEnElArea":
+                    sendAttractiveListToMapMessage(result, "Alojamiento");
+                    break;
+                case "consultarAlojamientoEnElArea":
+                    sendServicesListToMapMessage(result, "Alojamiento");
+                    break;
+                case "consultarComidaYBebidaEnElArea":
+                    sendServicesListToMapMessage(result, "Comidas y bebidas");
+                    break;
+                default:
+                    String speech = result.getFulfillment().getSpeech();
+                    MessageSendToDialogflow(speech);
+                    break;
             }
         }
     }
@@ -197,7 +205,7 @@ public class DialogflowClass {
     }
 
     // Método para enviar la respuesta al usuario.
-    private void MessageSendToDialogflow(String message) {
+    private void MessageSendToDialogflow(final String message) {
         TextMessageModel textMessageModel = new TextMessageModel(message);
         textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT);
         listMessagesText.add(textMessageModel);
@@ -241,6 +249,46 @@ public class DialogflowClass {
         }
     }
 
+    // Método para enviar la respuesta de la informacion del servicio al usuario.
+    private void sendServiceToDatailServiceMessage(Result result, boolean splitSpeech) {
+        Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
+        ArrayList<ServiceClass> listService =  new ArrayList<ServiceClass>(); // Lista de servicios
+        TextMessageModel textMessageModel = new TextMessageModel();
+        // Recorremos el resultado obtenido de dialogflow
+        Set mapDialogFlowResult = JSONDialogflowResult.entrySet();
+        Iterator iterator = mapDialogFlowResult.iterator();
+        while(iterator.hasNext()){
+            ServiceClass tempService = new ServiceClass();
+            Map.Entry mapService = (Map.Entry) iterator.next(); // Obtenemos el servicio dentro del JSon del mapa
+            Gson gson = new Gson();
+            JsonParser jsonParser = new JsonParser();
+            String key = mapService.getKey().toString(); // Obtenemos la clave del servicio
+            JsonElement values = jsonParser.parse(gson.toJson(mapService.getValue())); // Obtenemos los valores del servicio
+            tempService.readJSONDialogflow(key,values); // Asignamos los valores del Json al objeto servicio
+            if(tempService.getState()){
+                listService.add(tempService); // Añadimo el objeto servicio a la lista
+            }else{
+                Log.e("ERROR DE LECTURA JSON","Error al transformar Json a ServiceClass");
+            }
+        }
+        // Enviamos la respuesta obtenida de Dialogflow
+        String speech;
+        if(splitSpeech){
+            speech = result.getFulfillment().getSpeech().split("\\. ")[0];
+        }else {
+            speech = result.getFulfillment().getSpeech();
+        }
+        MessageSendToDialogflow(speech);
+        if(!listService.isEmpty()){ // Si la lista no esta vacia se envia el tipo de mensaje designado
+            // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
+            textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_DETAIL_SERVICE);
+            textMessageModel.setService(listService.get(0));
+            textMessageModel.setAction(result.getAction());
+            listMessagesText.add(textMessageModel);
+            addMessagesAdapter(listMessagesText);
+        }
+    }
+
     // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa
     private void sendAttractiveToMapMessage(Result result) {
         AttractiveClass attractive = new AttractiveClass();
@@ -251,6 +299,42 @@ public class DialogflowClass {
             textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP);
             textMessageModel.setAttractive(attractive);
             textMessageModel.setTitulo(attractive.getNameAttractive());
+            textMessageModel.setAction(result.getAction());
+            listMessagesText.add(textMessageModel);
+            addMessagesAdapter(listMessagesText);
+        }
+    }
+
+    // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa
+    private void sendServiceToMapMessage(Result result) {
+        Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
+        ArrayList<ServiceClass> listService =  new ArrayList<ServiceClass>(); // Lista de servicios
+        TextMessageModel textMessageModel = new TextMessageModel();
+        // Recorremos el resultado obtenido de dialogflow
+        Set mapDialogFlowResult = JSONDialogflowResult.entrySet();
+        Iterator iterator = mapDialogFlowResult.iterator();
+        while(iterator.hasNext()){
+            ServiceClass tempService = new ServiceClass();
+            Map.Entry mapService = (Map.Entry) iterator.next(); // Obtenemos el servicio dentro del JSon del mapa
+            Gson gson = new Gson();
+            JsonParser jsonParser = new JsonParser();
+            String key = mapService.getKey().toString(); // Obtenemos la clave del servicio
+            JsonElement values = jsonParser.parse(gson.toJson(mapService.getValue())); // Obtenemos los valores del servicio
+            tempService.readJSONDialogflow(key,values); // Asignamos los valores del Json al objeto servicio
+            if(tempService.getState()){
+                listService.add(tempService); // Añadimo el objeto servicio a la lista
+            }else{
+                Log.e("ERROR DE LECTURA JSON","Error al transformar Json a ServiceClass");
+            }
+        }
+        // Enviamos la respuesta obtenida de Dialogflow
+        String speech = result.getFulfillment().getSpeech();
+        MessageSendToDialogflow(speech);
+        if (!listService.isEmpty()) { // Para saber si el JSON no esta vacio.
+            // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
+            textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP);
+            textMessageModel.setService(listService.get(0));
+            textMessageModel.setTitulo(listService.get(0).getName());
             textMessageModel.setAction(result.getAction());
             listMessagesText.add(textMessageModel);
             addMessagesAdapter(listMessagesText);
@@ -279,6 +363,9 @@ public class DialogflowClass {
                 Log.e("ERROR DE LECTURA JSON","Error al transformar Json a AttractiveClass");
             }
         }
+        // Enviamos la respuesta obtenida de Dialogflow
+        String speech = result.getFulfillment().getSpeech();
+        MessageSendToDialogflow(speech);
         if(!listAttractive.isEmpty()){
             // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
             textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP);
@@ -312,6 +399,9 @@ public class DialogflowClass {
                 Log.e("ERROR DE LECTURA JSON","Error al transformar Json a ServiceClass");
             }
         }
+        // Enviamos la respuesta obtenida de Dialogflow
+        String speech = result.getFulfillment().getSpeech();
+        MessageSendToDialogflow(speech);
         if(!listService.isEmpty()){
             // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
             textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP);
@@ -328,38 +418,23 @@ public class DialogflowClass {
         MessagesAdapter messagesAdapter = new MessagesAdapter(listMessages, context);
         messagesAdapter.setChatTextFragment(this.messagesAdapter.getChatTextFragment());
         messagesAdapter.setListMessageCardMapView(this.messagesAdapter.getListMessageCardMapView());
-        messagesAdapter.setListMessageAttractiveHowToGet(this.messagesAdapter.getListMessageAttractiveHowToGet());
-
         rvListMessages.setAdapter(messagesAdapter);
         messagesAdapter.notifyDataSetChanged();
         setScrollbarChat();
     }
 
-    // Método para hacer hbalar al Chat Bot.
-    private void TextToSpeechChatBot(final String speech) {
-        toSpeechChatBot = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+    // Método para hacer hablar al Chat Bot.
+    private void TextToSpeechChatBot(final String message) {
+        Thread threadSpeakChatBot = new Thread(new Runnable() {
             @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-
-                    int result = toSpeechChatBot.setLanguage(Locale.getDefault());
-
-                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        Toast.makeText(context, "Este idioma no es compatible.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        toSpeechChatBot.speak(speech, TextToSpeech.QUEUE_FLUSH,null);
-                    }
-                } else {
-                    Toast.makeText(context, "Esta característica no está admitida en su dispositivo", Toast.LENGTH_SHORT).show();
-                }
+            public void run() {
+                toSpeechChatBot = new TextToSpeech();
+                toSpeechChatBot.setUsernameAndPassword(ChatBotReferences.USERNAME_API_WATSON, ChatBotReferences.PASSWORD_API_WATSON);
+                toSpeechChatBot.setEndPoint(ChatBotReferences.END_POINT_API_WATSON);
+                StreamPlayerClass streamPlayerClass = new StreamPlayerClass();
+                streamPlayerClass.playStream(toSpeechChatBot.synthesize(message, Voice.ES_ENRIQUE).execute());
             }
-        }, "com.google.android.tts");
-    }
-
-    public void onDestroyToSpeech() {
-        if (toSpeechChatBot != null) {
-            toSpeechChatBot.stop();
-            toSpeechChatBot.shutdown();
-        }
+        });
+        threadSpeakChatBot.start();
     }
 }

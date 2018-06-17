@@ -1,4 +1,4 @@
-package com.example.jona.latacungadigital.Activities.Clases;
+package com.example.jona.latacungadigital.Activities.Views;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.MyOnInfoWindowsClickListener;
 import com.example.jona.latacungadigital.Activities.ChatBotActivity;
+import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
+import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
@@ -42,8 +44,10 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
     ArrayList<ServiceClass> listService;
     ArrayList<AttractiveClass> listAttractive;
     AttractiveClass attractive;
-    ServiceClass serviceClass;
+    ServiceClass service;
     GoogleMap gMap;
+    LatLng currentUserLatLng;
+    LatLng destinationLatLng;
 
     // Varaibles de acuerdo a los componentes que comprenden el layout: message_cv_map.xml
     protected TextView txtTitle;
@@ -80,6 +84,11 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                     break;
                 case "churchShowLocationAction":
                     attractive = message.getAttractive();
+                    destinationLatLng = new LatLng(attractive.getLatitude(), attractive.getLongitude());
+                    break;
+                case "hotel_information_intent.hotel_information_intent-yes":
+                    service = message.getService();
+                    destinationLatLng = new LatLng(service.getLatitude(), service.getLongitude());
                     break;
             }
             txtTitle.setText(message.getTitulo());
@@ -182,6 +191,21 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                 new LatLng(-0.9364, -78.6163), new LatLng(-0.9301, -78.6129));
         gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centroHistorico.getCenter(), 15));
 
+        // Encontrar la posicion del usuario
+        EstadoGPS estadoGPS = new EstadoGPS(context, gMap); // Variable para obtener la locacion donde se encuentra el usuario.
+        estadoGPS.getCurrentLocation(); // Leer las coordenadas actuales de donde se encunetra el usuario y almacenarlo en un metodo Setter.
+        if (estadoGPS.getCurrentLatLng() != null) { // Si esta permitido la ubicacion del usuario se pone las coordenadas de donde se encuentra.
+            currentUserLatLng = estadoGPS.getCurrentLatLng();
+        } else { // Si no esta permitido la ubicacion actual del usario se pone un punto preestablecido.
+            currentUserLatLng = estadoGPS.puntoOrigen;
+        }
+
+        // Crear un marcador para la posicion del usuario
+        MarkerOptions markerUser = new MarkerOptions()
+                .position(currentUserLatLng) // Coordenadas actuales de donde se encunetra el usuario.
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_user_dark_blue));
+        gMap.addMarker(markerUser);
+
         switch (message.getAction()){
             case "consultarAtractivoEnElArea":
                 // Agregar un marcador en cada posicion del atractivo
@@ -197,38 +221,25 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                 }
                 break;
             case "churchShowLocationAction":
-                EstadoGPS estadoGPS = new EstadoGPS(context, gMap); // Variable para obtener la locacion donde se encuentra el usuario.
-                estadoGPS.getCurrentLocation(); // Leer las coordenadas actuales de donde se encunetra el usuario y almacenarlo en un metodo Setter.
-
-                LatLng currentUserLatLng;
-
-                if (estadoGPS.getCurrentLatLng() != null) { // Si esta permitido la ubicacion del usuario se pone las coordenadas de donde se encuentra.
-                    currentUserLatLng = estadoGPS.getCurrentLatLng();
-                } else { // Si no esta permitido la ubicacion actual del usario se pone un punto preestablecido.
-                    currentUserLatLng = estadoGPS.puntoOrigen;
+            case "hotel_information_intent.hotel_information_intent-yes":
+                if(attractive != null){
+                    // Crear marcador para la posicion del atractivo de destino
+                    createMarkerForAttractive(attractive);
+                }else {
+                    // Crear marcador para la posicion del servicio de destino
+                    createMarkerForService(service);
                 }
-
-                // Dibujar la ruta de como llegar al lugar turistico.
+                // Dibujar la ruta de como llegar al destino.
                 MyOnInfoWindowsClickListener myOnInfoWindowsClickListener = new MyOnInfoWindowsClickListener(context, gMap);
-                myOnInfoWindowsClickListener.distanciaGoogle(currentUserLatLng, new LatLng(attractive.getLatitude(), attractive.getLongitude()));
-
-                // Crear un marcador para la posicion del usuario
-                MarkerOptions markerUser = new MarkerOptions()
-                        .position(currentUserLatLng) // Coordenadas actuales de donde se encunetra el usuario.
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_user_dark_blue));
-                gMap.addMarker(markerUser);
-
-                // Crear marcador para la posicion del atractivo de destino
-                createMarkerForAttractive(attractive);
+                myOnInfoWindowsClickListener.distanciaGoogle(currentUserLatLng, destinationLatLng);
 
                 // Posicionar la camara segun la ruta de donde se encuentre el usuario con el punto de destino.
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 builder.include(currentUserLatLng);
-                builder.include(new LatLng(attractive.getLatitude(), attractive.getLongitude()));
+                builder.include(destinationLatLng);
                 gMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
                 break;
         }
-
         // Definir la funcion de click en el mapa
         gMap.setOnMapClickListener(this);
     }
@@ -249,8 +260,14 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                     mapaFragment.setListService(listService);
                     break;
                 case "churchShowLocationAction":
-                    mapaFragment.setPointDestination(new LatLng(attractive.getLatitude(), attractive.getLongitude()));
+                case "hotel_information_intent.hotel_information_intent-yes":
+                    mapaFragment.setPointDestination(destinationLatLng);
                     mapaFragment.setAttractive(this.attractive);
+                    if(attractive != null){
+                        mapaFragment.setAttractive(this.attractive);
+                    }else {
+                        mapaFragment.setService(this.service);
+                    }
                     break;
             }
             chatBotActivity.changeFragmente(mapaFragment);

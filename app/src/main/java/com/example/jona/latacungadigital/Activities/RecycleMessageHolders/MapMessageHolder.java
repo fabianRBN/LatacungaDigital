@@ -2,7 +2,7 @@ package com.example.jona.latacungadigital.Activities.RecycleMessageHolders;
 
 import android.support.v7.widget.RecyclerView;
 
-import com.example.jona.latacungadigital.Activities.Clases.MessageCardMapListItemView;
+import com.example.jona.latacungadigital.Activities.Views.MessageCardMapListItemView;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 
 public class MapMessageHolder extends RecyclerView.ViewHolder {

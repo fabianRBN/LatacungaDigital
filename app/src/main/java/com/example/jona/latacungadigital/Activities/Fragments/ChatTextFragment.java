@@ -37,11 +37,10 @@ import android.widget.Toast;
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
 import com.example.jona.latacungadigital.Activities.Clases.CharacterClass;
 import com.example.jona.latacungadigital.Activities.Clases.DialogflowClass;
-import com.example.jona.latacungadigital.Activities.Clases.MessageCardMapListItemView;
-import com.example.jona.latacungadigital.Activities.Clases.MessageMapAttractiveHowToGet;
 import com.example.jona.latacungadigital.Activities.Clases.NetworkReceiverClass;
 import com.example.jona.latacungadigital.Activities.Clases.SaveListMessageClass;
 import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
+import com.example.jona.latacungadigital.Activities.Views.MessageCardMapListItemView;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,22 +58,41 @@ public class ChatTextFragment extends Fragment {
     private RecyclerView rvListMessages;
     private List<TextMessageModel> listMessagesText;
     private List<MessageCardMapListItemView> listMessageCardMapView;
-    private List<MessageMapAttractiveHowToGet> listMessageAttractiveHowToGet;
     private FloatingActionButton btnSendMessage;
     private EditText txtMessageUserSend;
     private MessagesAdapter messagesAdapter;
     private TextView txtMessageWelcome;
     private DialogAppFragment dialogAppFragment; // Variable para controlar el Dialogo de eliminar mensajes.
     private boolean shouldRecreate = true; // Variable para controlar el onActivityResult() con onResume().
+    private boolean isMessageToSend = false;
+    private String messageToSend;
 
     private NetworkReceiverClass networkReceiverClass;
     private ActionBar actionBar;
 
-    public static DialogflowClass dialogflowClass;
+    public  DialogflowClass dialogflowClass;
     private View view;
 
     public ChatTextFragment() {
         // Required empty public constructor
+    }
+
+    public DialogflowClass getDialogflowClass() { return dialogflowClass; }
+
+    public boolean getIsMessageToSend() {
+        return isMessageToSend;
+    }
+
+    public void setIsMessageToSend(boolean isMessageToSend) {
+        this.isMessageToSend = isMessageToSend;
+    }
+
+    public String getMessageToSend() {
+        return messageToSend;
+    }
+
+    public void setMessageToSend(String messageToSend) {
+        this.messageToSend = messageToSend;
     }
 
     @Override
@@ -87,7 +105,6 @@ public class ChatTextFragment extends Fragment {
                              Bundle savedInstanceState) {
         listMessagesText = new ArrayList<>(); // Incializar la lista de los mensajes de texto.
         listMessageCardMapView = new ArrayList<>();
-        listMessageAttractiveHowToGet = new ArrayList<>();
 
         view = inflater.inflate(R.layout.fragment_chat_text, container, false);
 
@@ -111,7 +128,6 @@ public class ChatTextFragment extends Fragment {
         messagesAdapter = new MessagesAdapter(listMessagesText, view.getContext());
         messagesAdapter.setChatTextFragment(this);
         messagesAdapter.setListMessageCardMapView(listMessageCardMapView);
-        messagesAdapter.setListMessageAttractiveHowToGet(listMessageAttractiveHowToGet);
         rvListMessages.setAdapter(messagesAdapter); // Adaptamos el Recicle View a al adaptador que contendran los mensajes.
 
         dialogflowClass = new DialogflowClass(view.getContext(), listMessagesText, rvListMessages, messagesAdapter, txtMessageUserSend);
@@ -201,11 +217,6 @@ public class ChatTextFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.navChatbotDeleteMessages:
                 openDialogDeleteMessages();
-
-                rvListMessages.removeAllViewsInLayout();
-                messagesAdapter.notifyDataSetChanged();
-                DeleteListMessageFromSharedPreferences(view.getContext());
-                dialogflowClass.setListMessagesText(new ArrayList<TextMessageModel>());
                 return true;
 
             case R.id.navChatbotChangeCharacter:
@@ -272,7 +283,7 @@ public class ChatTextFragment extends Fragment {
             dialogflowClass.addMessagesAdapter(dialogflowClass.getListMessagesText());
         }
 
-        GiveWelcomeMessage(); // Verificamos si la lista esta vacia para dar la bienvenida al usuario.
+        GiveWelcomeMessage(); // Para evitar que de la bienvenida al usuario cuando este escrito algo.
     }
 
     // Método para actualizar la lista de mensajes del Shared Preferences.
@@ -280,14 +291,6 @@ public class ChatTextFragment extends Fragment {
         // Para guardar la lista de mensajes en el Shared Preferences.
         SaveListMessageClass saveListMessageClass = new SaveListMessageClass(dialogflowClass.getListMessagesText(), view.getContext());
         saveListMessageClass.SaveListMessage();
-
-        GiveWelcomeMessage(); // Verificamos si la lista esta vacia para dar la bienvenida al usuario.
-    }
-
-    // Método para eliminar la lista de mensajes del Shared Preferences.
-    private void DeleteListMessageFromSharedPreferences(Context context) {
-        SaveListMessageClass saveListMessageClass = new SaveListMessageClass(context);
-        saveListMessageClass.DeleteListMessages();
     }
 
     // Método para obtener el usuario Logeado de la aplicación.
@@ -401,19 +404,16 @@ public class ChatTextFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        ReadListMessageFromSharedPreferences(); // Leer lista de mensajes.
         if(listMessageCardMapView !=null){
             for (MessageCardMapListItemView view : listMessageCardMapView) {
                 view.mapViewOnResume();
             }
         }
-
-        if(listMessageAttractiveHowToGet != null){
-            for (MessageMapAttractiveHowToGet view : listMessageAttractiveHowToGet) {
-                view.mapViewOnResume();
-            }
+        if(isMessageToSend){
+            getDialogflowClass().CreateMessage(messageToSend);
+            isMessageToSend = false;
         }
-
-        ReadListMessageFromSharedPreferences(); // Leer lista de mensajes.
     }
 
     @Override
@@ -421,12 +421,6 @@ public class ChatTextFragment extends Fragment {
         super.onSaveInstanceState(outState);
         if(listMessageCardMapView != null){
             for (MessageCardMapListItemView view : listMessageCardMapView) {
-                view.mapViewOnSaveInstanceState(outState);
-            }
-        }
-
-        if(listMessageAttractiveHowToGet != null){
-            for (MessageMapAttractiveHowToGet view : listMessageAttractiveHowToGet) {
                 view.mapViewOnSaveInstanceState(outState);
             }
         }
@@ -440,13 +434,6 @@ public class ChatTextFragment extends Fragment {
                 view.mapViewOnPause();
             }
         }
-
-        if(listMessageAttractiveHowToGet != null){
-            for (MessageMapAttractiveHowToGet view : listMessageAttractiveHowToGet) {
-                view.mapViewOnPause();
-            }
-        }
-
         UpdateListMessageFromSharedPreferences(); // Modificamos la lista de mensajes.
     }
 
@@ -468,12 +455,6 @@ public class ChatTextFragment extends Fragment {
                 view.mapViewOnLowMemory();
             }
         }
-
-        if(listMessageAttractiveHowToGet != null){
-            for (MessageMapAttractiveHowToGet view : listMessageAttractiveHowToGet) {
-                view.mapViewOnLowMemory();
-            }
-        }
     }
 
     @Override
@@ -484,15 +465,6 @@ public class ChatTextFragment extends Fragment {
                 view.mapViewOnDestroy();
             }
         }
-
-        if(listMessageAttractiveHowToGet != null){
-            for (MessageMapAttractiveHowToGet view : listMessageAttractiveHowToGet) {
-                view.mapViewOnDestroy();
-            }
-        }
-
         getActivity().unregisterReceiver(networkReceiverClass); // Para destruir la comunicacion cuando se cierra la actividad.
-
-        dialogflowClass.onDestroyToSpeech(); // Para destruir el Text To Speech cuando se cierra la actividad.
     }
 }

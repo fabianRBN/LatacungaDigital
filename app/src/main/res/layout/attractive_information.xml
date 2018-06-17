@@ -17,13 +17,11 @@
 
         <TextView
             android:id="@+id/txtTitlePlacesInformation"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
+            android:padding="5dp"
+            android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <android.support.v4.view.ViewPager
@@ -31,29 +29,66 @@
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:layout_below="@+id/txtTitlePlacesInformation"
-            android:scaleType="centerCrop">
+            android:scaleType="centerCrop"/>
 
-        </android.support.v4.view.ViewPager>
+        <me.relex.circleindicator.CircleIndicator
+            android:id="@+id/ciViewPagerImages"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_above="@+id/linearLayoutExpand"/>
 
-        <TextView
-            android:id="@+id/txtCategoryPlacesInformation"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/linearLayoutExpand"
             android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:layout_below="@+id/vpPlacesInformation"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txtDescriptionPlacesInformation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtCategoryPlacesInformation"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp" />
+            <com.github.florent37.expansionpanel.ExpansionHeader
+                android:id="@+id/expansionHeaderLayout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                app:expansion_headerIndicator="@id/headerIndicator"
+                app:expansion_layout="@id/expansionLayout"
+                app:expansion_toggleOnClick="true">
+
+                <TextView
+                    android:id="@+id/txtMoreInformation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_below="@+id/vpPlacesInformation"
+                    android:padding="10dp" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:adjustViewBounds="true"
+                    android:id="@+id/headerIndicator"
+                    android:layout_gravity="top|right"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="38dp"
+                    android:layout_width="wrap_content"
+                    android:tint="@color/black"
+                    app:srcCompat="@drawable/ic_expansion_header_indicator_grey_24dp" />
+
+            </com.github.florent37.expansionpanel.ExpansionHeader>
+
+            <com.github.florent37.expansionpanel.ExpansionLayout
+                android:id="@+id/expansionLayout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
+
+                <TextView
+                    android:id="@+id/txtInformationAttractive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/divider_line"
+                    android:padding="10dp" />
+
+            </com.github.florent37.expansionpanel.ExpansionLayout>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

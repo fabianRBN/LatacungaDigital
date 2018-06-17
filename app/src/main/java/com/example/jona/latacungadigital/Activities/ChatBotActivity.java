@@ -10,7 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.DialogAppFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
+import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
+
+import java.util.ArrayList;
 
 public class ChatBotActivity extends AppCompatActivity implements ChatTextFragment.OnFragmentInteractionListener, MapaFragment.OnFragmentInteractionListener,
         DialogAppFragment.NoticeDialogListener {
@@ -21,13 +24,12 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_bot);
-
+        chatFragment = new ChatTextFragment();
         ChatTextFragment(); // Inicializamos la actividad con el fragmento que tiene para interactuar con el chatbot.
     }
 
     // Métodos para abrir el fragmento del chatbot.
     private void ChatTextFragment() {
-        chatFragment = new ChatTextFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.chatScreen, chatFragment);
 
@@ -39,10 +41,16 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
     public void changeFragmente(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.animation_slide_in_down,R.anim.animation_fade_out,R.anim.animation_fade_in,R.anim.animation_slide_out_down);
-        transaction.add(R.id.chatScreen, fragment);
+        transaction.replace(R.id.chatScreen, fragment);
         transaction.addToBackStack(null);
         // Commit a la transacción
         transaction.commit();
+    }
+
+    public void changeFragmentToChatbotAndSendMessage(String message) {
+        chatFragment.setMessageToSend(message);
+        chatFragment.setIsMessageToSend(true);
+        getSupportFragmentManager().popBackStack();
     }
 
     @Override
@@ -66,9 +74,15 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
 
     @Override
     public void onDialogConfirmClick(DialogFragment dialog) {
+        // Para eliminar los mensajes del Chat Bot.
+        chatFragment.getDialogflowClass().getRvListMessages().removeAllViewsInLayout();
+        chatFragment.getDialogflowClass().getMessagesAdapter().notifyDataSetChanged();
+        chatFragment.getDialogflowClass().setListMessagesText(new ArrayList<TextMessageModel>());
+        chatFragment.getDialogflowClass().addMessagesAdapter(new ArrayList<TextMessageModel>());
     }
 
     @Override
     public void onDialogCancelClick(DialogFragment dialog) {
+        dialog.getDialog().cancel();
     }
 }
