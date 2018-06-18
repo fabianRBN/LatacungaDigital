@@ -55,8 +55,6 @@ public class AtractivoActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseDatabase mFirebaseInstance;
 
-
-    public AtractivoModel atractivoModel;
     private static ArrayList<String> listaImagenes = new ArrayList<String>();
 
     AppBarLayout Appbar;
@@ -68,9 +66,6 @@ public class AtractivoActivity extends AppCompatActivity {
     private TextView txt_nombre_usuario, txt_comentario, txt_fecha;
     private ImageView imageView_usuario;
     private EditText edit_comentario;
-
-    private boolean atractivoComentado = false;
-
     private RatingBar mBar,mBar2, mBarTotal;
 
     private double valor_ratinf_bar = 0;

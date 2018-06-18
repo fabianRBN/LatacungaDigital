@@ -20,12 +20,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.AtractivoActivity;
-import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.R;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,13 +34,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Random;
-
 public class AtractivoService extends Service {
 
     GeoFire geoFire;
+    // Referencia para el usuario (cliente)
     private DatabaseReference mDatabase;
-
+    // REferencia para atractivos
+    private DatabaseReference mDatabaseAtractivo;
+    // Localizacion del usuario en listener
     private LocationListener listener;
     private LocationManager locationManager;
     private FirebaseUser userFirebase = FirebaseAuth.getInstance().getCurrentUser();
@@ -51,6 +52,7 @@ public class AtractivoService extends Service {
 
 
     private NotificationManager notificationManager;
+    // Identificador de notificacion
     private static  final int ID_NOTIFICATION =1234;
 
     public AtractivoService() {
@@ -64,42 +66,14 @@ public class AtractivoService extends Service {
 
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
+        // seguimiento de la ubicacion del cliente por medio del locationlistener
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 geoFire.setLocation("GeoFire",new GeoLocation(location.getLatitude(), location.getLongitude()));
-
-                GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(-0.837691,-78.6700539), 0.5f);
-                geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-                    @Override
-                    public void onKeyEntered(String key, GeoLocation location) {
-                        Toast.makeText(getApplicationContext(),"Servicio eter",Toast.LENGTH_SHORT).show();
-
-                        sendNotification("Alerta", String.format("Entraste en un área Peligrosa"));
-
-                    }
-
-                    @Override
-                    public void onKeyExited(String key) {
-
-
-                    }
-
-                    @Override
-                    public void onKeyMoved(String key, GeoLocation location) {
-                        Log.d("Alerta", String.format(" moved within the dangerous area "));
-                    }
-
-                    @Override
-                    public void onGeoQueryReady() {
-
-                    }
-
-                    @Override
-                    public void onGeoQueryError(DatabaseError error) {
-                        Log.e("ERROR", ""+error);
-                    }
-                });
+                // Carga de atractivos, cada uno posee un geofire listener
+                // Nota: no sobrecargar el servicio y tener encuenta  los tiempos y recursos de consumo
+                listaAtractivos();
 
             }
 
@@ -120,11 +94,14 @@ public class AtractivoService extends Service {
                 startActivity(i);
             }
         };
+
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         //noinspection MissingPermission
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,MIN_TIEMPO_ENTRE_UPDATES,MIN_CAMBIO_DISTANCIA_PARA_UPDATES,listener);
 
+        // Referencia de firebase
         mDatabase = FirebaseDatabase.getInstance().getReference("cliente").child(userFirebase.getUid());
+        mDatabaseAtractivo = FirebaseDatabase.getInstance().getReference("atractivo");
         geoFire = new GeoFire(mDatabase);
 
 
@@ -137,30 +114,6 @@ public class AtractivoService extends Service {
         Toast.makeText(this,"Servicio iniciado",Toast.LENGTH_SHORT).show();
 
 
-
-
-
-        /*mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot child: dataSnapshot.getChildren()){
-                    double latitud = (double) child.child("l").child("0").getValue();
-                    double longitud = (double) child.child("l").child("1").getValue();
-                    System.out.print("Valores:"+latitud+" "+longitud);
-                    Toast.makeText(getApplicationContext(),"Valores:"+latitud+" "+longitud,Toast.LENGTH_SHORT).show();
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-
-
-
-
         return START_STICKY;
     }
 
@@ -168,11 +121,12 @@ public class AtractivoService extends Service {
     public void onDestroy() {
         Toast.makeText(this,"Servicio terminado",Toast.LENGTH_SHORT).show();
         super.onDestroy();
-
+        //  evita que se creen varios resgistros de location listener al terminar destruir el servicio
         if(locationManager!=null){
             locationManager.removeUpdates(listener);
         }
         notificationManager.cancel(ID_NOTIFICATION);
+
 
     }
 
@@ -183,23 +137,55 @@ public class AtractivoService extends Service {
         throw new UnsupportedOperationException("No yet ");
     }
 
-    private void sendNotification(String title, String content) {
+    // Metodo para realizar la carga de atractivos
+    public void listaAtractivos(){
+        mDatabaseAtractivo.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                    for(DataSnapshot child: dataSnapshot.getChildren()){
+                        if(child.getValue() != null) { // Validacion para verificar si existe informacion en el child
+                            double latitud = (double) child.child("posicion").child("lat").getValue();
+                            double longitud = (double) child.child("posicion").child("lng").getValue();
+                            String nombreAtractivo = child.child("nombre").getValue().toString();
+                            String key = child.getKey().toString();
+                            geofireAtractivo((new LatLng(latitud, longitud)), nombreAtractivo, key);// Metodo que agrega geofire listener a cada atractivo
+
+                        }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void sendNotification(String title, String content, String key) {
+        // Crea una isntancia del systema principal de notificaciones
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // Validacion de la vercion de SDK   versiones sueriores a 7v requieren la declaracion de un channel
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            // Creaccion de channel
             NotificationChannel channel = new NotificationChannel("default",
                     "LATACUNGA_CHANNEL",
                     NotificationManager.IMPORTANCE_DEFAULT);
             channel.setDescription("LATACUNGA_NOTIFICATION_CHANNEL");
             mNotificationManager.createNotificationChannel(channel);
         }
+        // Creacion de la notificacion
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "default")
                 .setSmallIcon(R.mipmap.ic_launcher) // notification icon
-                .setContentTitle("Titulo") // title for notification
+                .setContentTitle("Atractivo encontrado") // title for notification
                 .setContentText(content)// message for notification
                 .setAutoCancel(true); // clear notification after click
-        Intent intent2 = new Intent(getApplicationContext(), AtractivoActivity.class);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent(getApplicationContext(), AtractivoActivity.class);
+        intent.putExtra("atractivoKey", key);
+        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pi);
         mNotificationManager.notify(0, mBuilder.build());
 
@@ -207,17 +193,17 @@ public class AtractivoService extends Service {
 
     }
 
-    public void geofireAtractivo(Location location){
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.getLatitude(), location.getLongitude()), 0.1f);
+    public void geofireAtractivo(LatLng location , final String nombreAtractivo, final String keyAtractivo){
+        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), 0.5f);
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                sendNotification("Alerta", String.format("Entraste en un área Peligrosa"));
+                sendNotification("Alerta", String.format("Te encuantras en el atractivo:" + nombreAtractivo+"."),keyAtractivo);
             }
 
             @Override
             public void onKeyExited(String key) {
-                sendNotification("Alerta", String.format(" Esta cerca un área Peligrosa"));
+                sendNotification("Alerta", String.format(" Esta cerca del atractivo "+nombreAtractivo),keyAtractivo);
 
             }
 

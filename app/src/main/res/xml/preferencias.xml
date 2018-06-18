@@ -18,6 +18,16 @@
             >
         </CheckBoxPreference>
 
+        <ListPreference
+            android:key="tiempoNotificacion"
+            android:title="Frecuencia de uso del gps"
+            android:summary="El uso de gps permite detectar la poscion del usuario y calcular buscar atractivos cercanos al mismo."
+            android:dialogTitle="Frecuencia de uso del gps"
+            android:entries="@array/tiempoNotificacion"
+            android:entryValues="@array/valortiempoNotificacion"
+            >
+        </ListPreference>
+
 
     </PreferenceCategory>
 
@@ -25,9 +35,9 @@
 
         <ListPreference
             android:key="opcion2"
-            android:title="Medio de transporte"
+            android:title="Modos de viaje"
             android:summary="Determina el medio de transporque en el cual viajas, esto servira para calcular la trayectoria al atractivo"
-            android:dialogTitle="Indica medio de Transporte"
+            android:dialogTitle="Indica el modo de viaje"
             android:entries="@array/transportes"
             android:entryValues="@array/codigoTransporte"
             >
