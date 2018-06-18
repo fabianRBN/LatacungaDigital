@@ -67,8 +67,8 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
     // Instanciar y dar valores a los componetes de la vista
     private void setView(Context context){
         View view = LayoutInflater.from(context).inflate(R.layout.message_cv_map, this);
-        txtTitle = (TextView) view.findViewById(R.id.txtTitle);
-        mapView = (MapView) view.findViewById(R.id.mapView);
+        txtTitle = view.findViewById(R.id.txtTitle);
+        mapView = view.findViewById(R.id.mapView);
         this.context = context;
     }
 
@@ -84,7 +84,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                 case "consultarRecreacionDiversionEsparcimientoEnElArea":
                     listService = message.getListService();
                     break;
-                case "churchShowLocationAction":
+                case "church_information_intent.church_information_intent-yes":
                     attractive = message.getAttractive();
                     destinationLatLng = new LatLng(attractive.getLatitude(), attractive.getLongitude());
                     break;
@@ -224,7 +224,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                     createMarkerForService(listService.get(cont));
                 }
                 break;
-            case "churchShowLocationAction":
+            case "church_information_intent.church_information_intent-yes":
             case "hotel_information_intent.hotel_information_intent-yes":
                 if(attractive != null){
                     // Crear marcador para la posicion del atractivo de destino
@@ -265,7 +265,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                 case "consultarRecreacionDiversionEsparcimientoEnElArea":
                     mapaFragment.setListService(listService);
                     break;
-                case "churchShowLocationAction":
+                case "church_information_intent.church_information_intent-yes":
                 case "hotel_information_intent.hotel_information_intent-yes":
                     mapaFragment.setPointDestination(destinationLatLng);
                     mapaFragment.setAttractive(this.attractive);

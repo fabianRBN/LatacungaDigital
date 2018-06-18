@@ -170,7 +170,7 @@ public class DialogflowClass {
                     });
                     break;
                 case "churchInformationAction":
-                    CardDialogflow(new AttractiveClass(), result);
+                    sendAttractiveToCardViewInformation(result);
                     break;
                 case "hotelInformationAction":
                     sendServiceToDatailServiceMessage(result, true);
@@ -179,7 +179,7 @@ public class DialogflowClass {
                 case "hotel_information_intent.hotel_information_intent-yes":
                     sendServiceToMapMessage(result);
                     break;
-                case "churchShowLocationAction":
+                case "church_information_intent.church_information_intent-yes":
                     sendAttractiveToMapMessage(result);
                     break;
                 case "consultarAtractivoEnElArea":
@@ -233,22 +233,27 @@ public class DialogflowClass {
     }
 
     // Método para enviar la respuesta de la informacion de los atractivos turisticos al usuario.
-    private void CardDialogflow(AttractiveClass attractiveModel, Result result) {
+    private void sendAttractiveToCardViewInformation(Result result) {
         TextMessageModel textMessageModel = new TextMessageModel();
-        attractiveModel.readJSONDialogflow(result);
+        AttractiveClass attractiveClass = new AttractiveClass();
+        attractiveClass.readJSONDialogflow(result);
 
-        if (attractiveModel.getState()) { // Para saber si el JSON no esta vacio.
+        if (attractiveClass.getState()) { // Para saber si el JSON no esta vacio.
+            // Para decir al usuario que se encontro la información dicha por el.
+            MessageSendToDialogflow(result.getFulfillment().getSpeech().split("\\. ")[0]);
+
             // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
             textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT);
-            textMessageModel.setNameAttractive(attractiveModel.getNameAttractive());
-            textMessageModel.setCategoryAttactive(attractiveModel.getCategory());
-            textMessageModel.setDescriptionAttractive(attractiveModel.getDescription());
-            textMessageModel.setListImagesURL(attractiveModel.getListImages());
+            textMessageModel.setNameAttractive(attractiveClass.getNameAttractive());
+            textMessageModel.setCategoryAttactive(attractiveClass.getCategory());
+            textMessageModel.setDescriptionAttractive(attractiveClass.getDescription());
+            textMessageModel.setListImagesURL(attractiveClass.getListImages());
             textMessageModel.setAction(result.getAction());
             listMessagesText.add(textMessageModel);
             addMessagesAdapter(listMessagesText);
 
-            MessageSendToDialogflow(result.getFulfillment().getSpeech()); // Para preguntar si quiere ver la ubicacion del atractivo.
+            // Para preguntar sobre si desea visitar la ruta.
+            MessageSendToDialogflow(result.getFulfillment().getSpeech().split("\\. ")[1]);
         } else { // Si el JSON esta vacio enviamos la respuesta por defecto de Dialogflow.
             String speech = result.getFulfillment().getSpeech();
             MessageSendToDialogflow(speech);

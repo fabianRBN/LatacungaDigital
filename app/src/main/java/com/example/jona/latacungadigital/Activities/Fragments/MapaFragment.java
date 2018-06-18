@@ -533,7 +533,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     }
                     googleMap.setOnMarkerClickListener(new OnMarkerClickListenerAdapter(getContext(),googleMap));
                     break;
-                case "churchShowLocationAction":
+                case "church_information_intent.church_information_intent-yes":
                 case "hotel_information_intent.hotel_information_intent-yes":
                     // Crear el marcador del punto Destino
                     if(attractive != null){
