@@ -151,7 +151,6 @@ public class ChatTextFragment extends Fragment {
                     GiveWelcomeMessage();
                 } else { // Caso contrario es un mensaje de voz.
                     startSpeech();
-                    GiveWelcomeMessage();
                 }
 
             }
@@ -205,6 +204,7 @@ public class ChatTextFragment extends Fragment {
                     dialogflowClass.setTextToSpeech(true);
                 } else {
                     dialogflowClass.setTextToSpeech(false);
+                    dialogflowClass.getStreamPlayerClass().interrupt(); // Para interrumpir si esque el usuario desactiva la Opción de Voz.
                 }
             }
         });
@@ -434,6 +434,7 @@ public class ChatTextFragment extends Fragment {
                 view.mapViewOnPause();
             }
         }
+        dialogflowClass.getStreamPlayerClass().interrupt(); // Para interrumpir si esque el usuario se sale del ChatBot.
         UpdateListMessageFromSharedPreferences(); // Modificamos la lista de mensajes.
     }
 
@@ -465,6 +466,7 @@ public class ChatTextFragment extends Fragment {
                 view.mapViewOnDestroy();
             }
         }
+        dialogflowClass.getStreamPlayerClass().interrupt(); // Para interrumpir si esque el usuario se sale del ChatBot.
         getActivity().unregisterReceiver(networkReceiverClass); // Para destruir la comunicacion cuando se cierra la actividad.
     }
 }
