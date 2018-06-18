@@ -37,6 +37,7 @@ public class DialogflowClass {
 
     // Declaración de variables para hacer hablar al Chat Bot.
     private TextToSpeech toSpeechChatBot;
+    private StreamPlayerClass streamPlayerClass;
 
     // Declaración de variables para inicializar este modelo.
     private Context context;
@@ -55,6 +56,7 @@ public class DialogflowClass {
         this.messagesAdapter = messagesAdapter;
         this.txtMessageUserSend = txtMessageUserSend;
         accesoInternet = new AccesoInternet();
+        streamPlayerClass = new StreamPlayerClass();
     }
 
     // Getters and Setters
@@ -69,6 +71,8 @@ public class DialogflowClass {
     public RecyclerView getRvListMessages() {return rvListMessages; }
 
     public MessagesAdapter getMessagesAdapter() { return messagesAdapter; }
+
+    public StreamPlayerClass getStreamPlayerClass() { return streamPlayerClass; }
 
     // Metodo de configuración para conectarse con Dialogflow.
     public void ConfigurationDialogflow() {
@@ -173,8 +177,7 @@ public class DialogflowClass {
                     sendAttractiveToCardViewInformation(result);
                     break;
                 case "hotelInformationAction":
-                    sendServiceToDatailServiceMessage(result, true);
-                    MessageSendToDialogflow(result.getFulfillment().getSpeech().split("\\. ")[1]);
+                    sendServiceToDatailServiceMessage(result);
                     break;
                 case "hotel_information_intent.hotel_information_intent-yes":
                     sendServiceToMapMessage(result);
@@ -261,9 +264,9 @@ public class DialogflowClass {
     }
 
     // Método para enviar la respuesta de la informacion del servicio al usuario.
-    private void sendServiceToDatailServiceMessage(Result result, boolean splitSpeech) {
+    private void sendServiceToDatailServiceMessage(Result result) {
         Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
-        ArrayList<ServiceClass> listService =  new ArrayList<ServiceClass>(); // Lista de servicios
+        ArrayList<ServiceClass> listService =  new ArrayList<>(); // Lista de servicios
         TextMessageModel textMessageModel = new TextMessageModel();
         // Recorremos el resultado obtenido de dialogflow
         Set mapDialogFlowResult = JSONDialogflowResult.entrySet();
@@ -282,30 +285,34 @@ public class DialogflowClass {
                 Log.e("ERROR DE LECTURA JSON","Error al transformar Json a ServiceClass");
             }
         }
-        // Enviamos la respuesta obtenida de Dialogflow
-        String speech;
-        if(splitSpeech){
-            speech = result.getFulfillment().getSpeech().split("\\. ")[0];
-        }else {
-            speech = result.getFulfillment().getSpeech();
-        }
-        MessageSendToDialogflow(speech);
+
         if(!listService.isEmpty()){ // Si la lista no esta vacia se envia el tipo de mensaje designado
+            // Para decir al usuario que se encontro la información dicha por el.
+            MessageSendToDialogflow(result.getFulfillment().getSpeech().split("\\. ")[0]);
+
             // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
             textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_DETAIL_SERVICE);
             textMessageModel.setService(listService.get(0));
             textMessageModel.setAction(result.getAction());
             listMessagesText.add(textMessageModel);
             addMessagesAdapter(listMessagesText);
+
+            // Para preguntar sobre si desea visitar la ruta.
+            MessageSendToDialogflow(result.getFulfillment().getSpeech().split("\\. ")[1]);
+        } else {
+            MessageSendToDialogflow(result.getFulfillment().getSpeech()); // Si esque no encontro nada relacionado a lo que escribio el usuario.
         }
     }
 
-    // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa
+    // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa.
     private void sendAttractiveToMapMessage(Result result) {
         AttractiveClass attractive = new AttractiveClass();
         TextMessageModel textMessageModel = new TextMessageModel();
         attractive.readJSONDialogflow(result); // Asignamos los valores del Json al objeto atractivo
         if (attractive.getState()) { // Para saber si el JSON no esta vacio.
+            // Para decirle que siga la ruta.
+            MessageSendToDialogflow(result.getFulfillment().getSpeech());
+
             // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
             textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP);
             textMessageModel.setAttractive(attractive);
@@ -319,7 +326,7 @@ public class DialogflowClass {
     // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa
     private void sendServiceToMapMessage(Result result) {
         Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
-        ArrayList<ServiceClass> listService =  new ArrayList<ServiceClass>(); // Lista de servicios
+        ArrayList<ServiceClass> listService =  new ArrayList<>(); // Lista de servicios
         TextMessageModel textMessageModel = new TextMessageModel();
         // Recorremos el resultado obtenido de dialogflow
         Set mapDialogFlowResult = JSONDialogflowResult.entrySet();
@@ -355,7 +362,7 @@ public class DialogflowClass {
     // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa
     private void sendAttractiveListToMapMessage(Result result, String titulo){
         Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
-        ArrayList<AttractiveClass> listAttractive =  new ArrayList<AttractiveClass>(); // Lista de atractivos
+        ArrayList<AttractiveClass> listAttractive =  new ArrayList<>(); // Lista de atractivos
         TextMessageModel textMessageModel = new TextMessageModel();
         // Recorremos el resultado obtenido de dialogflow
         Set mapDialogFlowResult = JSONDialogflowResult.entrySet();
@@ -391,7 +398,7 @@ public class DialogflowClass {
     // Método para enviar la respuesta del fullfiltment de Dialogflow en mensaje del tipo Mapa
     private void sendServicesListToMapMessage(Result result, String titulo){
         Map<String, JsonElement> JSONDialogflowResult = result.getFulfillment().getData(); // Obtenemos el nodo Data del Json
-        ArrayList<ServiceClass> listService =  new ArrayList<ServiceClass>(); // Lista de servicios
+        ArrayList<ServiceClass> listService =  new ArrayList<>(); // Lista de servicios
         TextMessageModel textMessageModel = new TextMessageModel();
         // Recorremos el resultado obtenido de dialogflow
         Set mapDialogFlowResult = JSONDialogflowResult.entrySet();
@@ -435,17 +442,25 @@ public class DialogflowClass {
     }
 
     // Método para hacer hablar al Chat Bot.
+    @SuppressLint("StaticFieldLeak")
     private void TextToSpeechChatBot(final String message) {
-        Thread threadSpeakChatBot = new Thread(new Runnable() {
+
+        new AsyncTask<String, Void, Boolean>() {
+
             @Override
-            public void run() {
-                toSpeechChatBot = new TextToSpeech();
-                toSpeechChatBot.setUsernameAndPassword(ChatBotReferences.USERNAME_API_WATSON, ChatBotReferences.PASSWORD_API_WATSON);
-                toSpeechChatBot.setEndPoint(ChatBotReferences.END_POINT_API_WATSON);
-                StreamPlayerClass streamPlayerClass = new StreamPlayerClass();
-                streamPlayerClass.playStream(toSpeechChatBot.synthesize(message, Voice.ES_ENRIQUE).execute());
+            protected Boolean doInBackground(String... strings) {
+                try {
+                    toSpeechChatBot = new TextToSpeech();
+                    toSpeechChatBot.setUsernameAndPassword(ChatBotReferences.USERNAME_API_WATSON, ChatBotReferences.PASSWORD_API_WATSON);
+                    toSpeechChatBot.setEndPoint(ChatBotReferences.END_POINT_API_WATSON);
+                    streamPlayerClass.playStream(toSpeechChatBot.synthesize(message, Voice.ES_ENRIQUE).execute());
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    this.cancel(true);
+                }
+                return false;
             }
-        });
-        threadSpeakChatBot.start();
+        }.execute(message);
     }
 }
