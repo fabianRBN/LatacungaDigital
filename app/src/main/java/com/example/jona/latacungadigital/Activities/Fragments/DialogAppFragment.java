@@ -3,15 +3,25 @@ package com.example.jona.latacungadigital.Activities.Fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
+import android.view.LayoutInflater;
+import android.view.View;
 
+import com.example.jona.latacungadigital.Activities.Adapters.CharacterAdapter;
+import com.example.jona.latacungadigital.Activities.Clases.CharacterClass;
 import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
+import com.example.jona.latacungadigital.Activities.modelos.CharacterModel;
 import com.example.jona.latacungadigital.R;
+
+import java.util.List;
 
 public class DialogAppFragment extends DialogFragment {
 
@@ -29,6 +39,12 @@ public class DialogAppFragment extends DialogFragment {
 
     private static final int DIALOG_SIGN_OFF = 1; // Para saber que tipo de Dialogo es.
 
+    private CharacterAdapter characterAdapter;
+
+    public DialogAppFragment() {} // Constructor.
+
+    public CharacterAdapter getCharacterAdapter() { return characterAdapter; }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -36,31 +52,55 @@ public class DialogAppFragment extends DialogFragment {
         // Se crea el diálogo y se configura los manejadores de clic del botón.
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        String titleDialog = "", bodyDialog = ""; // Variables para almacenar el titulo y el mensaje del dialogo.
         int typeDialog = 0; // Variable para controlar que tipo de Dialogo es.
-        int drawableIcon = 0; // Variable para establecer el icono del titulo del dialogo.
 
         if (getArguments() != null) {
             typeDialog = getArguments().getInt("Type_Dialog");
         }
 
+        // Se le añaden el icono, titulo y el mensaje que va a tener el dialogo segun sea el Dialogo.
         switch (typeDialog) {
             case DIALOG_SIGN_OFF:
-                drawableIcon = R.drawable.ic_exit_to_app;
-                titleDialog = "Cerrar Sesión";
-                bodyDialog = "¿Desea cerrar la sesión?";
+                builder.setIcon(R.drawable.ic_exit_to_app);
+                builder.setTitle("Cerrar Sesión");
+                builder.setMessage("¿Desea cerrar la sesión?");
                 break;
             case ChatBotReferences.DIALOG_DELETE_MESSAGE:
-                drawableIcon = R.drawable.ic_delete_messages;
-                titleDialog = "Eliminar Mensajes";
-                bodyDialog = "¿Desea eliminar los mensajes?";
+                builder.setIcon(R.drawable.ic_delete_messages);
+                builder.setTitle("Eliminar Mensajes");
+                builder.setMessage("¿Desea eliminar los mensajes?");
                 break;
-        }
+             case ChatBotReferences.DIALOG_CHANGE_CHARACTER:
+                 LayoutInflater inflater = getActivity().getLayoutInflater();
+                 View view = inflater.inflate(R.layout.character_recycle_view, null);
 
-        // Se le añaden el icono, titulo y el mensaje que va a tener el dialogo.
-        builder.setIcon(drawableIcon);
-        builder.setTitle(titleDialog);
-        builder.setMessage(bodyDialog);
+                 final RecyclerView rvListCharacters = view.findViewById(R.id.rvListCharacters);
+                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                 rvListCharacters.setLayoutManager(linearLayoutManager);
+
+                 // Para añadir un linea horizontal entre los items del Recycle View.
+                 rvListCharacters.addItemDecoration(new DividerItemDecoration(getContext(), linearLayoutManager.getOrientation()));
+
+                 // Para evitar que parpadee el item del Recycle View.
+                 RecyclerView.ItemAnimator animator = rvListCharacters.getItemAnimator();
+                 if (animator instanceof SimpleItemAnimator) {
+                     ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+                 }
+
+                 final CharacterClass characterClass = new CharacterClass();
+                 characterClass.getAllCharacterFromDataBase(new CharacterClass.AllCharacters() {
+                     @Override
+                     public void dataCharacters(List<CharacterModel> characterModelList) {
+                         characterAdapter = new CharacterAdapter(characterModelList);
+                         rvListCharacters.setAdapter(characterAdapter);
+                     }
+                 });
+
+                 builder.setView(view);
+                 builder.setIcon(R.drawable.ic_character_face);
+                 builder.setTitle("Cambiar Personaje");
+                 break;
+        }
 
         // Se añaden las acciones de los botones.
         builder.setPositiveButton(R.string.dialog_confirm_button, new DialogInterface.OnClickListener() {

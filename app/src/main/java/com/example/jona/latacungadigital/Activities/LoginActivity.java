@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.jona.latacungadigital.Activities.Clases.CharacterClass;
 import com.example.jona.latacungadigital.Activities.Clases.Cliente;
 import com.example.jona.latacungadigital.R;
 import com.google.android.gms.auth.api.Auth;
@@ -52,8 +53,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
-
         // Proceso para realizar el LoginIn con Google.
         GoogleSignInOptions googleSingInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))  // Para obtener un token.
@@ -90,13 +89,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     queryCliente.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                //Si encuentra regitro no hace nada mas
-                            }else {
+                            if (!dataSnapshot.exists()) {
                                 //Como no esta registrado el cliente procede al registro en firebase
                                 //idUsuario = mFirebaseDatabase.push().getKey();//genera la key unica de cada cliente
-                                Cliente cliente = new Cliente( user.getDisplayName(),user.getEmail(),user.getUid(),user.getPhotoUrl().toString()); //instancia de cliente
-                                mFirebaseDatabase.child("cliente").child(user.getUid()).setValue(cliente);//guarda la informacion en firebase
+                                CharacterClass characterClass = new CharacterClass();
+                                characterClass.getKeyLastCharacter(new CharacterClass.KeyLastChracter() {
+                                    @Override
+                                    public void keyLastCharacter(String keyCharacter) {
+                                        // Instancia de cliente.
+                                        Cliente cliente = new Cliente(user.getDisplayName(), user.getEmail(), user.getUid(), user.getPhotoUrl().toString());
+                                        cliente.setPersonajeID(keyCharacter); // Se guarda en el cliente la ultima clave del personaje
+                                        mFirebaseDatabase.child("cliente").child(user.getUid()).setValue(cliente);//guarda la informacion en firebase
+                                    }
+                                });
                             }
                         }
 
