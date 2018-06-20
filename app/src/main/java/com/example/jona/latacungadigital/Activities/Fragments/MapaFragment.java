@@ -106,10 +106,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     private static ArrayList<MarkerOptions> listaMarkadores = new ArrayList<MarkerOptions>();
     private static ArrayList<AreaPeligrosa> listaAreaPeligrosa = new ArrayList<AreaPeligrosa>();
 
-    public static ArrayList<AreaPeligrosa> getListaAreaPeligrosa() {
-        return listaAreaPeligrosa;
-    }
-
     public static void setListaAreaPeligrosa(ArrayList<AreaPeligrosa> listaAreaPeligrosa) {
         MapaFragment.listaAreaPeligrosa = listaAreaPeligrosa;
     }
@@ -402,12 +398,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             markerOptions.icon(BitmapDescriptorFactory.fromResource(attractive.getIcon()));
         }
         googleMap.addMarker(markerOptions).setTag(attractive);
-    }
-
-    //Crear un area Peligrosa en el mapa
-    private void crearAreaPeligrosa(AreaPeligrosa area){
-        //Crear una Area Peligrosa
-
     }
 
     // Crear un marcador en el mapa de acuerdo al usuario
