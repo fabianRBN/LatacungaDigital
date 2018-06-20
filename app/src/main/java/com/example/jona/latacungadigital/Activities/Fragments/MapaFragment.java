@@ -30,6 +30,7 @@ import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.Activities.Clases.AreaPeligrosa;
+import com.example.jona.latacungadigital.Activities.modelos.TrackinModel;
 import com.example.jona.latacungadigital.R;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -198,10 +199,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void displayLocation() {
-        /*if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }*/
         //Validar si la aplicacion tiene el permiso de Localizacion
         if(getActivity() != null){
             if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
@@ -309,7 +306,43 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     AreaPeligrosa areaPeligrosa = new AreaPeligrosa(nombreArea, idArea, radio, latitud, longitud);
                     System.out.println("empezo"+areaPeligrosa.getNombre());
                     listaAreaPeligrosa.add(areaPeligrosa);
+                    LatLng dangerousArea = new LatLng(areaPeligrosa.getLatitud(), areaPeligrosa.getLongitud());
+                    googleMap.addCircle(new CircleOptions()
+                            .center(dangerousArea)
+                            .radius(areaPeligrosa.getRadio())
+                            .strokeColor(Color.RED)
+                            .fillColor(0x220000FF)
+                            .strokeWidth(5.0f));
+                    //Equivalencias de distancia de GeoFire
+                    // 0.1f = 0.1km = 100m
+                    GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(dangerousArea.latitude, dangerousArea.longitude), 0.1f);
+                    geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                        @Override
+                        public void onKeyEntered(String key, GeoLocation location) {
+                            sendNotification("Alerta", String.format("Entraste en un área Peligrosa"));
+                        }
 
+                        @Override
+                        public void onKeyExited(String key) {
+                            sendNotification("Alerta", String.format(" Esta cerca un área Peligrosa"));
+
+                        }
+
+                        @Override
+                        public void onKeyMoved(String key, GeoLocation location) {
+                            Log.d("Alerta", String.format(" moved within the dangerous area "));
+                        }
+
+                        @Override
+                        public void onGeoQueryReady() {
+
+                        }
+
+                        @Override
+                        public void onGeoQueryError(DatabaseError error) {
+                            Log.e("ERROR", ""+error);
+                        }
+                    });
 
                 }
                 setListaAreaPeligrosa(listaAreaPeligrosa);
@@ -468,46 +501,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             dataFirebase(); // Agregar marcadores de atractivos
 
             //Instanciar las areas de peligro
-            for (AreaPeligrosa areaP: getListaAreaPeligrosa()) {
-                LatLng dangerousArea = new LatLng(areaP.getLatitud(), areaP.getLongitud());
-                googleMap.addCircle(new CircleOptions()
-                        .center(dangerousArea)
-                        .radius(areaP.getRadio())
-                        .strokeColor(Color.RED)
-                        .fillColor(0x220000FF)
-                        .strokeWidth(5.0f)
+            /*for (AreaPeligrosa areaP: getListaAreaPeligrosa()) {
+
                 );
-                //Equivalencias de distancia de GeoFire
-                // 0.1f = 0.1km = 100m
-                GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(dangerousArea.latitude, dangerousArea.longitude), 0.1f);
-                geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-                    @Override
-                    public void onKeyEntered(String key, GeoLocation location) {
-                        sendNotification("Alerta", String.format("Entraste en un área Peligrosa"));
-                    }
 
-                    @Override
-                    public void onKeyExited(String key) {
-                        sendNotification("Alerta", String.format(" Esta cerca un área Peligrosa"));
-
-                    }
-
-                    @Override
-                    public void onKeyMoved(String key, GeoLocation location) {
-                        Log.d("Alerta", String.format(" moved within the dangerous area "));
-                    }
-
-                    @Override
-                    public void onGeoQueryReady() {
-
-                    }
-
-                    @Override
-                    public void onGeoQueryError(DatabaseError error) {
-                        Log.e("ERROR", ""+error);
-                    }
-                });
-            }
+            }*/
         } else { // Si es una solicitud de consulta del chatbot
             switch (chatBotAction){
                 case "consultarAtractivoEnElArea":
