@@ -147,7 +147,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         mMapView.getMapAsync(this);
 
         //obtener permisos de ubicacion
-
         /*System.out.println("empezo1");
         mDatabase = FirebaseDatabase.getInstance().getReference();
         String key = mDatabase.child("areaPeligrosa").push().getKey();
