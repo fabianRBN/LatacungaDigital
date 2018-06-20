@@ -176,10 +176,10 @@ public class DialogflowClass {
                 case "churchInformationAction":
                     sendAttractiveToCardViewInformation(result);
                     break;
-                case "hotelInformationAction":
+                case "serviceInformationAction":
                     sendServiceToDatailServiceMessage(result);
                     break;
-                case "hotel_information_intent.hotel_information_intent-yes":
+                case "service_information_intent.service_information_intent-yes":
                     sendServiceToMapMessage(result);
                     break;
                 case "church_information_intent.church_information_intent-yes":

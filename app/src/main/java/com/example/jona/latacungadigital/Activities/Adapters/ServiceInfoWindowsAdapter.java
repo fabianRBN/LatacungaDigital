@@ -76,7 +76,7 @@ public class ServiceInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter, G
     public void onInfoWindowClick(Marker marker) {
         if(mapaFragment.getActivity() instanceof ChatBotActivity){
             ChatBotActivity chatBotActivity = (ChatBotActivity) mapaFragment.getActivity();
-            chatBotActivity.changeFragmentToChatbotAndSendMessage("Buscar hotel " + service.getAlias());
+            chatBotActivity.changeFragmentToChatbotAndSendMessage("Buscar " + service.getTypeOfActivity() + " " + service.getAlias());
         }
     }
 
