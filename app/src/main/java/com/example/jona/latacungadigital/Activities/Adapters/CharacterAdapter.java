@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -52,6 +53,7 @@ public class CharacterAdapter extends RecyclerView.Adapter {
         private TextView txtNameCharacter;
         private CircleImageView circleImageView;
         private RadioButton radioButton;
+        private LinearLayout linearLayout;
         private boolean isSelectedFirstTime;
 
         private CharacterHolder(View itemView, boolean isSelectedFirstTime) {
@@ -60,6 +62,7 @@ public class CharacterAdapter extends RecyclerView.Adapter {
             txtNameCharacter = itemView.findViewById(R.id.txtNameCharacter);
             circleImageView = itemView.findViewById(R.id.characterImage);
             radioButton = itemView.findViewById(R.id.radioButtonCharacters);
+            linearLayout = itemView.findViewById(R.id.linearLayoutCharacter);
             this.view = itemView;
             this.isSelectedFirstTime = isSelectedFirstTime;
         }
@@ -85,6 +88,7 @@ public class CharacterAdapter extends RecyclerView.Adapter {
             };
 
             radioButton.setOnClickListener(clickListener);
+            linearLayout.setOnClickListener(clickListener);
 
             radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
