@@ -427,7 +427,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                             Location locationA = new Location("punto A");
                             locationA.setLatitude(latitud);
                             locationA.setLongitude(longitud);
-
+                            //usuario amigo
                             Location locationB = new Location("punto B");
                             locationB.setLatitude(currentUserLatLng.latitude);
                             locationB.setLongitude(currentUserLatLng.longitude);
