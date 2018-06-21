@@ -15,7 +15,7 @@
         android:id="@+id/dot_progress_bar"
         android:layout_width="70dp"
         android:layout_height="20dp"
-        android:layout_toRightOf="@id/chatBotTypingImage"
+        android:layout_toEndOf="@id/chatBotTypingImage"
         android:layout_centerVertical="true"
         app:amount="3"
         app:duration="@android:integer/config_mediumAnimTime"
