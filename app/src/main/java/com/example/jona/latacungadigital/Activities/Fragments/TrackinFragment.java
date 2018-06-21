@@ -4,11 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 
 import com.example.jona.latacungadigital.Activities.Adapters.TrackingAdapter;
 import com.example.jona.latacungadigital.Activities.modelos.TrackinModel;
@@ -35,6 +42,7 @@ public class TrackinFragment extends Fragment {
     DatabaseReference mdatabase;
     FirebaseAuth userFirebase;
     RecyclerView recyclerView;
+    private static final ArrayList<String> listaUsuarios = new ArrayList<>();
 
     public TrackinFragment() {
         // Required empty public constructor
@@ -53,12 +61,60 @@ public class TrackinFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_trackin, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_friends);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+
         ConsultaAmigos();
+        ConsultaUsuarios();
+
+        //Autocompletar
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_dropdown_item_1line, listaUsuarios);
+        AutoCompleteTextView textView = (AutoCompleteTextView)
+                view.findViewById(R.id.tv_buscar);
+        textView.setAdapter(adapter);
+
+        //Flotante que redirige al mapa
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Se presionó el FAB", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                MapaFragment mf = new MapaFragment();
+                //fr.setArguments(bn);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_fragment, mf);
+                transaction.addToBackStack(null);
+
+                // Commit a la transacción
+                transaction.commit();
+            }
+        });
 
 
         return view;
 
 
+    }
+
+    private void ConsultaUsuarios() {
+        mdatabase = FirebaseDatabase.getInstance().getReference("cliente");
+        mdatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child: dataSnapshot.getChildren()){
+                    if (child.child("nombre").exists())
+                        listaUsuarios.add(child.child("nombre").getValue().toString());
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void ConsultaAmigos() {
@@ -81,7 +137,7 @@ public class TrackinFragment extends Fragment {
                     TrackinModel trac = new TrackinModel(nombre, email, pathimage, key, autorizacion);
                     listaAmigos.add(trac);
                 }
-                recyclerView.setAdapter(new TrackingAdapter(getContext(), listaAmigos));
+                recyclerView.setAdapter(new TrackingAdapter( listaAmigos));
             }
 
             @Override

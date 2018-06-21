@@ -18,32 +18,29 @@ import com.squareup.picasso.Picasso;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 
-public class TrackingAdapter extends RecyclerView.Adapter<TrackingAdapter.ViewHolderDatos> {
-    @NonNull
-    Context context;
-    ArrayList<TrackinModel> listaAmigos = new ArrayList<>();
-    private static LayoutInflater inflater = null;
+public class TrackingAdapter extends RecyclerView.Adapter {
 
-    public TrackingAdapter(@NonNull Context context, ArrayList<TrackinModel> listaAmigos) {
-        this.context = context;
+   private ArrayList<TrackinModel> listaAmigos;
+
+    public TrackingAdapter( ArrayList<TrackinModel> listaAmigos) {
         this.listaAmigos = listaAmigos;
     }
 
+    @NonNull
     @Override
     public TrackingAdapter.ViewHolderDatos onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tracking_item, null, false);
-        System.out.println("VHL cREO");
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tracking_item, parent, false);
         return new ViewHolderDatos(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TrackingAdapter.ViewHolderDatos holder, int position) {
-        holder.asignarDatos(listaAmigos.get(position));
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        TrackinModel trackinModel = listaAmigos.get(position);
+        ((ViewHolderDatos) holder).asignarDatos(trackinModel);
     }
 
     @Override
     public int getItemCount() {
-        System.out.println("VHLlista: "+listaAmigos.size());
         return listaAmigos.size();
     }
 
@@ -52,6 +49,7 @@ public class TrackingAdapter extends RecyclerView.Adapter<TrackingAdapter.ViewHo
         TextView tvEmail;
         ImageView ivFoto;
         Switch swEstado;
+
         public ViewHolderDatos(View itemView) {
             super(itemView);
             tvNombre = (TextView) itemView.findViewById(R.id.tv_nombre);
@@ -64,7 +62,8 @@ public class TrackingAdapter extends RecyclerView.Adapter<TrackingAdapter.ViewHo
             tvNombre.setText(trackinModel.getNombre());
             tvEmail.setText(trackinModel.getEmail());
             Picasso.get().load(trackinModel.getPathImagen()).transform(new CircleTransform()).into(ivFoto);
-            System.out.println("VHLLlego: "+trackinModel.getNombre());
+            if (trackinModel.isAutorizacion())
+                swEstado.setChecked(true);
 
         }
     }

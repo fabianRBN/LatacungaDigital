@@ -11,6 +11,7 @@ public class Cliente {
     public String pathImagen;
     private String personajeID;
 
+
     public Cliente() { }
 
     public Cliente(String nombre, String email, String idcliente, String pathImagen) {
