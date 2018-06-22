@@ -156,7 +156,7 @@ var World = {
                           console.log("Dato "+objeto.latitude);
                           console.log("Dato "+objeto.longitude);
                           console.log("Dato "+objeto.description);
-                  Menu.init(objeto);
+                  Solar.init(objeto);
 	},
 
 	// screen was clicked but no geo-object was hit
