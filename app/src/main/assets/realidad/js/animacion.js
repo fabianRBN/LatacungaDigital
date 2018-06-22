@@ -1,89 +1,74 @@
-var Solar = {
-    planetsInfo: null,
+var Menu = {
+    objetosInfo: null,
     marcadorseleccionado: null,
     init: function(marcador) {
 
         var distanceFactor = 580.2;
 
-        /* null means: use relative to user, sun is NORTH to the user */
-        var locationSun = new AR.RelativeLocation(null, 25000, 0, 5000);
+        /* null means: use relative to user, Eje is NORTH to the user */
+        var locationEje = new AR.RelativeLocation(null, 25000, 0, 5000);
 
         /* sizes & distances are far away from real values! used these scalings to be able to show within user range */
         var sizeFactor = 0.5;
-        var sizeEarth = 12.8 * 25;
+        var sizeEscala = 12.8 * 25;
 
-        /* every object in space has a name, location and a circle (drawable) */
-        var sunImg = new AR.ImageResource("assets/agente.jpg");
-        var mercuryImg = new AR.ImageResource("assets/label.png");
-        var venusImg = new AR.ImageResource("assets/label.png");
-        var earthImg = new AR.ImageResource("assets/label.png");
-        var marsImg = new AR.ImageResource("assets/label.png");
+        /* every object has a name, location and a circle (drawable) */
+        var ejeImg = new AR.ImageResource("assets/agente.jpg");
+        var objeto1Img = new AR.ImageResource("assets/label.png");
+        var objeto2Img= new AR.ImageResource("assets/label.png");
+        var objeto3Img= new AR.ImageResource("assets/label.png");
+        var objeto4Img = new AR.ImageResource("assets/label.png");
         var indicatorImg = new AR.ImageResource("assets/indi.png");
 
-        var sunSize = (((109 * sizeEarth) / sizeEarth) * 0.3) * sizeFactor;
-        var mercurySize = (10 * sizeEarth / sizeEarth) * sizeFactor;
-        var venusSize = (10* sizeEarth / sizeEarth) * sizeFactor;
-        var earthSize = (10* sizeEarth / sizeEarth) * sizeFactor;
-        var marsSize = (10 * sizeEarth / sizeEarth) * sizeFactor;
+        var ejeSize = (((109 * sizeEscala) / sizeEscala) * 0.3) * sizeFactor;
+        var objeto1Size = (10 * sizeEscala / sizeEscala) * sizeFactor;
+        var objeto2Size = (10* sizeEscala / sizeEscala) * sizeFactor;
+        var objeto3Size = (10* sizeEscala / sizeEscala) * sizeFactor;
+        var objeto4Size = (10 * sizeEscala / sizeEscala) * sizeFactor;
 
         var parque = {
             name: "Parque",
             distance: 0,
-            location: locationSun,
-            imgDrawable: new AR.ImageDrawable(sunImg, sunSize),
-            size: sunSize,
-            description: "The Sun is the star at the center of the Solar System. It is almost perfectly spherical and consists of hot plasma interwoven with magnetic fields.",
-            mass: "2&nbsp;10<sup>30</sup>&nbsp;kg",
-            diameter: "1,392,684&nbsp;km"
+            location: locationEje,
+            imgDrawable: new AR.ImageDrawable(ejeImg, ejeSize),
+            size: ejeSize
         };
 
-        var mercury = {
+        var objeto1 = {
             name: "DATO 1",
             distance: 7 * distanceFactor,
-            location: new AR.RelativeLocation(locationSun, 0, -7 * distanceFactor , 2000),
-            imgDrawable: new AR.ImageDrawable(mercuryImg, mercurySize),
-            size: mercurySize,
-            description: "Is the innermost planet in the Solar System. It is also the smallest, and its orbit is the most eccentric (that is, the least perfectly circular).",
-            mass: "3.3&nbsp;10<sup>23</sup>&nbsp;kg",
-            diameter: "4,880&nbsp;km"
+            location: new AR.RelativeLocation(locationEje, 0, -7 * distanceFactor , 2000),
+            imgDrawable: new AR.ImageDrawable(objeto1Img, objeto1Size),
+            size: objeto1Size
         };
 
-        var venus = {
+        var objeto2 = {
             name: "DATO 2",
             distance: 8 * distanceFactor,
-            location: new AR.RelativeLocation(locationSun, 0, 8 * distanceFactor, 0),
-            imgDrawable: new AR.ImageDrawable(venusImg, venusSize),
-            size: venusSize,
-            description: "Is named after the Roman goddess of love and beauty. After the Moon, it is the brightest natural object in the night sky, bright enough to cast shadows.",
-            mass: "4.9&nbsp;10<sup>24</sup>",
-            diameter: "12,092&nbsp;km"
+            location: new AR.RelativeLocation(locationEje, 0, 8 * distanceFactor, 0),
+            imgDrawable: new AR.ImageDrawable(objeto2Img, objeto2Size),
+            size: objeto2Size
         };
 
         var earth = {
             name: "DATO 3",
             distance: 9 * distanceFactor,
-            location: new AR.RelativeLocation(locationSun, 0, 9 * distanceFactor, -2000),
-            imgDrawable: new AR.ImageDrawable(earthImg, earthSize),
-            size: earthSize,
-            description: "Is the third planet from the Sun, and the densest and fifth-largest of the eight planets in the Solar System. It is sometimes referred to as the world, the Blue Planet, Terra.",
-            mass: " 6&nbsp;10<sup>24</sup>&nbsp;kg",
-            diameter: "12,742&nbsp;km"
+            location: new AR.RelativeLocation(locationEje, 0, 9 * distanceFactor, -2000),
+            imgDrawable: new AR.ImageDrawable(objeto3Img, objeto3Size),
+            size: objeto3Size
         };
 
-        var mars = {
+        var objeto4 = {
             name: "DATO 4",
             distance: 10 * distanceFactor,
-            location: new AR.RelativeLocation(locationSun, 0, -10 * distanceFactor, -3000),
-            imgDrawable: new AR.ImageDrawable(marsImg, marsSize),
-            size: marsSize,
-            description: "Is named after the Roman god of war, it is often described as the &quot;Red Planet&quot;, as the iron oxide prevalent on its surface gives it a reddish appearance.",
-            mass: "6.4&nbsp;10<sup>23</sup>&nbsp;kg",
-            diameter: "6794&nbsp;km"
+            location: new AR.RelativeLocation(locationEje, 0, -10 * distanceFactor, -3000),
+            imgDrawable: new AR.ImageDrawable(objeto4Img, objeto4Size),
+            size: objeto4Size
         };
 
 
-        /* put sun, planets (and pluto) in an array */
-        this.planetsInfo = [parque, mercury, venus, earth, mars];
+         /* put eje, objetos 1234 an array */
+         this.objetosInfo = [parque, objeto1, objeto2, earth, objeto4];
 
          //objeto recibido
          this.marcadorseleccionado=marcador;
@@ -92,12 +77,12 @@ var Solar = {
          //}
 
         /* create helper array to create goeObjects out of given information */
-        var planetsGeoObjects = [];
-        for (var i = 0; i < this.planetsInfo.length; i++) {
+        var objetosGeoObjects = [];
+        for (var i = 0; i < this.objetosInfo.length; i++) {
 
             /* show name of object below*/
-            var label = new AR.Label(this.planetsInfo[i].name, 3, {
-                offsetY: -this.planetsInfo[i].size / 2,
+            var label = new AR.Label(this.objetosInfo[i].name, 3, {
+                offsetY: -this.objetosInfo[i].size / 2,
                 verticalAnchor: AR.CONST.VERTICAL_ANCHOR.TOP,
                 opacity: 0.9,
                 zOrder: 1,
@@ -109,25 +94,25 @@ var Solar = {
 
             /* drawable in cam of object -> image and label */
             var drawables = [];
-            drawables[0] = this.planetsInfo[i].imgDrawable;
+            drawables[0] = this.objetosInfo[i].imgDrawable;
             drawables[1] = label;
 
             /* Create objects in AR*/
-            planetsGeoObjects[i] = new AR.GeoObject(this.planetsInfo[i].location, {
+            objetosGeoObjects[i] = new AR.GeoObject(this.objetosInfo[i].location, {
                 drawables: {
                     cam: drawables
                 },
                 //animacion desabilitada
                 //enabled: false
-                onClick: this.planetClicked(this.planetsInfo[i],this.marcadorseleccionado)
+                onClick: this.objetoClicked(this.objetosInfo[i],this.marcadorseleccionado)
             });
             if (i > 0) {
-                this.animate(this.planetsInfo[i]);
+                this.animate(this.objetosInfo[i]);
             } else {
-                var sunHackAnim = new AR.PropertyAnimation(this.planetsInfo[i].location, 'northing', 10000, 10000, 1000, {
+                var ejeHackAnim = new AR.PropertyAnimation(this.objetosInfo[i].location, 'northing', 10000, 10000, 1000, {
                     type: AR.CONST.EASING_CURVE_TYPE.EASE_IN_SINE
                 });
-                sunHackAnim.start(-1);
+                ejeHackAnim.start(-1);
             }
         }
 
@@ -135,20 +120,14 @@ var Solar = {
         var imageDrawable = new AR.ImageDrawable(indicatorImg, 0.1, {
             verticalAnchor: AR.CONST.VERTICAL_ANCHOR.TOP
         });
-        planetsGeoObjects[0].drawables.addIndicatorDrawable(imageDrawable);
+        objetosGeoObjects[0].drawables.addIndicatorDrawable(imageDrawable);
     },
 
-    animate: function(planet) {
-        var relLocation = planet.location;
-        var distance = planet.distance;
+    animate: function(objeto) {
+        var relLocation = objeto.location;
+        var distance = objeto.distance;
         var roundingTime = distance * 2 * 2;
 
-        var northSouthAnimation1 = new AR.PropertyAnimation(relLocation, 'northing', distance * 1, distance * 0, roundingTime / 4, {
-            type: AR.CONST.EASING_CURVE_TYPE.EASE_IN_OUT_QUINT
-        });
-        var eastWestAnimation1 = new AR.PropertyAnimation(relLocation, 'easting', distance * 0, distance * 1, roundingTime / 4, {
-            type: AR.CONST.EASING_CURVE_TYPE.EASE_OUT_IN_QUINT
-        });
 
         var northSouthAnimation2 = new AR.PropertyAnimation(relLocation, 'northing', distance * 0, distance * -1, roundingTime / 4, {
             type: AR.CONST.EASING_CURVE_TYPE.EASE_OUT_IN_QUINT
@@ -164,33 +143,25 @@ var Solar = {
             type: AR.CONST.EASING_CURVE_TYPE.EASE_OUT_IN_QUINT
         });
 
-        var northSouthAnimation4 = new AR.PropertyAnimation(relLocation, 'northing', distance * 0, distance * 1, roundingTime / 4, {
-            type: AR.CONST.EASING_CURVE_TYPE.EASE_OUT_IN_QUINT
-        });
-        var eastWestAnimation4 = new AR.PropertyAnimation(relLocation, 'easting', distance * -1, distance * 0, roundingTime / 4, {
-            type: AR.CONST.EASING_CURVE_TYPE.EASE_IN_OUT_QUINT
-        });
 
-        var q1 = new AR.AnimationGroup(AR.CONST.ANIMATION_GROUP_TYPE.PARALLEL, [northSouthAnimation1, eastWestAnimation1]);
-        var q2 = new AR.AnimationGroup(AR.CONST.ANIMATION_GROUP_TYPE.PARALLEL, [northSouthAnimation2, eastWestAnimation2]);
-        var q3 = new AR.AnimationGroup(AR.CONST.ANIMATION_GROUP_TYPE.PARALLEL, [northSouthAnimation3, eastWestAnimation3]);
-        var q4 = new AR.AnimationGroup(AR.CONST.ANIMATION_GROUP_TYPE.PARALLEL, [northSouthAnimation4, eastWestAnimation4]);
+        var q1 = new AR.AnimationGroup(AR.CONST.ANIMATION_GROUP_TYPE.PARALLEL, [northSouthAnimation2, eastWestAnimation2]);
+        var q2 = new AR.AnimationGroup(AR.CONST.ANIMATION_GROUP_TYPE.PARALLEL, [northSouthAnimation3, eastWestAnimation3]);
 
-        var cicularAnimationGroup = new AR.AnimationGroup(AR.CONST.ANIMATION_GROUP_TYPE.SEQUENTIAL, [q2,q3]);
+        var cicularAnimationGroup = new AR.AnimationGroup(AR.CONST.ANIMATION_GROUP_TYPE.SEQUENTIAL, [q1,q2]);
 
         cicularAnimationGroup.start(-1);
     },
 
 
 
-    planetClicked: function(marker, objeto) {
+    objetoClicked: function(marker, objetoseleccionado) {
 
         return function() {
         if (marker.name == "Parque"){
             // update panel values
-            		$("#poi-detail-title").html(objeto.name);
-            		$("#poi-detail-description").html(objeto.description);
-            		$("#poi-detail-distance").html(objeto.longitude);
+            		$("#poi-detail-title").html(objetoseleccionado.name);
+            		$("#poi-detail-description").html(objetoseleccionado.description);
+            		$("#poi-detail-distance").html(objetoseleccionado.longitude);
             		// show panel
             		$("#panel-poidetail").panel("open", 123);
             		$(".ui-panel-dismiss").unbind("mousedown");
@@ -201,8 +172,8 @@ var Solar = {
                // alert("Datos click");
                 document.getElementById("info").setAttribute("class", "info");
                 document.getElementById("name").innerHTML = marker.name;
-                document.getElementById("dato1").innerHTML = objeto.latitude;
-                document.getElementById("dato2").innerHTML =objeto.longitude;
+                document.getElementById("dato1").innerHTML = objetoseleccionado.latitude;
+                document.getElementById("dato2").innerHTML =objetoseleccionado.longitude;
                 document.getElementById("info").setAttribute("class", "infoVisible");
         }
 
@@ -210,4 +181,3 @@ var Solar = {
     }
 };
 
-//Solar.init();
