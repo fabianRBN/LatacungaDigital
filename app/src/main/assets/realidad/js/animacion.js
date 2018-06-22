@@ -18,7 +18,7 @@ var Menu = {
         var objeto2Img= new AR.ImageResource("assets/label.png");
         var objeto3Img= new AR.ImageResource("assets/label.png");
         var objeto4Img = new AR.ImageResource("assets/label.png");
-        var indicatorImg = new AR.ImageResource("assets/indi.png");
+        var indicatorImg = new AR.ImageResource("assets/indicador.png");
 
         var ejeSize = (((109 * sizeEscala) / sizeEscala) * 0.3) * sizeFactor;
         var objeto1Size = (10 * sizeEscala / sizeEscala) * sizeFactor;
@@ -50,7 +50,7 @@ var Menu = {
             size: objeto2Size
         };
 
-        var earth = {
+        var objeto3 = {
             name: "DATO 3",
             distance: 9 * distanceFactor,
             location: new AR.RelativeLocation(locationEje, 0, 9 * distanceFactor, -2000),
@@ -68,7 +68,7 @@ var Menu = {
 
 
          /* put eje, objetos 1234 an array */
-         this.objetosInfo = [parque, objeto1, objeto2, earth, objeto4];
+         this.objetosInfo = [parque, objeto1, objeto2, objeto3, objeto4];
 
          //objeto recibido
          this.marcadorseleccionado=marcador;
@@ -116,8 +116,8 @@ var Menu = {
             }
         }
 
-        // Add indicator to sun
-        var imageDrawable = new AR.ImageDrawable(indicatorImg, 0.1, {
+        // Add indicator to Eje
+        var imageDrawable = new AR.ImageDrawable(indicatorImg, 0.2, {
             verticalAnchor: AR.CONST.VERTICAL_ANCHOR.TOP
         });
         objetosGeoObjects[0].drawables.addIndicatorDrawable(imageDrawable);
@@ -175,9 +175,16 @@ var Menu = {
                 document.getElementById("dato1").innerHTML = objetoseleccionado.latitude;
                 document.getElementById("dato2").innerHTML =objetoseleccionado.longitude;
                 document.getElementById("info").setAttribute("class", "infoVisible");
+                $('#info').css('display', 'block');
+                 $('#info').css('visibility', 'visible');
         }
 
         };
-    }
+    },
+    //close div info
+    onclosedivButtonClicked: function onclosedivButtonClickedFn(){
+           $('#info').css('display', 'block');
+         $("#info").css('visibility', 'hidden');
+    	}
 };
 

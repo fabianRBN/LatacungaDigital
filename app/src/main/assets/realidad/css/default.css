@@ -4,7 +4,7 @@ body {
 
 table {
 	/*margin-left: auto;*/
-	width: 100%;
+	width: 50%;
 	margin-right: auto;
 	border: none;
 	border-spacing: 10px 5px;
@@ -38,7 +38,7 @@ tr {
 }
 
 .tableheader {
-    font-size: 24pt;
+    font-size: 14pt;
 	font-weight: bold;
 	background-color: #FF9C4F;
 	color: rgb(34,34,34);
@@ -51,12 +51,15 @@ tr {
 #info {
 	display: inline-block;
 	background-color: rgba(34,34,34,0.75);
-	bottom: 0;
 	position: absolute;
-	width: 100%;
+	top: 300px;
+	left: 100px;
+	width: 60%;
 	border-top-left-radius: 20px;
 	border-top-right-radius: 20px;
-	font-size: 24pt;
+	border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+	font-size: 10pt;
 }
 
 #description {
