@@ -8,7 +8,7 @@
     tools:context="com.example.jona.latacungadigital.Activities.ARActivity"
     >
     <com.wikitude.architect.ArchitectView
-        android:id="@+id/architectView"
+        android:id="@+id/architectViewprueba"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
 

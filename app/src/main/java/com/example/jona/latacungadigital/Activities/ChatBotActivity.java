@@ -7,9 +7,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
+import com.example.jona.latacungadigital.Activities.Clases.CharacterClass;
 import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.DialogAppFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
+import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
 
@@ -74,11 +76,22 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
 
     @Override
     public void onDialogConfirmClick(DialogFragment dialog) {
-        // Para eliminar los mensajes del Chat Bot.
-        chatFragment.getDialogflowClass().getRvListMessages().removeAllViewsInLayout();
-        chatFragment.getDialogflowClass().getMessagesAdapter().notifyDataSetChanged();
-        chatFragment.getDialogflowClass().setListMessagesText(new ArrayList<TextMessageModel>());
-        chatFragment.getDialogflowClass().addMessagesAdapter(new ArrayList<TextMessageModel>());
+
+        switch (chatFragment.getTypeDialog()) {
+            case ChatBotReferences.DIALOG_DELETE_MESSAGE:
+                // Para eliminar los mensajes del Chat Bot.
+                chatFragment.getDialogflowClass().getRvListMessages().removeAllViewsInLayout();
+                chatFragment.getDialogflowClass().getMessagesAdapter().notifyDataSetChanged();
+                chatFragment.getDialogflowClass().setListMessagesText(new ArrayList<TextMessageModel>());
+                chatFragment.getDialogflowClass().addMessagesAdapter(new ArrayList<TextMessageModel>());
+                break;
+            case ChatBotReferences.DIALOG_CHANGE_CHARACTER:
+                // Proceso para cambiar de personaje del ChatBot.
+                String keyCharacter = chatFragment.getDialogAppFragment().getCharacterAdapter().getKeyCharacter();
+                CharacterClass characterClass = new CharacterClass();
+                characterClass.updateKeyCharacterSeletedFormUser(keyCharacter);
+                break;
+        }
     }
 
     @Override

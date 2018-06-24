@@ -12,8 +12,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatBotTypingHolder extends RecyclerView.ViewHolder {
 
-    CircleImageView circleImageViewTyping;
-    Context context;
+    private CircleImageView circleImageViewTyping;
+    private Context context;
 
     public ChatBotTypingHolder(View itemView, Context context) {
         super(itemView);
@@ -27,7 +27,7 @@ public class ChatBotTypingHolder extends RecyclerView.ViewHolder {
         CharacterClass characterClass = new CharacterClass();
         characterClass.ReadCharacterFromDatabase(new CharacterClass.DataOfCharacters() {
             @Override
-            public void nameCharacter(String nameCharacter, String imageCharacterURL) {
+            public void dataCharacterSelected(String nameCharacter, String imageCharacterURL) {
                 Glide.with(context).load(imageCharacterURL).crossFade().centerCrop().into(circleImageViewTyping);
             }
         });

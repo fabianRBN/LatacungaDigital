@@ -105,10 +105,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     private static ArrayList<MarkerOptions> listaMarkadores = new ArrayList<MarkerOptions>();
     private static ArrayList<AreaPeligrosa> listaAreaPeligrosa = new ArrayList<AreaPeligrosa>();
 
-    public static ArrayList<AreaPeligrosa> getListaAreaPeligrosa() {
-        return listaAreaPeligrosa;
-    }
-
     public static void setListaAreaPeligrosa(ArrayList<AreaPeligrosa> listaAreaPeligrosa) {
         MapaFragment.listaAreaPeligrosa = listaAreaPeligrosa;
     }
@@ -146,7 +142,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         mMapView.getMapAsync(this);
 
         //obtener permisos de ubicacion
-
         /*System.out.println("empezo1");
         mDatabase = FirebaseDatabase.getInstance().getReference();
         String key = mDatabase.child("areaPeligrosa").push().getKey();
@@ -198,10 +193,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void displayLocation() {
-        /*if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }*/
         //Validar si la aplicacion tiene el permiso de Localizacion
         if(getActivity() != null){
             if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
@@ -309,7 +300,43 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     AreaPeligrosa areaPeligrosa = new AreaPeligrosa(nombreArea, idArea, radio, latitud, longitud);
                     System.out.println("empezo"+areaPeligrosa.getNombre());
                     listaAreaPeligrosa.add(areaPeligrosa);
+                    LatLng dangerousArea = new LatLng(areaPeligrosa.getLatitud(), areaPeligrosa.getLongitud());
+                    googleMap.addCircle(new CircleOptions()
+                            .center(dangerousArea)
+                            .radius(areaPeligrosa.getRadio())
+                            .strokeColor(Color.RED)
+                            .fillColor(0x220000FF)
+                            .strokeWidth(5.0f));
+                    //Equivalencias de distancia de GeoFire
+                    // 0.1f = 0.1km = 100m
+                    GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(dangerousArea.latitude, dangerousArea.longitude), 0.1f);
+                    geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                        @Override
+                        public void onKeyEntered(String key, GeoLocation location) {
+                            sendNotification("Alerta", String.format("Entraste en un área Peligrosa"));
+                        }
 
+                        @Override
+                        public void onKeyExited(String key) {
+                            sendNotification("Alerta", String.format(" Esta cerca un área Peligrosa"));
+
+                        }
+
+                        @Override
+                        public void onKeyMoved(String key, GeoLocation location) {
+                            Log.d("Alerta", String.format(" moved within the dangerous area "));
+                        }
+
+                        @Override
+                        public void onGeoQueryReady() {
+
+                        }
+
+                        @Override
+                        public void onGeoQueryError(DatabaseError error) {
+                            Log.e("ERROR", ""+error);
+                        }
+                    });
 
                 }
                 setListaAreaPeligrosa(listaAreaPeligrosa);
@@ -372,10 +399,61 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         googleMap.addMarker(markerOptions).setTag(attractive);
     }
 
-    //Crear un area Peligrosa en el mapa
-    private void crearAreaPeligrosa(AreaPeligrosa area){
-        //Crear una Area Peligrosa
+    // Crear un marcador en el mapa de acuerdo a usuarios amigos
+    private void createMarkerForUsers(){
+        final OnMarkerClickListenerAdapter onMarkerClickListenerAdapter = new OnMarkerClickListenerAdapter(getContext(),googleMap);
+        final ArrayList<String> listaidUsuarios = new ArrayList<>();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child("autorizados").child(userFirebase.getUid()).exists()){
+                    for (DataSnapshot child: dataSnapshot.child("autorizados").child(userFirebase.getUid()).getChildren()){
+                        listaidUsuarios.add(child.getKey());
+                    }
+                    for (String key: listaidUsuarios){
+                        if (dataSnapshot.child("cliente").child(key).child("GeoFire").exists()){
+                            String nombre = dataSnapshot.child("cliente").child(key).child("nombre").getValue().toString();
+                            double latitud = Double.parseDouble(dataSnapshot.child("cliente").child(key).child("GeoFire")
+                                            .child("l").child("0").getValue().toString());
+                            double longitud = Double.parseDouble(dataSnapshot.child("cliente").child(key).child("GeoFire")
+                                    .child("l").child("1").getValue().toString());
+                            MarkerOptions markerOptions =  new MarkerOptions();
+                            markerOptions.position(new LatLng(latitud,longitud));
+                            markerOptions.title(nombre);
+                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_user_dark_blue));
 
+                            //Calculo de la distancia
+                            Location locationA = new Location("punto A");
+                            locationA.setLatitude(latitud);
+                            locationA.setLongitude(longitud);
+                            //usuario amigo
+                            Location locationB = new Location("punto B");
+                            locationB.setLatitude(currentUserLatLng.latitude);
+                            locationB.setLongitude(currentUserLatLng.longitude);
+
+                            float distance = locationA.distanceTo(locationB) /1000;
+                            String formatoDistancia = String.format("%.02f", distance);
+
+                            markerOptions.snippet("distancia: "+formatoDistancia+" km");
+                            markerOptions.draggable(false);
+                            googleMap.addMarker(markerOptions).setTag("userMarker");
+
+                            if (distance >= 1){
+                                sendNotification("Alerta", String.format(nombre+" se alejo a "+formatoDistancia+" km de distancia de ti"));
+                            }
+
+                        }
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     // Crear un marcador en el mapa de acuerdo al usuario
@@ -465,49 +543,9 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             googleMap.setOnInfoWindowClickListener( myOnInfoWindowsClickListener);
             googleMap.setOnInfoWindowLongClickListener(myOnInfoWindowsClickListener);
 
-            dataFirebase(); // Agregar marcadores de atractivos
+            dataFirebase(); // Agregar marcadores de atractivos y areas peligrosas
+            createMarkerForUsers();//Instanciar usuarios aamigos en el mapa
 
-            //Instanciar las areas de peligro
-            for (AreaPeligrosa areaP: getListaAreaPeligrosa()) {
-                LatLng dangerousArea = new LatLng(areaP.getLatitud(), areaP.getLongitud());
-                googleMap.addCircle(new CircleOptions()
-                        .center(dangerousArea)
-                        .radius(areaP.getRadio())
-                        .strokeColor(Color.RED)
-                        .fillColor(0x220000FF)
-                        .strokeWidth(5.0f)
-                );
-                //Equivalencias de distancia de GeoFire
-                // 0.1f = 0.1km = 100m
-                GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(dangerousArea.latitude, dangerousArea.longitude), 0.1f);
-                geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-                    @Override
-                    public void onKeyEntered(String key, GeoLocation location) {
-                        sendNotification("Alerta", String.format("Entraste en un área Peligrosa"));
-                    }
-
-                    @Override
-                    public void onKeyExited(String key) {
-                        sendNotification("Alerta", String.format(" Esta cerca un área Peligrosa"));
-
-                    }
-
-                    @Override
-                    public void onKeyMoved(String key, GeoLocation location) {
-                        Log.d("Alerta", String.format(" moved within the dangerous area "));
-                    }
-
-                    @Override
-                    public void onGeoQueryReady() {
-
-                    }
-
-                    @Override
-                    public void onGeoQueryError(DatabaseError error) {
-                        Log.e("ERROR", ""+error);
-                    }
-                });
-            }
         } else { // Si es una solicitud de consulta del chatbot
             switch (chatBotAction){
                 case "consultarAtractivoEnElArea":
@@ -534,7 +572,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     googleMap.setOnMarkerClickListener(new OnMarkerClickListenerAdapter(getContext(),googleMap));
                     break;
                 case "church_information_intent.church_information_intent-yes":
-                case "hotel_information_intent.hotel_information_intent-yes":
+                case "service_information_intent.service_information_intent-yes":
                     // Crear el marcador del punto Destino
                     if(attractive != null){
                         // Crear marcador para la posicion del atractivo de destino

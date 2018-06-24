@@ -9,9 +9,10 @@ public class Cliente {
     public String email;
     public String idcliente;
     public String pathImagen;
+    private String personajeID;
 
-    public Cliente() {
-    }
+
+    public Cliente() { }
 
     public Cliente(String nombre, String email, String idcliente, String pathImagen) {
 
@@ -63,4 +64,8 @@ public class Cliente {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getPersonajeID() { return personajeID; }
+
+    public void setPersonajeID(String personajeID) { this.personajeID = personajeID; }
 }

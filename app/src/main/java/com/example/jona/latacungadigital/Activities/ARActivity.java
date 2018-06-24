@@ -34,14 +34,14 @@ public class ARActivity extends AppCompatActivity implements LocationListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ar);
-        btn_salir =  (FloatingActionButton) findViewById(R.id.fab);
+       // btn_salir =  (FloatingActionButton) findViewById(R.id.fab);
 
-        btn_salir.setOnClickListener(new View.OnClickListener() {
+       /* btn_salir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
-        });
+        });*/
 
         this.architectView = (ArchitectView) this.findViewById(R.id.architectView);
         final ArchitectStartupConfiguration config = new ArchitectStartupConfiguration();

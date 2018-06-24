@@ -88,7 +88,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                     attractive = message.getAttractive();
                     destinationLatLng = new LatLng(attractive.getLatitude(), attractive.getLongitude());
                     break;
-                case "hotel_information_intent.hotel_information_intent-yes":
+                case "service_information_intent.service_information_intent-yes":
                     service = message.getService();
                     destinationLatLng = new LatLng(service.getLatitude(), service.getLongitude());
                     break;
@@ -225,7 +225,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                 }
                 break;
             case "church_information_intent.church_information_intent-yes":
-            case "hotel_information_intent.hotel_information_intent-yes":
+            case "service_information_intent.service_information_intent-yes":
                 if(attractive != null){
                     // Crear marcador para la posicion del atractivo de destino
                     createMarkerForAttractive(attractive);
@@ -266,7 +266,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                     mapaFragment.setListService(listService);
                     break;
                 case "church_information_intent.church_information_intent-yes":
-                case "hotel_information_intent.hotel_information_intent-yes":
+                case "service_information_intent.service_information_intent-yes":
                     mapaFragment.setPointDestination(destinationLatLng);
                     mapaFragment.setAttractive(this.attractive);
                     if(attractive != null){

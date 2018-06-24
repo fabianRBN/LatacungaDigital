@@ -5,7 +5,7 @@
     android:id="@+id/cvPlacesInformation"
     android:foreground="?android:attr/selectableItemBackground"
     android:layout_marginTop="10dp"
-    android:layout_marginLeft="10dp"
+    android:layout_marginStart="10dp"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     app:cardCornerRadius="5dp"
@@ -66,7 +66,7 @@
                     android:id="@+id/headerIndicator"
                     android:layout_gravity="top|right"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="38dp"
+                    android:layout_marginStart="38dp"
                     android:layout_width="wrap_content"
                     android:tint="@color/black"
                     app:srcCompat="@drawable/ic_expansion_header_indicator_grey_24dp" />

@@ -143,30 +143,21 @@ var World = {
 		World.locationUpdateCounter = (++World.locationUpdateCounter % World.updatePlacemarkDistancesEveryXLocationUpdates);
 	},
 
+
 	// fired when user pressed maker in cam
 	onMarkerSelected: function onMarkerSelectedFn(marker) {
 		World.currentMarker = marker;
-
-		// update panel values
-		$("#poi-detail-title").html(marker.poiData.title);
-		$("#poi-detail-description").html(marker.poiData.description);
-
-		/* It's ok for AR.Location subclass objects to return a distance of `undefined`. In case such a distance was calculated when all distances were queried in `updateDistanceToUserValues`, we recalcualte this specific distance before we update the UI. */
-		if( undefined == marker.distanceToUser ) {
-			marker.distanceToUser = marker.markerObject.locations[0].distanceToUser();
-		}
-		var distanceToUserValue = (marker.distanceToUser > 999) ? ((marker.distanceToUser / 1000).toFixed(2) + " km") : (Math.round(marker.distanceToUser) + " m");
-
-		$("#poi-detail-distance").html(distanceToUserValue);
-
-		// show panel
-		$("#panel-poidetail").panel("open", 123);
-
-		$(".ui-panel-dismiss").unbind("mousedown");
-
-		$("#panel-poidetail").on("panelbeforeclose", function(event, ui) {
-			World.currentMarker.setDeselected(World.currentMarker);
-		});
+           var objeto = {
+                              name: marker.poiData.title,
+                              latitude: marker.poiData.latitude,
+                              longitude: marker.poiData.longitude,
+                              description: marker.poiData.description
+                          };
+                          console.log("Dato "+objeto.name);
+                          console.log("Dato "+objeto.latitude);
+                          console.log("Dato "+objeto.longitude);
+                          console.log("Dato "+objeto.description);
+                  Menu.init(objeto);
 	},
 
 	// screen was clicked but no geo-object was hit

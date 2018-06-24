@@ -32,7 +32,7 @@ public class ChatBotMessageHolder extends RecyclerView.ViewHolder {
         CharacterClass characterClass = new CharacterClass();
         characterClass.ReadCharacterFromDatabase(new CharacterClass.DataOfCharacters() {
             @Override
-            public void nameCharacter(String nameCharacter, String imageCharacterURL) {
+            public void dataCharacterSelected(String nameCharacter, String imageCharacterURL) {
                 Glide.with(context).load(imageCharacterURL).crossFade().centerCrop().into(circleImageView);
             }
         });

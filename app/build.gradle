@@ -79,8 +79,8 @@ dependencies {
 
     //Librerias para la realidad aumentada
 
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile(name: 'wikitudesdk', ext: 'aar')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation (name: 'wikitudesdk', ext: 'aar')
 
 
 

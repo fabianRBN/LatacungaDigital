@@ -66,6 +66,7 @@ public class ChatTextFragment extends Fragment {
     private boolean shouldRecreate = true; // Variable para controlar el onActivityResult() con onResume().
     private boolean isMessageToSend = false;
     private String messageToSend;
+    private int typeDialog;
 
     private NetworkReceiverClass networkReceiverClass;
     private ActionBar actionBar;
@@ -83,6 +84,8 @@ public class ChatTextFragment extends Fragment {
         return isMessageToSend;
     }
 
+    public int getTypeDialog() { return typeDialog; }
+
     public void setIsMessageToSend(boolean isMessageToSend) {
         this.isMessageToSend = isMessageToSend;
     }
@@ -94,6 +97,8 @@ public class ChatTextFragment extends Fragment {
     public void setMessageToSend(String messageToSend) {
         this.messageToSend = messageToSend;
     }
+
+    public DialogAppFragment getDialogAppFragment() { return dialogAppFragment; }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -220,6 +225,7 @@ public class ChatTextFragment extends Fragment {
                 return true;
 
             case R.id.navChatbotChangeCharacter:
+                openDialogChangeCharacter();
                 return true;
 
             default:
@@ -246,7 +252,18 @@ public class ChatTextFragment extends Fragment {
     private void openDialogDeleteMessages() {
         // Se crea una instancia de la clase DialogAppFragement y se la muestra.
         Bundle bundle = new Bundle();
-        bundle.putInt("Type_Dialog", ChatBotReferences.DIALOG_DELETE_MESSAGE);
+        typeDialog = ChatBotReferences.DIALOG_DELETE_MESSAGE;
+        bundle.putInt("Type_Dialog", typeDialog);
+        dialogAppFragment.setArguments(bundle);
+
+        dialogAppFragment.show(getFragmentManager(), "NoticeDialogFragment");
+    }
+
+    private void openDialogChangeCharacter() {
+        // Se crea una instancia de la clase DialogAppFragement y se la muestra.
+        Bundle bundle = new Bundle();
+        typeDialog = ChatBotReferences.DIALOG_CHANGE_CHARACTER;
+        bundle.putInt("Type_Dialog", typeDialog);
         dialogAppFragment.setArguments(bundle);
 
         dialogAppFragment.show(getFragmentManager(), "NoticeDialogFragment");
@@ -259,7 +276,7 @@ public class ChatTextFragment extends Fragment {
             CharacterClass characterClass = new CharacterClass();
             characterClass.ReadCharacterFromDatabase(new CharacterClass.DataOfCharacters() {
                 @Override
-                public void nameCharacter(String nameCharacter, String imageCharacterURL) {
+                public void dataCharacterSelected(String nameCharacter, String imageCharacterURL) {
                     actionBar.setTitle(nameCharacter);
                 }
             });
