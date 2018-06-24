@@ -143,15 +143,15 @@ public class AtractivoService extends Service {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-
+                    int contador = 1234;
                     for(DataSnapshot child: dataSnapshot.getChildren()){
                         if(child.getValue() != null) { // Validacion para verificar si existe informacion en el child
                             double latitud = (double) child.child("posicion").child("lat").getValue();
                             double longitud = (double) child.child("posicion").child("lng").getValue();
                             String nombreAtractivo = child.child("nombre").getValue().toString();
                             String key = child.getKey().toString();
-                            geofireAtractivo((new LatLng(latitud, longitud)), nombreAtractivo, key);// Metodo que agrega geofire listener a cada atractivo
-
+                            geofireAtractivo((new LatLng(latitud, longitud)), nombreAtractivo, key, contador);// Metodo que agrega geofire listener a cada atractivo
+                            contador++;
                         }
                 }
 
@@ -164,7 +164,7 @@ public class AtractivoService extends Service {
         });
     }
 
-    private void sendNotification(String title, String content, String key) {
+    private void sendNotification(String title, String content, final String key, int id) {
         // Crea una isntancia del systema principal de notificaciones
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -178,6 +178,7 @@ public class AtractivoService extends Service {
             mNotificationManager.createNotificationChannel(channel);
         }
         // Creacion de la notificacion
+        Toast.makeText(this,"Notificacion:"+ key,Toast.LENGTH_SHORT).show();
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "default")
                 .setSmallIcon(R.mipmap.ic_launcher) // notification icon
                 .setContentTitle("Atractivo encontrado") // title for notification
@@ -187,23 +188,23 @@ public class AtractivoService extends Service {
         intent.putExtra("atractivoKey", key);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pi);
-        mNotificationManager.notify(0, mBuilder.build());
+        mNotificationManager.notify(id, mBuilder.build());
 
 
 
     }
 
-    public void geofireAtractivo(LatLng location , final String nombreAtractivo, final String keyAtractivo){
+    public void geofireAtractivo(LatLng location , final String nombreAtractivo, final String keyAtractivo, final int id_notificacion){
         GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), 0.5f);
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                sendNotification("Alerta", String.format("Te encuantras en el atractivo:" + nombreAtractivo+"."),keyAtractivo);
+                sendNotification("Alerta", String.format("Te encuantras en el atractivo:" + nombreAtractivo+"."),keyAtractivo, id_notificacion);
             }
 
             @Override
             public void onKeyExited(String key) {
-                sendNotification("Alerta", String.format(" Esta cerca del atractivo "+nombreAtractivo),keyAtractivo);
+                sendNotification("Alerta", String.format(" Esta cerca del atractivo "+nombreAtractivo),keyAtractivo,id_notificacion);
 
             }
 

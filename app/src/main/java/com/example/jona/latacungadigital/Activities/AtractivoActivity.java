@@ -280,6 +280,7 @@ public class AtractivoActivity extends AppCompatActivity {
 
 
 
+
     }
 
     public void comentarioUsuario(){
@@ -330,6 +331,7 @@ public class AtractivoActivity extends AppCompatActivity {
                 if(dataSnapshot.getValue() != null){
                     listaComentarios.clear();
                     double ratingTotal = 0;
+                    double rating = 0;
                     int contador = 0;
                     for(DataSnapshot child: dataSnapshot.getChildren()){
                         contador++;
@@ -340,7 +342,13 @@ public class AtractivoActivity extends AppCompatActivity {
 
                     }
                     mBarTotal.setRating((float) (ratingTotal/contador));
-                    txtRatingTotal.setText((ratingTotal/contador)+"");
+
+                    if(contador>0){
+                        rating = (ratingTotal/contador);
+                    }
+
+                    txtRatingTotal.setText(rating+"");
+                    setRatingTotalAtractivo(rating);
 
 
 
@@ -358,6 +366,12 @@ public class AtractivoActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    public void setRatingTotalAtractivo(double rating){
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("atractivo").child(this.atractivoKey);
+        mDatabase.child("rating").setValue(rating);
 
     }
 
