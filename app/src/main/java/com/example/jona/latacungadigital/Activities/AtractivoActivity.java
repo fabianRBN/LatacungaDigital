@@ -1,5 +1,10 @@
 package com.example.jona.latacungadigital.Activities;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -12,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Layout;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.ListaComentarioAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.ViewPagerAdapter;
@@ -36,8 +43,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.vr.sdk.widgets.pano.VrPanoramaEventListener;
+import com.google.vr.sdk.widgets.pano.VrPanoramaView;
 import com.squareup.picasso.Picasso;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -68,7 +86,7 @@ public class AtractivoActivity extends AppCompatActivity {
     private EditText edit_comentario;
     private RatingBar mBar,mBar2, mBarTotal;
 
-    private double valor_ratinf_bar = 0;
+    private double valor_rating_bar = 0;
 
     Calendar fecha = new GregorianCalendar();
 
@@ -76,12 +94,26 @@ public class AtractivoActivity extends AppCompatActivity {
     public ArrayList<ComentarioModel> listaComentarios = new ArrayList<>();
 
 
-    public double getValor_ratinf_bar() {
-        return valor_ratinf_bar;
+    // Variables para Imagenes 360
+    public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
+    private Button descargar360;
+    private ProgressDialog mProgressDialog; // Para controlar el proseso de la descarga
+
+    private VrPanoramaView vr_pan_view;
+    private String NameOfFolder = "LatacungaDigitalImagenes"; // Directorio en donde se guardan las imagenes 360
+    private String NameOfFile = "vr"; // Nombre de la imagen que se guardara en storage
+    // Url de la imagen 360  desde firebase
+    private String imageHttpAddress = "https://firebasestorage.googleapis.com/v0/b/turismoar-72e69.appspot.com/o/imagenes%2Fatractivos%2F-LD9cbfJWj7MleOqIau7-0661?alt=media&token=2b7905da-82c5-40e5-af45-f951fef0468a";
+
+    private File file; // Variable para  manipular la descarga y lectura de la imagen
+
+
+    public double getvalor_rating_bar() {
+        return valor_rating_bar;
     }
 
-    public void setValor_ratinf_bar(double valor_ratinf_bar) {
-        this.valor_ratinf_bar = valor_ratinf_bar;
+    public void setvalor_rating_bar(double valor_rating_bar) {
+        this.valor_rating_bar = valor_rating_bar;
     }
 
     @Override
@@ -97,9 +129,7 @@ public class AtractivoActivity extends AppCompatActivity {
         CoolToolbar = (CollapsingToolbarLayout)findViewById(R.id.ctolbar);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
-
+        
         layout_comentario = (LinearLayout) findViewById(R.id.layou_comentario);
         layout_editar_comentario = (LinearLayout ) findViewById(R.id.layout_editar_coemtario);
 
@@ -124,9 +154,7 @@ public class AtractivoActivity extends AppCompatActivity {
         mBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-
-                setValor_ratinf_bar(ratingBar.getRating());
-
+                setvalor_rating_bar(ratingBar.getRating());
             }
         });
 
@@ -139,8 +167,7 @@ public class AtractivoActivity extends AppCompatActivity {
                 layout_editar_comentario.setVisibility(View.GONE);
             }
         });
-
-
+        
         btn_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,14 +187,11 @@ public class AtractivoActivity extends AppCompatActivity {
                 popupMenu.show();
             }
         });
-
-
+        
         layout_lista_comentarios = (LinearLayout) findViewById(R.id.layout_lista_comentarios);
         listView = (RecyclerView) findViewById(R.id.listViewComentarios);
         listView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-
-
-
+        
         txtTitulo = (TextView) findViewById(R.id.txtTituloAtractivo);
         txtCategoria= (TextView) findViewById(R.id.txtCategoriaAtractivo);
         txtDescripcion = (TextView) findViewById(R.id.txtDescripcionAtractivo);
@@ -175,29 +199,34 @@ public class AtractivoActivity extends AppCompatActivity {
             txtDescripcion.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
         }
 
-
-
-
-
-
-
         Bundle parametros = this.getIntent().getExtras();
         if(parametros !=null){
 
             this.atractivoKey = getIntent().getExtras().getString("atractivoKey");
             mDatabase = FirebaseDatabase.getInstance().getReference().child("atractivo").child(this.atractivoKey);
             getAtractivo();
-
-
         }
 
         setComentario();
         comentarioUsuario();
-        getComentarios();  
+        getComentarios();
+        imagenes360();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (vr_pan_view != null) {
+            vr_pan_view.pauseRendering();
+        }
+    }
 
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (vr_pan_view != null) {
+            vr_pan_view.shutdown();
+        }
     }
 
     public void setComentario(){
@@ -244,11 +273,7 @@ public class AtractivoActivity extends AppCompatActivity {
                 }
                 ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getApplicationContext(), listaImagenes , width,height);
                 viewPager.setAdapter(viewPagerAdapter);
-
-
-
-
-            }
+             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -268,7 +293,7 @@ public class AtractivoActivity extends AppCompatActivity {
         ComentarioModel comentarioModel = new ComentarioModel(
                 this.usuarioKey,
                 edit_comentario.getText().toString(),
-                getValor_ratinf_bar() ,
+                getvalor_rating_bar() ,
                 dia + "/" + (mes+1) + "/" + año
                 );
         mDatabase.child("comentario").child(this.atractivoKey).child(this.usuarioKey).setValue(comentarioModel);//guarda la informacion en firebase
@@ -277,10 +302,6 @@ public class AtractivoActivity extends AppCompatActivity {
         layout_editar_comentario.setVisibility(View.GONE);
 
         comentarioUsuario();
-
-
-
-
     }
 
     public void comentarioUsuario(){
@@ -294,8 +315,6 @@ public class AtractivoActivity extends AppCompatActivity {
                 if(dataSnapshot.getValue() != null){
 
                     ComentarioModel comentarioModel = dataSnapshot.getValue(ComentarioModel.class);
-
-
                     txt_comentario.setText(comentarioModel.getContenido());
                     txt_fecha.setText(comentarioModel.getFecha());
                     mBar2.setRating((float) comentarioModel.getCalificacion());
@@ -309,9 +328,6 @@ public class AtractivoActivity extends AppCompatActivity {
                     layout_editar_comentario.setVisibility(View.VISIBLE);
                     btn_cancelar.setVisibility(View.GONE);
                 }
-
-
-
 
             }
 
@@ -337,7 +353,6 @@ public class AtractivoActivity extends AppCompatActivity {
                         contador++;
                         ComentarioModel comentarioModel = child.getValue(ComentarioModel.class);
                         listaComentarios.add(comentarioModel);
-
                         ratingTotal = ratingTotal + comentarioModel.getCalificacion();
 
                     }
@@ -349,14 +364,8 @@ public class AtractivoActivity extends AppCompatActivity {
 
                     txtRatingTotal.setText(rating+"");
                     setRatingTotalAtractivo(rating);
-
-
-
                     listView.setAdapter(new ListaComentarioAdapter(getApplicationContext(), listaComentarios));
-
-
-
-
+                    
                 }
 
             }
@@ -374,5 +383,154 @@ public class AtractivoActivity extends AppCompatActivity {
         mDatabase.child("rating").setValue(rating);
 
     }
+
+    public void imagenes360(){
+        String file_path = "/sdcard/" + NameOfFolder; // direccion en donde se guardaran las imagenes
+        File dir = new File(file_path); // Referencia del directorio
+
+        if (!dir.exists()) { // Validacion de la existencia del directorio
+            dir.mkdirs(); // creaccion del direcctorio
+            Toast.makeText(getApplicationContext(),"No existe 1",Toast.LENGTH_LONG).show();
+        }
+        file = new File(dir, NameOfFile  + ".jpg"); // referencia de a imagen 360
+
+        if(file.exists()){ // verificacion si  la imagen 360 del atractivo ya esta descargada
+            Toast.makeText(getApplicationContext(),"Ya existe 1",Toast.LENGTH_LONG).show();
+
+            load360Image();
+
+        }
+
+
+        descargar360 = (Button)findViewById(R.id.btnDescarga);
+        descargar360.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                startDownload();
+            }
+        });
+
+
+
+    }
+
+    private void load360Image() {
+        vr_pan_view = (VrPanoramaView) findViewById(R.id.vr_pan_view);
+
+        InputStream open = null;
+        FileInputStream open2 = null;
+        try {
+            open = new FileInputStream(file);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Bitmap bitmap = BitmapFactory.decodeStream(open);
+        //Bitmap bitmap= getBitmapFromURL("");
+        final VrPanoramaView.Options options = new VrPanoramaView.Options();
+        options.inputType = VrPanoramaView.Options.TYPE_STEREO_OVER_UNDER;
+        vr_pan_view.setEventListener(new VrPanoramaEventListener() {
+            @Override
+            public void onDisplayModeChanged(int newDisplayMode) {
+                super.onDisplayModeChanged(newDisplayMode);
+            }
+
+            @Override
+            public void onLoadError(String errorMessage) {
+                super.onLoadError(errorMessage);
+            }
+            @Override
+            public void onLoadSuccess() {
+                super.onLoadSuccess();
+            }
+            @Override
+            public void onClick() {
+                super.onClick();
+            }
+        });
+
+
+
+        vr_pan_view.loadImageFromBitmap(bitmap, options);
+
+
+
+
+    }
+
+    private void startDownload() {
+        String url = imageHttpAddress;
+        new DownloadFileAsync().execute(url,NameOfFile,NameOfFolder);
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DIALOG_DOWNLOAD_PROGRESS:
+                mProgressDialog = new ProgressDialog(this);
+                mProgressDialog.setMessage("Downloading file..");
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.show();
+                return mProgressDialog;
+            default:
+                return null;
+        }
+    }
+
+    class DownloadFileAsync extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showDialog(DIALOG_DOWNLOAD_PROGRESS);
+        }
+
+        @Override
+        protected String doInBackground(String... aurl) {
+            int count;
+
+            try {
+                URL url = new URL(aurl[0]);
+                String nameFile = aurl[1];
+                String nameFolder = aurl[2];
+                URLConnection conexion = url.openConnection();
+                conexion.connect();
+
+                int lenghtOfFile = conexion.getContentLength();
+                Log.d("ANDRO_ASYNC", "Lenght of file: " + lenghtOfFile);
+
+                InputStream input = new BufferedInputStream(url.openStream());
+                OutputStream output = new FileOutputStream("/sdcard/" + nameFolder+"/"+nameFile+".jpg");
+
+                byte data[] = new byte[1024];
+
+                long total = 0;
+
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    publishProgress(""+(int)((total*100)/lenghtOfFile));
+                    output.write(data, 0, count);
+                }
+
+                output.flush();
+                output.close();
+                input.close();
+                load360Image();
+                descargar360.setVisibility(View.GONE);
+            } catch (Exception e) {}
+            return null;
+
+        }
+        protected void onProgressUpdate(String... progress) {
+            Log.d("ANDRO_ASYNC",progress[0]);
+            mProgressDialog.setProgress(Integer.parseInt(progress[0]));
+        }
+
+        @Override
+        protected void onPostExecute(String unused) {
+            dismissDialog(DIALOG_DOWNLOAD_PROGRESS);
+        }
+    }
+
 
 }
