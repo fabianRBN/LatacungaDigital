@@ -571,7 +571,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     }
                     googleMap.setOnMarkerClickListener(new OnMarkerClickListenerAdapter(getContext(),googleMap));
                     break;
-                case "church_information_intent.church_information_intent-yes":
+                case "attraction_information_intent.attraction_information_intent-yes":
                 case "service_information_intent.service_information_intent-yes":
                     // Crear el marcador del punto Destino
                     if(attractive != null){

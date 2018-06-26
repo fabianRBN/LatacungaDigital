@@ -1,7 +1,9 @@
 package com.example.jona.latacungadigital.Activities.Clases;
 
 import com.example.jona.latacungadigital.R;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import ai.api.model.Result;
 
@@ -24,12 +27,11 @@ public class AttractiveClass {
     private double latitude;
     private double longitude;
 
-    private JsonElement result;
     private JsonElement gallery;
     private JsonElement position;
     private int icon = 0;
 
-    public AttractiveClass() {
+    AttractiveClass() {
         imagenURL = new ArrayList<>();
         setIcon();
     }
@@ -82,14 +84,6 @@ public class AttractiveClass {
         this.longitude = longitude;
     }
 
-    public JsonElement getResult() {
-        return result;
-    }
-
-    public void setResult(JsonElement result) {
-        this.result = result;
-    }
-
     public JsonElement getGallery() {
         return gallery;
     }
@@ -110,10 +104,6 @@ public class AttractiveClass {
         return imagenURL;
     }
 
-    public void setImagenURL(List<String> imagenURL) {
-        this.imagenURL = imagenURL;
-    }
-
     public String getAddress() { return address; }
 
     public void setAddress(String address) { this.address = address; }
@@ -129,23 +119,27 @@ public class AttractiveClass {
     // Método para leer el JSON de atractivos consultados que se obtiene de Dialogflow.
     public void readJSONDialogflow(Result resultAI) {
         final Map<String, JsonElement> JSONDialogflowResult = resultAI.getFulfillment().getData();
+
+        // Leemos el JSON obtenido de Dialogflow si esque no esta nulo o vacío.
         if (JSONDialogflowResult != null && !JSONDialogflowResult.isEmpty()) {
+            Set dataDialogFlowResult = JSONDialogflowResult.entrySet();
+            for (Object objectValuesResult : dataDialogFlowResult) {
+                Map.Entry attractiveEntry = (Map.Entry) objectValuesResult; // Obtenemos el servicio dentro del JSon del mapa
+                Gson gson = new Gson();
+                JsonParser jsonParser = new JsonParser();
+                JsonElement values = jsonParser.parse(gson.toJson(attractiveEntry.getValue())); // Obtenemos los valores del servicio
 
-            setState(Boolean.valueOf(JSONDialogflowResult.get("estado").toString()));
-
-            setResult(JSONDialogflowResult.get("resultado"));
-
-            setDescription(getResult().getAsJsonObject().get("descripcion").toString().replace("\"", ""));
-            setNameAttractive(getResult().getAsJsonObject().get("nombre").toString().replace("\"", ""));
-            setCategory(getResult().getAsJsonObject().get("categoria").toString().replace("\"", ""));
-            setAddress(getResult().getAsJsonObject().get("direccion").toString().replace("\"", ""));
-
-            setGallery(getResult().getAsJsonObject().get("galeria"));
-
-            setPosition(getResult().getAsJsonObject().get("posicion"));
-            setLatitude(Double.parseDouble(getPosition().getAsJsonObject().get("lat").toString()));
-            setLongitude(Double.parseDouble(getPosition().getAsJsonObject().get("lng").toString()));
-            setIcon();
+                setState(true);
+                setDescription(values.getAsJsonObject().get("descripcion").toString().replace("\"", ""));
+                setNameAttractive(values.getAsJsonObject().get("nombre").toString().replace("\"", ""));
+                setCategory(values.getAsJsonObject().get("categoria").toString().replace("\"", ""));
+                setAddress(values.getAsJsonObject().get("direccion").toString().replace("\"", ""));
+                setGallery(values.getAsJsonObject().get("galeria"));
+                setPosition(values.getAsJsonObject().get("posicion"));
+                setLatitude(Double.parseDouble(getPosition().getAsJsonObject().get("lat").toString()));
+                setLongitude(Double.parseDouble(getPosition().getAsJsonObject().get("lng").toString()));
+                setIcon();
+            }
         } else {
             setState(false); // Para saber si el JSON esta vacio.
         }
@@ -155,13 +149,12 @@ public class AttractiveClass {
     public void readJSONDialogflow(String key, JsonElement values) {
         if (!values.isJsonNull() && !key.isEmpty()) {
             setState(true);
-            setResult(values);
-            setDescription(getResult().getAsJsonObject().get("descripcion").toString().replace("\"", ""));
-            setNameAttractive(getResult().getAsJsonObject().get("nombre").toString().replace("\"", ""));
-            setCategory(getResult().getAsJsonObject().get("categoria").toString().replace("\"", ""));
-            setAddress(getResult().getAsJsonObject().get("direccion").toString().replace("\"", ""));
-            setGallery(getResult().getAsJsonObject().get("galeria"));
-            setPosition(getResult().getAsJsonObject().get("posicion"));
+            setDescription(values.getAsJsonObject().get("descripcion").toString().replace("\"", ""));
+            setNameAttractive(values.getAsJsonObject().get("nombre").toString().replace("\"", ""));
+            setCategory(values.getAsJsonObject().get("categoria").toString().replace("\"", ""));
+            setAddress(values.getAsJsonObject().get("direccion").toString().replace("\"", ""));
+            setGallery(values.getAsJsonObject().get("galeria"));
+            setPosition(values.getAsJsonObject().get("posicion"));
             setLatitude(Double.parseDouble(getPosition().getAsJsonObject().get("lat").toString()));
             setLongitude(Double.parseDouble(getPosition().getAsJsonObject().get("lng").toString()));
             setIcon();
