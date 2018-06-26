@@ -166,15 +166,17 @@ public class DialogflowClass {
 
             switch (action) {
                 case "weatherAction":
-                case "weather_intent.weather_intent-yes":
-                    // Para dar el clima y recomendar que usuar.
-                    if(this.checkForParameters(result)){
+                    if(!result.getParameters().isEmpty()){
                         WeatherClass weatherModel = new WeatherClass(context, result, this);
                         weatherModel.WeatherResponse();
-                    }else {
+                    } else {
                         String speech = result.getFulfillment().getSpeech();
                         MessageSendToDialogflow(speech);
                     }
+                    break;
+                case "weather_intent.weather_intent-yes":
+                    WeatherClass weatherModel = new WeatherClass(context, result, this);
+                    weatherModel.WeatherResponse();
                     break;
                 case "attractionInformationAction":
                     sendAttractiveToCardViewInformation(result);
@@ -209,14 +211,6 @@ public class DialogflowClass {
                     break;
             }
         }
-    }
-
-    // Funcion para validar si dialogflow trae parametros
-    private boolean checkForParameters(Result result){
-        if(result.getParameters().isEmpty()){
-            return false;
-        }
-        return true;
     }
 
     private void RemoveMessageTypingToDialogflow() {
