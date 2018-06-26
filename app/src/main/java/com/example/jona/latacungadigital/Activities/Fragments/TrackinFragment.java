@@ -1,19 +1,18 @@
 package com.example.jona.latacungadigital.Activities.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
@@ -40,7 +39,7 @@ public class TrackinFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private static ArrayList<TrackinModel> listaAmigos = new ArrayList<>();
     DatabaseReference mdatabase;
-    FirebaseAuth userFirebase;
+    private FirebaseAuth userFirebase;
     RecyclerView recyclerView;
     private static final ArrayList<String> listaUsuarios = new ArrayList<>();
 
@@ -63,16 +62,48 @@ public class TrackinFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_friends);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-
-        ConsultaAmigos();
+        userFirebase = FirebaseAuth.getInstance();
+        final String uid = userFirebase.getCurrentUser().getUid();
+        ConsultaAmigos(uid);
         ConsultaUsuarios();
 
         //Autocompletar
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_dropdown_item_1line, listaUsuarios);
-        AutoCompleteTextView textView = (AutoCompleteTextView)
+        final AutoCompleteTextView textView = (AutoCompleteTextView)
                 view.findViewById(R.id.tv_buscar);
         textView.setAdapter(adapter);
+        textView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final String nombreLista = adapter.getItem(position);
+                mdatabase = FirebaseDatabase.getInstance().getReference();
+                System.out.println("Usua "+uid);
+                mdatabase.child("cliente").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot chil: dataSnapshot.getChildren()) {
+                            if (chil.child("nombre").exists()){
+                                String nombreConsulta = chil.child("nombre").getValue().toString();
+                                if (nombreConsulta.equals(nombreLista)){
+                                    mdatabase.child("autorizados").child(uid).child(chil.getKey()).
+                                            setValue(new TrackinModel(chil.getKey(), false));
+                                }
+                            }
+                        }
+                        ConsultaAmigos(uid);
+                        recyclerView.refreshDrawableState();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+
+                });
+            }
+        });
+
 
         //Flotante que redirige al mapa
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
@@ -99,6 +130,7 @@ public class TrackinFragment extends Fragment {
     }
 
     private void ConsultaUsuarios() {
+        listaUsuarios.clear();
         mdatabase = FirebaseDatabase.getInstance().getReference("cliente");
         mdatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -117,27 +149,32 @@ public class TrackinFragment extends Fragment {
         });
     }
 
-    private void ConsultaAmigos() {
-        userFirebase = FirebaseAuth.getInstance();
-        mdatabase = FirebaseDatabase.getInstance().getReference("autorizados")
-                    .child(userFirebase.getCurrentUser().getUid());
+    private void ConsultaAmigos(final String uid) {
+        final ArrayList<String> listaidUsuarios = new ArrayList<>();
+        listaidUsuarios.clear();
+        listaAmigos.clear();
+        mdatabase = FirebaseDatabase.getInstance().getReference();
         //System.out.println("uid: "+userFirebase.getCurrentUser().getUid());
         mdatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot child: dataSnapshot.getChildren()){
-                    //System.out.println("uidn: "+child.child("nombre").getValue().toString());
-                    String nombre = child.child("nombre").getValue().toString();
-                    String email = child.child("email").getValue().toString();
-                    String key = child.child("key").getValue().toString();
-                    String pathimage = child.child("pathImagen").getValue().toString();
+                for (DataSnapshot child: dataSnapshot.child("autorizados").child(uid).getChildren()){
+                    System.out.println("empezo "+child.getKey());
+                    listaidUsuarios.add(child.getKey());
+                }
+                for (String key: listaidUsuarios) {
+                    String nombre = dataSnapshot.child("cliente").child(key).child("nombre").getValue().toString();
+                    String email = dataSnapshot.child("cliente").child(key).child("email").getValue().toString();
+                    String pathimage = dataSnapshot.child("cliente").child(key).child("pathImagen").getValue().toString();
                     boolean autorizacion = false;
-                    if (child.child("autorizacion").getValue().toString() == "true")
+                    if (dataSnapshot.child("autorizados").child(uid).child(key).child("autorizacion").getValue().toString().equals("true"))
                         autorizacion = true;
                     TrackinModel trac = new TrackinModel(nombre, email, pathimage, key, autorizacion);
                     listaAmigos.add(trac);
+                    System.out.println("empezoa "+key);
                 }
                 recyclerView.setAdapter(new TrackingAdapter( listaAmigos));
+                System.out.println("empezo2 "+listaAmigos.size());
             }
 
             @Override

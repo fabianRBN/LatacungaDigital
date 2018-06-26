@@ -298,7 +298,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     Double latitud = Double.parseDouble(child.child("latitud").getValue().toString());
                     Double longitud = Double.parseDouble(child.child("longitud").getValue().toString());
                     AreaPeligrosa areaPeligrosa = new AreaPeligrosa(nombreArea, idArea, radio, latitud, longitud);
-                    System.out.println("empezo"+areaPeligrosa.getNombre());
                     listaAreaPeligrosa.add(areaPeligrosa);
                     LatLng dangerousArea = new LatLng(areaPeligrosa.getLatitud(), areaPeligrosa.getLongitud());
                     googleMap.addCircle(new CircleOptions()
