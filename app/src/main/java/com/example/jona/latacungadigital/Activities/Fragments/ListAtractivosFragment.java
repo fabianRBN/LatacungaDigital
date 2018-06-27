@@ -69,7 +69,7 @@ public class ListAtractivosFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
 
-
+                listaAtractivo.clear();
                 for (DataSnapshot child: dataSnapshot.getChildren()){
                     AtractivoModel atractivoModel = new AtractivoModel();
                     atractivoModel.setNombre(child.child("nombre").getValue().toString());

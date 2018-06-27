@@ -12,6 +12,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -66,6 +67,7 @@ public class AtractivoActivity extends AppCompatActivity {
     public ViewPager viewPager;
 
     public LinearLayout layout_comentario, layout_editar_comentario, layout_lista_comentarios;
+    public CardView card_view_360;
 
     String atractivoKey;
     String usuarioKey;
@@ -96,7 +98,7 @@ public class AtractivoActivity extends AppCompatActivity {
 
     // Variables para Imagenes 360
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
-    private Button descargar360;
+    private ImageButton descargar360;
     private ProgressDialog mProgressDialog; // Para controlar el proseso de la descarga
 
     private VrPanoramaView vr_pan_view;
@@ -132,6 +134,7 @@ public class AtractivoActivity extends AppCompatActivity {
         
         layout_comentario = (LinearLayout) findViewById(R.id.layou_comentario);
         layout_editar_comentario = (LinearLayout ) findViewById(R.id.layout_editar_coemtario);
+        card_view_360 = (CardView) findViewById(R.id.card_view_360);
 
 
         txt_nombre_usuario = (TextView) findViewById(R.id.txt_nombre_usuario);
@@ -195,6 +198,7 @@ public class AtractivoActivity extends AppCompatActivity {
         txtTitulo = (TextView) findViewById(R.id.txtTituloAtractivo);
         txtCategoria= (TextView) findViewById(R.id.txtCategoriaAtractivo);
         txtDescripcion = (TextView) findViewById(R.id.txtDescripcionAtractivo);
+        vr_pan_view = (VrPanoramaView) findViewById(R.id.vr_pan_view);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             txtDescripcion.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
         }
@@ -203,14 +207,16 @@ public class AtractivoActivity extends AppCompatActivity {
         if(parametros !=null){
 
             this.atractivoKey = getIntent().getExtras().getString("atractivoKey");
+            NameOfFile = this.atractivoKey.toString();
             mDatabase = FirebaseDatabase.getInstance().getReference().child("atractivo").child(this.atractivoKey);
             getAtractivo();
+            setComentario();
+            comentarioUsuario();
+            getComentarios();
+            imagenes360();
         }
 
-        setComentario();
-        comentarioUsuario();
-        getComentarios();
-        imagenes360();
+
     }
 
     @Override
@@ -262,7 +268,8 @@ public class AtractivoActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //atractivoModel = dataSnapshot.getValue(AtractivoModel.class);
+                //atractivoModel = dataSnapshot.getValue(AtractivoModel.class)
+                listaImagenes.clear();
                txtTitulo.setText(dataSnapshot.child("nombre").getValue().toString());
                txtDescripcion.setText(dataSnapshot.child("descripcion").getValue().toString());
 
@@ -270,6 +277,13 @@ public class AtractivoActivity extends AppCompatActivity {
 
                 for(DataSnapshot galeria: dataSnapshot.child("galeria").getChildren()){
                     listaImagenes.add(galeria.child("imagenURL").getValue().toString());
+                }
+                if(dataSnapshot.child("imagen360").child("imagenURL").getValue() == null){
+                    //Toast.makeText(getApplicationContext(),"No hay imagen",Toast.LENGTH_LONG).show();
+
+                    card_view_360.setVisibility(View.GONE);
+                }else{
+                    imageHttpAddress = dataSnapshot.child("imagen360").child("imagenURL").getValue().toString();
                 }
                 ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getApplicationContext(), listaImagenes , width,height);
                 viewPager.setAdapter(viewPagerAdapter);
@@ -390,31 +404,35 @@ public class AtractivoActivity extends AppCompatActivity {
 
         if (!dir.exists()) { // Validacion de la existencia del directorio
             dir.mkdirs(); // creaccion del direcctorio
-            Toast.makeText(getApplicationContext(),"No existe 1",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Directorio de imagenes creado",Toast.LENGTH_LONG).show();
         }
         file = new File(dir, NameOfFile  + ".jpg"); // referencia de a imagen 360
 
-        if(file.exists()){ // verificacion si  la imagen 360 del atractivo ya esta descargada
-            Toast.makeText(getApplicationContext(),"Ya existe 1",Toast.LENGTH_LONG).show();
-
-            load360Image();
-
-        }
-
-
-        descargar360 = (Button)findViewById(R.id.btnDescarga);
+        descargar360 = (ImageButton)findViewById(R.id.btnDescarga);
         descargar360.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 startDownload();
             }
         });
 
+        if(file.exists()){ // verificacion si  la imagen 360 del atractivo ya esta descargada
+            //Toast.makeText(getApplicationContext(),"Ya existe 1",Toast.LENGTH_LONG).show();
+            descargar360.setVisibility(View.GONE);
+            load360Image();
+
+        }else{
+           // vr_pan_view.setVisibility(View.GONE);
+        }
+
+
+
+
 
 
     }
 
     private void load360Image() {
-        vr_pan_view = (VrPanoramaView) findViewById(R.id.vr_pan_view);
+
 
         InputStream open = null;
         FileInputStream open2 = null;
@@ -449,6 +467,9 @@ public class AtractivoActivity extends AppCompatActivity {
         });
 
 
+      /*  vr_pan_view.setVisibility(View.VISIBLE);
+        descargar360.setVisibility(View.GONE);
+        card_view_360.getLayoutParams().height = 300;*/
 
         vr_pan_view.loadImageFromBitmap(bitmap, options);
 
