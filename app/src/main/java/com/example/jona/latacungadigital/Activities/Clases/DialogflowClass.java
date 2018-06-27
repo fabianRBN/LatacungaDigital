@@ -49,7 +49,8 @@ public class DialogflowClass {
 
     private AccesoInternet accesoInternet; // Variable para controlar que el usuario este conectado a Internet.
 
-    public DialogflowClass(Context context, List<TextMessageModel> listMessagesText, RecyclerView rvListMessages, MessagesAdapter messagesAdapter, EditText txtMessageUserSend) {
+    public DialogflowClass(Context context, List<TextMessageModel> listMessagesText, RecyclerView rvListMessages, MessagesAdapter messagesAdapter,
+                           EditText txtMessageUserSend) {
         this.context = context;
         this.listMessagesText = listMessagesText;
         this.rvListMessages = rvListMessages;
@@ -105,11 +106,10 @@ public class DialogflowClass {
                especificas que irán en segundo plano. */
             @Override
             protected AIResponse doInBackground(AIRequest... aiRequests) {
-                //final AIRequest request = aiRequests[0];
+
                 if (accesoInternet.isNetDisponible(context)) { // Se envia el mensaje cuando haya solo internet en la aplicacion.
                     try {
-                        final AIResponse response = aiDataService.request(aiRequest);
-                        return response;
+                        return aiDataService.request(aiRequest); // Retornamos la respuesta de Dialogflow.
                     } catch (AIServiceException e) {
                         e.printStackTrace();
                         RemoveMessageTypingToDialogflow(); // Eliminamos la vista de chat bot is typing si existe un error.
@@ -163,17 +163,22 @@ public class DialogflowClass {
         if (response != null) {
             Result result = response.getResult();
             String action = result.getAction(); // Variable para reconocer la acción según la pregunta del usuario.
-            switch (action){
+
+            switch (action) {
                 case "weatherAction":
-                    final WeatherClass weatherModel = new WeatherClass(context);
-                    weatherModel.CurrentWeather(new WeatherClass.WeatherCallback() {
-                        @Override
-                        public void getResponseWeather(String response) {
-                            MessageSendToDialogflow(response);
-                        }
-                    });
+                    if(!result.getParameters().isEmpty()){
+                        WeatherClass weatherModel = new WeatherClass(context, result, this);
+                        weatherModel.WeatherResponse();
+                    } else {
+                        String speech = result.getFulfillment().getSpeech();
+                        MessageSendToDialogflow(speech);
+                    }
                     break;
-                case "churchInformationAction":
+                case "weather_intent.weather_intent-yes":
+                    WeatherClass weatherModel = new WeatherClass(context, result, this);
+                    weatherModel.WeatherResponse();
+                    break;
+                case "attractionInformationAction":
                     sendAttractiveToCardViewInformation(result);
                     break;
                 case "serviceInformationAction":
@@ -182,7 +187,7 @@ public class DialogflowClass {
                 case "service_information_intent.service_information_intent-yes":
                     sendServiceToMapMessage(result);
                     break;
-                case "church_information_intent.church_information_intent-yes":
+                case "attraction_information_intent.attraction_information_intent-yes":
                     sendAttractiveToMapMessage(result);
                     break;
                 case "consultarAtractivoEnElArea":
@@ -214,7 +219,7 @@ public class DialogflowClass {
     }
 
     // Método para enviar la respuesta al usuario.
-    private void MessageSendToDialogflow(final String message) {
+    public void MessageSendToDialogflow(String message) {
         TextMessageModel textMessageModel = new TextMessageModel(message);
         textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT);
         listMessagesText.add(textMessageModel);
@@ -270,19 +275,18 @@ public class DialogflowClass {
         TextMessageModel textMessageModel = new TextMessageModel();
         // Recorremos el resultado obtenido de dialogflow
         Set mapDialogFlowResult = JSONDialogflowResult.entrySet();
-        Iterator iterator = mapDialogFlowResult.iterator();
-        while(iterator.hasNext()){
+        for (Object aMapDialogFlowResult : mapDialogFlowResult) {
             ServiceClass tempService = new ServiceClass();
-            Map.Entry mapService = (Map.Entry) iterator.next(); // Obtenemos el servicio dentro del JSon del mapa
+            Map.Entry mapService = (Map.Entry) aMapDialogFlowResult; // Obtenemos el servicio dentro del JSon del mapa
             Gson gson = new Gson();
             JsonParser jsonParser = new JsonParser();
             String key = mapService.getKey().toString(); // Obtenemos la clave del servicio
             JsonElement values = jsonParser.parse(gson.toJson(mapService.getValue())); // Obtenemos los valores del servicio
-            tempService.readJSONDialogflow(key,values); // Asignamos los valores del Json al objeto servicio
-            if(tempService.getState()){
+            tempService.readJSONDialogflow(key, values); // Asignamos los valores del Json al objeto servicio
+            if (tempService.getState()) {
                 listService.add(tempService); // Añadimo el objeto servicio a la lista
-            }else{
-                Log.e("ERROR DE LECTURA JSON","Error al transformar Json a ServiceClass");
+            } else {
+                Log.e("ERROR DE LECTURA JSON", "Error al transformar Json a ServiceClass");
             }
         }
 

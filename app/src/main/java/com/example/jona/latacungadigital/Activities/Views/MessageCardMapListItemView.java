@@ -84,7 +84,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                 case "consultarRecreacionDiversionEsparcimientoEnElArea":
                     listService = message.getListService();
                     break;
-                case "church_information_intent.church_information_intent-yes":
+                case "attraction_information_intent.attraction_information_intent-yes":
                     attractive = message.getAttractive();
                     destinationLatLng = new LatLng(attractive.getLatitude(), attractive.getLongitude());
                     break;
@@ -224,12 +224,12 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                     createMarkerForService(listService.get(cont));
                 }
                 break;
-            case "church_information_intent.church_information_intent-yes":
+            case "attraction_information_intent.attraction_information_intent-yes":
             case "service_information_intent.service_information_intent-yes":
-                if(attractive != null){
+                if (attractive != null) {
                     // Crear marcador para la posicion del atractivo de destino
                     createMarkerForAttractive(attractive);
-                }else {
+                } else {
                     // Crear marcador para la posicion del servicio de destino
                     createMarkerForService(service);
                 }
@@ -265,7 +265,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                 case "consultarRecreacionDiversionEsparcimientoEnElArea":
                     mapaFragment.setListService(listService);
                     break;
-                case "church_information_intent.church_information_intent-yes":
+                case "attraction_information_intent.attraction_information_intent-yes":
                 case "service_information_intent.service_information_intent-yes":
                     mapaFragment.setPointDestination(destinationLatLng);
                     mapaFragment.setAttractive(this.attractive);

@@ -17,6 +17,11 @@ public class TrackinModel {
         this.autorizacion = autorizacion;
     }
 
+    public TrackinModel(String key, boolean autorizacion) {
+        this.key = key;
+        this.autorizacion = autorizacion;
+    }
+
     public String getNombre() {
         return nombre;
     }
