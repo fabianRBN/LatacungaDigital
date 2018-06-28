@@ -48,7 +48,7 @@ El trozo de texto estándar de Lorem Ipsum usado desde el año 1500 es reproduci
     <string-array name="valortiempoNotificacion">
         <item>30</item>
         <item>60</item>
-        <item>180 min</item>
+        <item>180</item>
         <item>3000</item>
         <item>600</item>
     </string-array>

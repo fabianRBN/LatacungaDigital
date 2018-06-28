@@ -88,7 +88,6 @@ public class TaskParser extends AsyncTask<String, Void, List<List<HashMap<String
                         double lat = Double.parseDouble(point.get("lat"));
 
                         double lon = Double.parseDouble(point.get("lon"));
-                        System.out.println("Punto añadido:"+ lon+" "+lat);
                         points.add(new LatLng(lat,lon));
                     }
                     polylineOptions.addAll(points);
@@ -99,7 +98,6 @@ public class TaskParser extends AsyncTask<String, Void, List<List<HashMap<String
             }
 
             if (polylineOptions!=null) {
-                System.out.println("Puntos completos");
                 if(this.polyline != null){
                     polyline.remove();
                 }

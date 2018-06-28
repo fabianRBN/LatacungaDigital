@@ -1,7 +1,9 @@
 package com.example.jona.latacungadigital.Activities.AsyncTask;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 
 import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +26,7 @@ public class TaskRequestDirections  extends AsyncTask<String,Void,String> implem
     GoogleMap googleMap;
     Context context;
     Polyline polyline;
+    SharedPreferences prefs;
 
     AccesoInternet accesoInternet;
 
@@ -42,6 +45,7 @@ public class TaskRequestDirections  extends AsyncTask<String,Void,String> implem
     }
 
     public String getRequestUrl(LatLng origen, LatLng destino){
+
         // Valor de origen
         String str_origen = "origin="+origen.latitude+","+origen.longitude;
         // Valor de destino
@@ -49,7 +53,9 @@ public class TaskRequestDirections  extends AsyncTask<String,Void,String> implem
         // Valor de sensor
         String sensor = "sensor=false";
         // Modo de direccion
-        String mode = "mode=walking";
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String direccionModo = prefs.getString("modoViaje", "walking");
+        String mode = "mode="+direccionModo;
         // Construir parametros google api
         String param = str_origen+"&"+str_destino+"&"+sensor+"&"+mode;
         // Output api
