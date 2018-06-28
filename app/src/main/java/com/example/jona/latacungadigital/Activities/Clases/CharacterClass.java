@@ -27,6 +27,10 @@ public class CharacterClass {
         void keyLastCharacter(String keyCharacter);
     }
 
+    public interface GenreCharacter {
+        void genreCharacter(String genreCharacter);
+    }
+
     // Constructor.
     public CharacterClass() {}
 
@@ -158,7 +162,7 @@ public class CharacterClass {
 
             // Método en caso de que exista un error en la consulta.
             @Override
-            public void onCancelled(DatabaseError databaseError) {databaseError.getMessage(); }
+            public void onCancelled(DatabaseError databaseError) { databaseError.getMessage(); }
         });
     }
 
@@ -182,9 +186,53 @@ public class CharacterClass {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError) { databaseError.getMessage(); }
+        });
+    }
 
+    // Método para obtener el genero del personaje seleccionado por el usuario.
+    public void getGenreCharacter(final GenreCharacter genreCharacter) {
+        // Se crea una nueva consulta para retornar los datos del personaje
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference("cliente");
+
+        databaseReference.orderByChild("idcliente").equalTo(getCurrentUserSignedUID()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String key = "";
+                for (DataSnapshot allDataCharacter: dataSnapshot.getChildren()) {
+                    // Guardamos la clave del personaje seleccionado en una varibale.
+                    key = allDataCharacter.child("personajeID").getValue(String.class);
+                }
+
+                // Se crea una nueva consulta para retornar los datos del personaje
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference databaseReference = database.getReference("personaje");
+
+                final String KeyCharacter = key;
+
+                // Creamos el query de la consulta de la base de datos.
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot allDataCharacter: dataSnapshot.getChildren()) {
+
+                            if (allDataCharacter.getKey().equals(KeyCharacter)) {
+                                genreCharacter.genreCharacter(allDataCharacter.child("sexo").getValue(String.class));
+                            }
+                        }
+                    }
+
+                    // Método en caso de que exista un error en la consulta.
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) { databaseError.getMessage(); }
+                });
             }
+
+            // Método en caso de que exista un error en la consulta.
+            @Override
+            public void onCancelled(DatabaseError databaseError) { databaseError.getMessage(); }
         });
     }
 

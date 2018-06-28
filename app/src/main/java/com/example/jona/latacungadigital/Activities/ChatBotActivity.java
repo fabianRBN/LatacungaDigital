@@ -90,6 +90,7 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
                 String keyCharacter = chatFragment.getDialogAppFragment().getCharacterAdapter().getKeyCharacter();
                 CharacterClass characterClass = new CharacterClass();
                 characterClass.updateKeyCharacterSeletedFormUser(keyCharacter);
+                chatFragment.getGenreCharacter(); // Para obtener el genero del personaje.
                 break;
         }
     }

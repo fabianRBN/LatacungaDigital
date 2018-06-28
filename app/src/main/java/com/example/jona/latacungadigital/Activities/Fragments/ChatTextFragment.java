@@ -142,6 +142,8 @@ public class ChatTextFragment extends Fragment {
 
         GiveWelcomeMessage(); // Dar el mensaje de Bienvenida al usuario.
 
+        getGenreCharacter(); // Obtenemos el genero del personaje.
+
         SetupActionBar(); // Para dar el titulo y el subtitulo que va a tener el Action Bar.
         setHasOptionsMenu(true); // Para habilitar las opciones del Toolbar.
 
@@ -205,6 +207,8 @@ public class ChatTextFragment extends Fragment {
         switchTextToSpeech.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                getGenreCharacter(); // Se obtiene el genero del personaje y se envia a la clase Dialogflow.
+
                 if (isChecked) {
                     dialogflowClass.setTextToSpeech(true);
                 } else {
@@ -310,6 +314,12 @@ public class ChatTextFragment extends Fragment {
         saveListMessageClass.SaveListMessage();
     }
 
+    // Método para saber si se permite guardar los mensajes en el chat.
+    public boolean isPermitSaveMessages() {
+        SaveListMessageClass saveListMessageClass = new SaveListMessageClass(getContext());
+        return saveListMessageClass.isPermitSaveMessages();
+    }
+
     // Método para obtener el usuario Logeado de la aplicación.
     private String getCurrentUserSigned() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -320,6 +330,17 @@ public class ChatTextFragment extends Fragment {
         }
 
         return nameUser; // Retornamos el nombre del usuario.
+    }
+
+    public void getGenreCharacter() {
+        // Cuando cambie el switch leemos el genero del personaje.
+        CharacterClass characterClass = new CharacterClass();
+        characterClass.getGenreCharacter(new CharacterClass.GenreCharacter() {
+            @Override
+            public void genreCharacter(String genreCharacter) {
+                dialogflowClass.setGenreCharacter(genreCharacter);
+            }
+        });
     }
 
     // Método para establecer el mensaje de bienvenida.
@@ -421,7 +442,9 @@ public class ChatTextFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ReadListMessageFromSharedPreferences(); // Leer lista de mensajes.
+        // Se leen los mensajes si el usuario a marcado la opcion "Mensajes en el Chat" en la parte de configuracion de la app.
+        if (isPermitSaveMessages()) ReadListMessageFromSharedPreferences(); // Se leen los mensajes guardados del chat.
+
         if(listMessageCardMapView !=null){
             for (MessageCardMapListItemView view : listMessageCardMapView) {
                 view.mapViewOnResume();
@@ -452,7 +475,9 @@ public class ChatTextFragment extends Fragment {
             }
         }
         dialogflowClass.getStreamPlayerClass().interrupt(); // Para interrumpir si esque el usuario se sale del ChatBot.
-        UpdateListMessageFromSharedPreferences(); // Modificamos la lista de mensajes.
+
+        // Se guardan los mensajes si el usuario a marcado la opcion "Mensajes en el Chat" en la parte de configuracion de la app.
+        if (isPermitSaveMessages()) UpdateListMessageFromSharedPreferences(); // Modificamos la lista de mensajes.
     }
 
     @Override

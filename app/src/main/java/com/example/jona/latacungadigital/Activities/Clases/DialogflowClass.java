@@ -46,6 +46,7 @@ public class DialogflowClass {
     private MessagesAdapter messagesAdapter;
     private EditText txtMessageUserSend;
     private boolean isTextToSpeech = false;
+    private String genreCharacter;
 
     private AccesoInternet accesoInternet; // Variable para controlar que el usuario este conectado a Internet.
 
@@ -74,6 +75,10 @@ public class DialogflowClass {
     public MessagesAdapter getMessagesAdapter() { return messagesAdapter; }
 
     public StreamPlayerClass getStreamPlayerClass() { return streamPlayerClass; }
+
+    public String getGenreCharacter() { return genreCharacter; }
+
+    public void setGenreCharacter(String genreCharacter) { this.genreCharacter = genreCharacter; }
 
     // Metodo de configuración para conectarse con Dialogflow.
     public void ConfigurationDialogflow() {
@@ -457,7 +462,16 @@ public class DialogflowClass {
                     toSpeechChatBot = new TextToSpeech();
                     toSpeechChatBot.setUsernameAndPassword(ChatBotReferences.USERNAME_API_WATSON, ChatBotReferences.PASSWORD_API_WATSON);
                     toSpeechChatBot.setEndPoint(ChatBotReferences.END_POINT_API_WATSON);
-                    streamPlayerClass.playStream(toSpeechChatBot.synthesize(message, Voice.ES_ENRIQUE).execute());
+
+                    Voice typeVoice;
+
+                    if (getGenreCharacter().equals("Hombre")) {
+                        typeVoice = Voice.ES_ENRIQUE;
+                    } else {
+                        typeVoice = Voice.ES_SOFIA;
+                    }
+
+                    streamPlayerClass.playStream(toSpeechChatBot.synthesize(message, typeVoice).execute());
                     return true;
                 } catch (Exception e) {
                     e.printStackTrace();

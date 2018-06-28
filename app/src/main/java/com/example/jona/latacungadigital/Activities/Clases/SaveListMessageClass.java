@@ -22,9 +22,7 @@ public class SaveListMessageClass {
         this.context = context;
     }
 
-    public SaveListMessageClass(Context context) {
-        this.context = context;
-    }
+    public SaveListMessageClass(Context context) { this.context = context; }
 
     public void SaveListMessage() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -50,5 +48,17 @@ public class SaveListMessageClass {
         }
 
         return messageModel;
+    }
+
+    public boolean isPermitSaveMessages() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        // Borramos la lista de mensajes antes de que se inicialize el chat.
+        if (!sharedPreferences.getBoolean("mensajesChat", false)) {
+            SharedPreferences.Editor editorPreferences = sharedPreferences.edit();
+            editorPreferences.remove("Lista_De_Mensajes").apply();
+        }
+
+        return sharedPreferences.getBoolean("mensajesChat", false);
     }
 }
