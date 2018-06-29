@@ -49,6 +49,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class ChatTextFragment extends Fragment {
 
@@ -65,38 +66,31 @@ public class ChatTextFragment extends Fragment {
     private DialogAppFragment dialogAppFragment; // Variable para controlar el Dialogo de eliminar mensajes.
     private boolean shouldRecreate = true; // Variable para controlar el onActivityResult() con onResume().
     private boolean isMessageToSend = false;
+    private boolean isSwicthChanged = false; // Varible para controlar el switch de activar la voz del personaje.
     private String messageToSend;
     private int typeDialog;
+    private Switch switchTextToSpeech;
 
     private NetworkReceiverClass networkReceiverClass;
     private ActionBar actionBar;
 
-    public  DialogflowClass dialogflowClass;
+    public DialogflowClass dialogflowClass;
     private View view;
 
-    public ChatTextFragment() {
-        // Required empty public constructor
-    }
+    // Constructor.
+    public ChatTextFragment() { }
 
     public DialogflowClass getDialogflowClass() { return dialogflowClass; }
 
-    public boolean getIsMessageToSend() {
-        return isMessageToSend;
-    }
+    public boolean getIsMessageToSend() { return isMessageToSend; }
 
     public int getTypeDialog() { return typeDialog; }
 
-    public void setIsMessageToSend(boolean isMessageToSend) {
-        this.isMessageToSend = isMessageToSend;
-    }
+    public void setIsMessageToSend(boolean isMessageToSend) { this.isMessageToSend = isMessageToSend; }
 
-    public String getMessageToSend() {
-        return messageToSend;
-    }
+    public String getMessageToSend() { return messageToSend; }
 
-    public void setMessageToSend(String messageToSend) {
-        this.messageToSend = messageToSend;
-    }
+    public void setMessageToSend(String messageToSend) { this.messageToSend = messageToSend; }
 
     public DialogAppFragment getDialogAppFragment() { return dialogAppFragment; }
 
@@ -114,7 +108,7 @@ public class ChatTextFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_chat_text, container, false);
 
         Toolbar toolBarChatBot = view.findViewById(R.id.toolBarChatBot); // Instanciar la variable con el Id del Toolbar.
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolBarChatBot);
+        ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolBarChatBot);
 
         rvListMessages = view.findViewById(R.id.listOfMessages); // Instanciar la variable con el Id del RecicleView.
 
@@ -141,8 +135,6 @@ public class ChatTextFragment extends Fragment {
         dialogAppFragment = new DialogAppFragment();
 
         GiveWelcomeMessage(); // Dar el mensaje de Bienvenida al usuario.
-
-        getGenreCharacter(); // Obtenemos el genero del personaje.
 
         SetupActionBar(); // Para dar el titulo y el subtitulo que va a tener el Action Bar.
         setHasOptionsMenu(true); // Para habilitar las opciones del Toolbar.
@@ -195,20 +187,22 @@ public class ChatTextFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Se infla el menu_chatbot.
         inflater.inflate(R.menu.menu_chatbot, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+        // Se infla el Switch para activar la voz del personaje.
         MenuItem menuItem = menu.findItem(R.id.navChatbotTextToSpeech);
         menuItem.setActionView(R.layout.switch_text_to_speech);
 
-        Switch switchTextToSpeech = menuItem.getActionView().findViewById(R.id.swicthTextToSpeech);
+        switchTextToSpeech = menuItem.getActionView().findViewById(R.id.swicthTextToSpeech);
+
+        // Para obtener el estado del Switch de la voz del personaje.
+        if (isSwicthChanged) {
+            dialogflowClass.setTextToSpeech(readStatusSwitchTextToSpeech());
+            switchTextToSpeech.setChecked(readStatusSwitchTextToSpeech());
+        }
+
         switchTextToSpeech.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                getGenreCharacter(); // Se obtiene el genero del personaje y se envia a la clase Dialogflow.
-
                 if (isChecked) {
                     dialogflowClass.setTextToSpeech(true);
                 } else {
@@ -217,7 +211,8 @@ public class ChatTextFragment extends Fragment {
                 }
             }
         });
-        super.onPrepareOptionsMenu(menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -260,7 +255,7 @@ public class ChatTextFragment extends Fragment {
         bundle.putInt("Type_Dialog", typeDialog);
         dialogAppFragment.setArguments(bundle);
 
-        dialogAppFragment.show(getFragmentManager(), "NoticeDialogFragment");
+        dialogAppFragment.show(Objects.requireNonNull(getFragmentManager()), "NoticeDialogFragment");
     }
 
     private void openDialogChangeCharacter() {
@@ -270,12 +265,12 @@ public class ChatTextFragment extends Fragment {
         bundle.putInt("Type_Dialog", typeDialog);
         dialogAppFragment.setArguments(bundle);
 
-        dialogAppFragment.show(getFragmentManager(), "NoticeDialogFragment");
+        dialogAppFragment.show(Objects.requireNonNull(getFragmentManager()), "NoticeDialogFragment");
     }
 
     // Método para establecer el nombre del personaje y si esta activo de acuerdo a la conexión a internet.
     private void SetupActionBar() {
-        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
         if (actionBar != null) {
             CharacterClass characterClass = new CharacterClass();
             characterClass.ReadCharacterFromDatabase(new CharacterClass.DataOfCharacters() {
@@ -285,9 +280,10 @@ public class ChatTextFragment extends Fragment {
                 }
             });
 
-            boolean showMessageToStartActivity = false; // Para no mostrar el mensaje de "Conexión exitosa" al inicio de la actividad.
             IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-            networkReceiverClass = new NetworkReceiverClass(actionBar, getActivity(), showMessageToStartActivity);
+
+            // Se envia false para no mostrar el mensaje de "Conexión exitosa" al inicio de la actividad.
+            networkReceiverClass = new NetworkReceiverClass(actionBar, getActivity(), false);
             getActivity().registerReceiver(networkReceiverClass, filter);
         }
     }
@@ -318,6 +314,18 @@ public class ChatTextFragment extends Fragment {
     public boolean isPermitSaveMessages() {
         SaveListMessageClass saveListMessageClass = new SaveListMessageClass(getContext());
         return saveListMessageClass.isPermitSaveMessages();
+    }
+
+    // Método para guardar el estado del Switch de la voz del personaje.
+    private void saveStatusSwitchTextToSpeech() {
+        SaveListMessageClass saveListMessageClass = new SaveListMessageClass(getContext());
+        saveListMessageClass.saveStateSwitch(switchTextToSpeech.isChecked());
+    }
+
+    // Método para obtener el estado del Switch de la voz del personaje.
+    private boolean readStatusSwitchTextToSpeech() {
+        SaveListMessageClass saveListMessageClass = new SaveListMessageClass(getContext());
+        return saveListMessageClass.readStateSwitch();
     }
 
     // Método para obtener el usuario Logeado de la aplicación.
@@ -445,6 +453,10 @@ public class ChatTextFragment extends Fragment {
         // Se leen los mensajes si el usuario a marcado la opcion "Mensajes en el Chat" en la parte de configuracion de la app.
         if (isPermitSaveMessages()) ReadListMessageFromSharedPreferences(); // Se leen los mensajes guardados del chat.
 
+        getGenreCharacter(); // Obtenemos el genero del personaje.
+
+        isSwicthChanged = true; // Para que al momento de que la app se resuma se pueda controlar el estado del Switch de la voz del personaje.
+
         if(listMessageCardMapView !=null){
             for (MessageCardMapListItemView view : listMessageCardMapView) {
                 view.mapViewOnResume();
@@ -475,6 +487,8 @@ public class ChatTextFragment extends Fragment {
             }
         }
         dialogflowClass.getStreamPlayerClass().interrupt(); // Para interrumpir si esque el usuario se sale del ChatBot.
+
+        saveStatusSwitchTextToSpeech(); // Guardamos el estado del Switch de la voz del personaje.
 
         // Se guardan los mensajes si el usuario a marcado la opcion "Mensajes en el Chat" en la parte de configuracion de la app.
         if (isPermitSaveMessages()) UpdateListMessageFromSharedPreferences(); // Modificamos la lista de mensajes.
@@ -509,6 +523,6 @@ public class ChatTextFragment extends Fragment {
             }
         }
         dialogflowClass.getStreamPlayerClass().interrupt(); // Para interrumpir si esque el usuario se sale del ChatBot.
-        getActivity().unregisterReceiver(networkReceiverClass); // Para destruir la comunicacion cuando se cierra la actividad.
+        Objects.requireNonNull(getActivity()).unregisterReceiver(networkReceiverClass); // Para destruir la comunicación cuando se cierra la actividad.
     }
 }

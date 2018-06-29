@@ -44,7 +44,7 @@ public class NetworkReceiverClass extends BroadcastReceiver {
         AccesoInternet accesoInternet = new AccesoInternet();
 
         if (accesoInternet.isNetDisponible(context)) { // Si esl dispositivo esta conectado al Internet.
-            actionBar.setSubtitle("Activo(a) ahora");
+            actionBar.setSubtitle("En línea");
             messageStatus = "Conexión exitosa.";
             colorSnackBarSatats = "FF04C607";
             timeToShowMessage = TSnackbar.LENGTH_SHORT;
