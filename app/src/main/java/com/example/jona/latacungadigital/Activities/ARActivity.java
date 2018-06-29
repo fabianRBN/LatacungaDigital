@@ -55,7 +55,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener {
         architectView.onPostCreate();
 
         try {
-            this.architectView.load("file:///android_asset/realidad/index.html");
+            this.architectView.load("file:///android_asset/Lugares/index.html");
             architectView.setLocation(latitude, longitude, altitude, accuracy);
         } catch (Exception e) {
             System.out.println("Error al cargar el asset de Wikitude");
