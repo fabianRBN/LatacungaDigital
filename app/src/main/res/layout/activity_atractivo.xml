@@ -109,7 +109,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/txtRatingToatal"
                             android:textStyle="bold"
-                            android:text="Categoria"
+                            android:text="0.0"
                             android:layout_marginBottom="5dp"
                             />
                     </LinearLayout>

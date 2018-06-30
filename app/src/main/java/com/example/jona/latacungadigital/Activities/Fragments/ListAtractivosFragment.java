@@ -11,6 +11,7 @@ import android.widget.ListView;
 
 import com.example.jona.latacungadigital.Activities.Adapters.ListAtractivoAdapter;
 import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
+import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -77,6 +78,7 @@ public class ListAtractivosFragment extends Fragment {
                     for(DataSnapshot child_galeria: child.child("galeria").getChildren()){
                         atractivoModel.setPathImagen(child_galeria.child("imagenURL").getValue().toString());
                     }
+                    atractivoModel.setPosicion(child.child("posicion").getValue(Coordenada.class));
 
                     listaAtractivo.add(atractivoModel);
                 }

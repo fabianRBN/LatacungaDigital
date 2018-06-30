@@ -34,6 +34,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 public class AtractivoService extends Service {
 
     GeoFire geoFire;
@@ -41,6 +44,8 @@ public class AtractivoService extends Service {
     private DatabaseReference mDatabase;
     // REferencia para atractivos
     private DatabaseReference mDatabaseAtractivo;
+    // REferencia para historial
+    private DatabaseReference mDatabaseHistorial;
     // Localizacion del usuario en listener
     private LocationListener listener;
     private LocationManager locationManager;
@@ -50,6 +55,11 @@ public class AtractivoService extends Service {
     //Minima distancia para updates en metros.
     private static final long MIN_CAMBIO_DISTANCIA_PARA_UPDATES = (long) 1.5; // 1.5 metros
 
+    //Para leer y escribir en la base de datos, necesitas una instancia de DatabaseReference:
+    private DatabaseReference databaseReference;
+    // Referencia de la fecha
+    Calendar fecha = new GregorianCalendar();
+    int año,mes,dia ;
 
     private NotificationManager notificationManager;
     // Identificador de notificacion
@@ -63,8 +73,12 @@ public class AtractivoService extends Service {
     public void onCreate() {
         super.onCreate();
 
-
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+
+        año = fecha.get(Calendar.YEAR);
+        mes = fecha.get(Calendar.MONTH);
+        dia = fecha.get(Calendar.DAY_OF_MONTH);
 
         // seguimiento de la ubicacion del cliente por medio del locationlistener
         listener = new LocationListener() {
@@ -100,8 +114,10 @@ public class AtractivoService extends Service {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,MIN_TIEMPO_ENTRE_UPDATES,MIN_CAMBIO_DISTANCIA_PARA_UPDATES,listener);
 
         // Referencia de firebase
-        mDatabase = FirebaseDatabase.getInstance().getReference("cliente").child(userFirebase.getUid());
-        mDatabaseAtractivo = FirebaseDatabase.getInstance().getReference("atractivo");
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        mDatabase = databaseReference.child("cliente").child(userFirebase.getUid());
+        mDatabaseAtractivo = databaseReference.child("atractivo");
+        mDatabaseHistorial = databaseReference.child("historial");
         geoFire = new GeoFire(mDatabase);
 
 
@@ -188,7 +204,7 @@ public class AtractivoService extends Service {
         intent.putExtra("atractivoKey", key);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pi);
-        mNotificationManager.notify(id, mBuilder.build());
+        mNotificationManager.notify(ID_NOTIFICATION, mBuilder.build());
 
 
 
@@ -200,6 +216,8 @@ public class AtractivoService extends Service {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 sendNotification("Alerta", String.format("Te encuantras en el atractivo:" + nombreAtractivo+"."),keyAtractivo, id_notificacion);
+                mDatabaseHistorial.child(keyAtractivo).child(userFirebase.getUid()).setValue("");
+
             }
 
             @Override
@@ -225,3 +243,4 @@ public class AtractivoService extends Service {
         });
     }
 }
+

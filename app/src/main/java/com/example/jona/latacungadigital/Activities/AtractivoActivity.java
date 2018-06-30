@@ -71,6 +71,7 @@ public class AtractivoActivity extends AppCompatActivity {
 
     String atractivoKey;
     String usuarioKey;
+    String distancia;
 
     private DatabaseReference mDatabase;
     private FirebaseDatabase mFirebaseInstance;
@@ -170,7 +171,7 @@ public class AtractivoActivity extends AppCompatActivity {
                 layout_editar_comentario.setVisibility(View.GONE);
             }
         });
-        
+        // Menu para editar
         btn_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,12 +208,18 @@ public class AtractivoActivity extends AppCompatActivity {
         if(parametros !=null){
 
             this.atractivoKey = getIntent().getExtras().getString("atractivoKey");
+            this.distancia = getIntent().getExtras().getString("distancia");
             NameOfFile = this.atractivoKey.toString();
             mDatabase = FirebaseDatabase.getInstance().getReference().child("atractivo").child(this.atractivoKey);
+            // Recupera toda la informacion del atractivo
             getAtractivo();
+            // Implementa funciones para que el usuario pueda comentar el atractivo
             setComentario();
+            // Recupera la informacion del commentario que a realizado el usuario
             comentarioUsuario();
+            // Recupera todos los comentarios sobre el atractivo
             getComentarios();
+            // Cargala image 360 o permite la descargar de la misma
             imagenes360();
         }
 
@@ -272,15 +279,12 @@ public class AtractivoActivity extends AppCompatActivity {
                 listaImagenes.clear();
                txtTitulo.setText(dataSnapshot.child("nombre").getValue().toString());
                txtDescripcion.setText(dataSnapshot.child("descripcion").getValue().toString());
-
-               txtCategoria.setText(dataSnapshot.child("categoria").getValue().toString());
+               txtCategoria.setText(dataSnapshot.child("categoria").getValue().toString() +" - "+ distancia);
 
                 for(DataSnapshot galeria: dataSnapshot.child("galeria").getChildren()){
                     listaImagenes.add(galeria.child("imagenURL").getValue().toString());
                 }
                 if(dataSnapshot.child("imagen360").child("imagenURL").getValue() == null){
-                    //Toast.makeText(getApplicationContext(),"No hay imagen",Toast.LENGTH_LONG).show();
-
                     card_view_360.setVisibility(View.GONE);
                 }else{
                     imageHttpAddress = dataSnapshot.child("imagen360").child("imagenURL").getValue().toString();
