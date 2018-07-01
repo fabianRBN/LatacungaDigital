@@ -65,9 +65,7 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
+    protected void onResume() { super.onResume(); }
 
     @Override
     protected void onDestroy() {
@@ -90,6 +88,14 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
                 String keyCharacter = chatFragment.getDialogAppFragment().getCharacterAdapter().getKeyCharacter();
                 CharacterClass characterClass = new CharacterClass();
                 characterClass.updateKeyCharacterSeletedFormUser(keyCharacter);
+
+                // Proceso para obtener el genero del personaje cuando el usuario decida cambiar este.
+                characterClass.getGenreCharacterFormChanged(keyCharacter, new CharacterClass.GenreCharacterFromChanged() {
+                    @Override
+                    public void genreCharacterFromChanged(String genreCharacter) {
+                        chatFragment.getDialogflowClass().setGenreCharacter(genreCharacter);
+                    }
+                });
                 break;
         }
     }

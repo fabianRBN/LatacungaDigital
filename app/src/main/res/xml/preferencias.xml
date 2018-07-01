@@ -10,11 +10,17 @@
             >
         </CheckBoxPreference>
 
-
         <CheckBoxPreference
             android:key="databaselocal"
             android:title="Datos sin conexio a internet"
             android:summary="Permite guardar informacion de los atractivos en la memoria de su dispositivo para "
+            >
+        </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:key="mensajesChat"
+            android:title="Mensajes en el Chat"
+            android:summary="Permite guardar los mensajes del chat en la memoria de su dispositivo para poder ver tu información en todo momento."
             >
         </CheckBoxPreference>
 
