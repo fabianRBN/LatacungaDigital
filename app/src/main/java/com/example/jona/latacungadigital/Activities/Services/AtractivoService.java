@@ -35,6 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class AtractivoService extends Service {
@@ -79,6 +80,7 @@ public class AtractivoService extends Service {
         año = fecha.get(Calendar.YEAR);
         mes = fecha.get(Calendar.MONTH);
         dia = fecha.get(Calendar.DAY_OF_MONTH);
+
 
         // seguimiento de la ubicacion del cliente por medio del locationlistener
         listener = new LocationListener() {
@@ -215,8 +217,10 @@ public class AtractivoService extends Service {
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
+                Date fecha = new Date();
                 sendNotification("Alerta", String.format("Te encuantras en el atractivo:" + nombreAtractivo+"."),keyAtractivo, id_notificacion);
-                mDatabaseHistorial.child(keyAtractivo).child(userFirebase.getUid()).setValue("");
+
+                mDatabaseHistorial.child(keyAtractivo).child(userFirebase.getUid()).child(fecha.getYear()+""+fecha.getMonth()+""+fecha.getDay()).setValue(fecha);
 
             }
 

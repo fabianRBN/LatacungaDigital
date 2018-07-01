@@ -2,14 +2,19 @@ package com.example.jona.latacungadigital.Activities;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -33,9 +38,11 @@ import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.ListaComentarioAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.ViewPagerAdapter;
+import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.Activities.Parser.CircleTransform;
 import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
 import com.example.jona.latacungadigital.Activities.modelos.ComentarioModel;
+import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -221,6 +228,8 @@ public class AtractivoActivity extends AppCompatActivity {
             getComentarios();
             // Cargala image 360 o permite la descargar de la misma
             imagenes360();
+
+
         }
 
 
@@ -241,6 +250,8 @@ public class AtractivoActivity extends AppCompatActivity {
             vr_pan_view.shutdown();
         }
     }
+
+
 
     public void setComentario(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -263,7 +274,7 @@ public class AtractivoActivity extends AppCompatActivity {
     }
 
     public void  getAtractivo(){
-        listaImagenes.clear();
+        listaImagenes.clear();// Limpia el arreglo de imagenes
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -280,10 +291,11 @@ public class AtractivoActivity extends AppCompatActivity {
                txtTitulo.setText(dataSnapshot.child("nombre").getValue().toString());
                txtDescripcion.setText(dataSnapshot.child("descripcion").getValue().toString());
                txtCategoria.setText(dataSnapshot.child("categoria").getValue().toString() +" - "+ distancia);
-
+                // Recupera las imagenes del atractivo
                 for(DataSnapshot galeria: dataSnapshot.child("galeria").getChildren()){
                     listaImagenes.add(galeria.child("imagenURL").getValue().toString());
                 }
+                // Verifica si existen imagenes 360
                 if(dataSnapshot.child("imagen360").child("imagenURL").getValue() == null){
                     card_view_360.setVisibility(View.GONE);
                 }else{
@@ -291,6 +303,23 @@ public class AtractivoActivity extends AppCompatActivity {
                 }
                 ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getApplicationContext(), listaImagenes , width,height);
                 viewPager.setAdapter(viewPagerAdapter);
+
+                if(dataSnapshot.child("posicion").getValue() != null){
+                    final Coordenada coordenada = dataSnapshot.child("posicion").getValue(Coordenada.class);
+                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            Uri gmmIntentUri = Uri.parse("google.navigation:q="+coordenada.getLat()+","+coordenada.getLng());
+                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                            mapIntent.setPackage("com.google.android.apps.maps");
+                            startActivity(mapIntent);
+
+
+                        }
+                    });
+                }
              }
 
             @Override
