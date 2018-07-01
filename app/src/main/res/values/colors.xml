@@ -6,4 +6,7 @@
     <color name="button">#2397f3</color>
     <color name="indigo">#9784ec</color>
     <color name="pink">#9784ec</color>
+    <color name="map_DRIVING">#d426108b</color>
+    <color name="map_BICYCLING">#e942dc7d</color>
+    <color name="map_WALKING">#e516710e</color>
 </resources>

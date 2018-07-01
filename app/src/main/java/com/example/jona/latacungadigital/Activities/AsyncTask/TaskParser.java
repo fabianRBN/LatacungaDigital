@@ -1,12 +1,15 @@
 package com.example.jona.latacungadigital.Activities.AsyncTask;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Parser.DirectionsParser;
 import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
+import com.example.jona.latacungadigital.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
@@ -29,7 +32,7 @@ public class TaskParser extends AsyncTask<String, Void, List<List<HashMap<String
     Context context;
 
     Polyline polyline;
-
+    SharedPreferences prefs;
     AccesoInternet accesoInternet;
 
     public AsyncResponse delegate = null;
@@ -92,7 +95,18 @@ public class TaskParser extends AsyncTask<String, Void, List<List<HashMap<String
                     }
                     polylineOptions.addAll(points);
                     polylineOptions.width(15);
-                    polylineOptions.color(Color.BLUE);
+                    prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                    String direccionModo = prefs.getString("modoViaje", "walking");
+                    if(direccionModo.equals("walking")){
+                        polylineOptions.color(context.getResources().getColor(R.color.map_WALKING));
+                    }else if(direccionModo.equals("driving")){
+                        polylineOptions.color(context.getResources().getColor(R.color.map_DRIVING));
+                    }else if(direccionModo.equals("bicycling")){
+
+                        polylineOptions.color(context.getResources().getColor(R.color.map_BICYCLING));
+                    }
+
+
                     polylineOptions.geodesic(true);
                 }
             }
