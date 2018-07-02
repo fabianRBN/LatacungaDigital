@@ -70,6 +70,7 @@ public class ChatTextFragment extends Fragment {
     private String messageToSend;
     private int typeDialog;
     private Switch switchTextToSpeech;
+    private boolean receiversRegistered; // Variable para controlar el brodcast de la conexion a internet.
 
     private NetworkReceiverClass networkReceiverClass;
     private ActionBar actionBar;
@@ -284,7 +285,10 @@ public class ChatTextFragment extends Fragment {
 
             // Se envia false para no mostrar el mensaje de "Conexión exitosa" al inicio de la actividad.
             networkReceiverClass = new NetworkReceiverClass(actionBar, getActivity(), false);
-            getActivity().registerReceiver(networkReceiverClass, filter);
+            if (!receiversRegistered) {
+                getActivity().registerReceiver(networkReceiverClass, filter);
+                receiversRegistered = true;
+            }
         }
     }
 
@@ -502,6 +506,12 @@ public class ChatTextFragment extends Fragment {
                 view.mapViewOnStop();
             }
         }
+
+        // Para parar la comunicación del broadcast cuando se pare la actividad.
+        if (receiversRegistered) {
+            Objects.requireNonNull(getActivity()).unregisterReceiver(networkReceiverClass);
+            receiversRegistered = false;
+        }
     }
 
     @Override
@@ -523,6 +533,7 @@ public class ChatTextFragment extends Fragment {
             }
         }
         dialogflowClass.getStreamPlayerClass().interrupt(); // Para interrumpir si esque el usuario se sale del ChatBot.
-        Objects.requireNonNull(getActivity()).unregisterReceiver(networkReceiverClass); // Para destruir la comunicación cuando se cierra la actividad.
+        // Para destruir la comunicación cuando se cierra la actividad.
+        if (receiversRegistered) Objects.requireNonNull(getActivity()).unregisterReceiver(networkReceiverClass);
     }
 }
