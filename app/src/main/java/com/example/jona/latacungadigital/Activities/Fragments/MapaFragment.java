@@ -30,6 +30,7 @@ import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.Activities.Clases.AreaPeligrosa;
+import com.example.jona.latacungadigital.Activities.modelos.TrackinModel;
 import com.example.jona.latacungadigital.R;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -400,48 +401,50 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
 
     // Crear un marcador en el mapa de acuerdo a usuarios amigos
     private void createMarkerForUsers(){
-        final OnMarkerClickListenerAdapter onMarkerClickListenerAdapter = new OnMarkerClickListenerAdapter(getContext(),googleMap);
-        final ArrayList<String> listaidUsuarios = new ArrayList<>();
+        final ArrayList<TrackinModel> listaidUsuarios = new ArrayList<>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child("autorizados").child(userFirebase.getUid()).exists()){
-                    for (DataSnapshot child: dataSnapshot.child("autorizados").child(userFirebase.getUid()).getChildren()){
-                        listaidUsuarios.add(child.getKey());
+                if (dataSnapshot.child("meAutorizaron").child(userFirebase.getUid()).exists()){
+                    for (DataSnapshot child: dataSnapshot.child("meAutorizaron").child(userFirebase.getUid()).getChildren()){
+                        boolean autorizado = Boolean.parseBoolean(child.child("autorizacion").getValue().toString());
+                        listaidUsuarios.add(new TrackinModel(child.getKey(),autorizado));
                     }
-                    for (String key: listaidUsuarios){
-                        if (dataSnapshot.child("cliente").child(key).child("GeoFire").exists()){
-                            String nombre = dataSnapshot.child("cliente").child(key).child("nombre").getValue().toString();
-                            double latitud = Double.parseDouble(dataSnapshot.child("cliente").child(key).child("GeoFire")
-                                            .child("l").child("0").getValue().toString());
-                            double longitud = Double.parseDouble(dataSnapshot.child("cliente").child(key).child("GeoFire")
-                                    .child("l").child("1").getValue().toString());
-                            MarkerOptions markerOptions =  new MarkerOptions();
-                            markerOptions.position(new LatLng(latitud,longitud));
-                            markerOptions.title(nombre);
-                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_user_dark_blue));
+                    for (TrackinModel trac: listaidUsuarios){
+                        if (trac.isAutorizacion()){
+                            if (dataSnapshot.child("cliente").child(trac.getKey()).child("GeoFire").exists()){
+                                String nombre = dataSnapshot.child("cliente").child(trac.getKey()).child("nombre").getValue().toString();
+                                double latitud = Double.parseDouble(dataSnapshot.child("cliente").child(trac.getKey())
+                                        .child("GeoFire").child("l").child("0").getValue().toString());
+                                double longitud = Double.parseDouble(dataSnapshot.child("cliente").child(trac.getKey())
+                                        .child("GeoFire").child("l").child("1").getValue().toString());
+                                MarkerOptions markerOptions =  new MarkerOptions();
+                                markerOptions.position(new LatLng(latitud,longitud));
+                                markerOptions.title(nombre);
+                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_user_dark_blue));
 
-                            //Calculo de la distancia
-                            Location locationA = new Location("punto A");
-                            locationA.setLatitude(latitud);
-                            locationA.setLongitude(longitud);
-                            //usuario amigo
-                            Location locationB = new Location("punto B");
-                            locationB.setLatitude(currentUserLatLng.latitude);
-                            locationB.setLongitude(currentUserLatLng.longitude);
+                                //Calculo de la distancia
+                                Location locationA = new Location("punto A");
+                                locationA.setLatitude(latitud);
+                                locationA.setLongitude(longitud);
+                                //usuario amigo
+                                Location locationB = new Location("punto B");
+                                locationB.setLatitude(currentUserLatLng.latitude);
+                                locationB.setLongitude(currentUserLatLng.longitude);
 
-                            float distance = locationA.distanceTo(locationB) /1000;
-                            String formatoDistancia = String.format("%.02f", distance);
+                                float distance = locationA.distanceTo(locationB) /1000;
+                                String formatoDistancia = String.format("%.02f", distance);
 
-                            markerOptions.snippet("distancia: "+formatoDistancia+" km");
-                            markerOptions.draggable(false);
-                            googleMap.addMarker(markerOptions).setTag("userMarker");
+                                markerOptions.snippet("distancia: "+formatoDistancia+" km");
+                                markerOptions.draggable(false);
+                                googleMap.addMarker(markerOptions).setTag("userMarker");
 
-                            if (distance >= 1){
-                                sendNotification("Alerta", String.format(nombre+" se alejo a "+formatoDistancia+" km de distancia de ti"));
+                                if (distance >= 1){
+                                    sendNotification("Alerta", String.format(nombre+" se alejo a "+formatoDistancia+" km de distancia de ti"));
+                                }
+
                             }
-
                         }
 
                     }
