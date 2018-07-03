@@ -210,7 +210,6 @@ public class TrackinFragment extends Fragment {
         listaidUsuarios.clear();
         listaAmigos.clear();
         mdatabase = FirebaseDatabase.getInstance().getReference();
-        //System.out.println("uid: "+userFirebase.getCurrentUser().getUid());
         mdatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
