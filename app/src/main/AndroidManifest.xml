@@ -76,7 +76,12 @@
         <service
             android:name=".Activities.Services.AtractivoService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="true"></service>
+        <receiver android:name=".Activities.Services.BootBroadcast">
+            <intent-filter >
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

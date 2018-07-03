@@ -50,6 +50,19 @@ public class SaveListMessageClass {
         return messageModel;
     }
 
+    public void saveStateSwitch(boolean status) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editorPreferences = sharedPreferences.edit();
+
+        editorPreferences.putBoolean("Estado_Switch_Speech", status);
+        editorPreferences.apply();
+    }
+
+    public boolean readStateSwitch() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean("Estado_Switch_Speech", false);
+    }
+
     public boolean isPermitSaveMessages() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 

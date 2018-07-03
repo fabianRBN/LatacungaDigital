@@ -33,11 +33,6 @@ public  class AtractivoModel {
 
     public String key;
 
-
-
-
-
-
     public AtractivoModel() {
 
     }

@@ -59,7 +59,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
         } else if (viewType == ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT) { // Si el mensaje es del ChatBot se añade el view de esta al view de la lista de mensajes.
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.message_chatbot, parent, false);
-            return new ChatBotMessageHolder(view, context);
+            return new ChatBotMessageHolder(view, parent.getContext());
         } else if (viewType == ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT_TYPING) { // Si el mensaje es del ChatBotTyping se añade el view de esta al view de la lista de mensajes.
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.chatbot_is_typing, parent, false);
@@ -126,27 +126,5 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
         return listChatModel.get(position).getViewTypeMessage();
-//        if (listChatModel.get(position).getViewTypeMessage() == ChatBotReferences.VIEW_TYPE_MESSAGE_USER) {
-//            // Si el usuario mando el mensaje.
-//            return ChatBotReferences.VIEW_TYPE_MESSAGE_USER;
-//        } else if (listChatModel.get(position).getViewTypeMessage() == ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT) {
-//            // Si el ChatBot envio el mensaje.
-//            return ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT;
-//        } else if (listChatModel.get(position).getViewTypeMessage() == ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT_TYPING) {
-//            // Si el ChatBot esta escribiendo el mensaje.
-//            return ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT_TYPING;
-//        } else if (listChatModel.get(position).getViewTypeMessage() == ChatBotReferences.VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT){
-//            // El chatbot envia un mensaje con informacion de un atractivo turistico
-//            return ChatBotReferences.VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT;
-//        } else if (listChatModel.get(position).getViewTypeMessage() == ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP) {
-//            // El chatbot envia un mensaje con un mapa
-//            return ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP;
-//        } else if (listChatModel.get(position).getViewTypeMessage() == ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_DETAIL_SERVICE) {
-//            // El chatbot envia un mensaje con informacion de un servicio
-//            return ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_DETAIL_SERVICE;
-//        } else {
-//            // El chat bot muestra como llegar al lugar turistico.
-//            return ChatBotReferences.VIEW_TYPE_MESSAGE_MAP_ATTRACTIVE_HOW_TO_GET;
-//        }
     }
 }

@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.jona.latacungadigital.Activities.Fragments.DialogAppFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.ListAtractivosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
+import com.example.jona.latacungadigital.Activities.Fragments.TrackeadosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.TrackinFragment;
 import com.example.jona.latacungadigital.Activities.Services.AtractivoService;
 import com.example.jona.latacungadigital.R;
@@ -36,7 +37,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import java.util.prefs.PreferenceChangeListener;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener,
-        ListAtractivosFragment.OnFragmentInteractionListener, DialogAppFragment.NoticeDialogListener, TrackinFragment.OnFragmentInteractionListener {
+        ListAtractivosFragment.OnFragmentInteractionListener, DialogAppFragment.NoticeDialogListener, TrackinFragment.OnFragmentInteractionListener,
+        TrackeadosFragment.OnFragmentInteractionListener {
 
     private GoogleApiClient googleApiClient; // Variable para manejar los datos de Google.
 

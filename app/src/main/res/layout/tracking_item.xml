@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:padding="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,13 +37,12 @@
             android:layout_width="0dp"
             android:layout_weight=".2"
             android:layout_height="wrap_content">
-            <Switch
-                android:id="@+id/switch1"
+            <Button
+                android:id="@+id/button2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Switch"
-                tools:layout_editor_absoluteX="134dp"
-                tools:layout_editor_absoluteY="135dp" />
+                android:layout_weight="1"
+                android:drawableBottom="@drawable/ic_cancelar_green" />
         </LinearLayout>
     </LinearLayout>
 

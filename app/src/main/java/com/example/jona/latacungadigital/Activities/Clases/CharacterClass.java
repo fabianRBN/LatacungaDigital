@@ -31,6 +31,10 @@ public class CharacterClass {
         void genreCharacter(String genreCharacter);
     }
 
+    public interface GenreCharacterFromChanged {
+        void genreCharacterFromChanged(String genreCharacter);
+    }
+
     // Constructor.
     public CharacterClass() {}
 
@@ -228,6 +232,30 @@ public class CharacterClass {
                     @Override
                     public void onCancelled(DatabaseError databaseError) { databaseError.getMessage(); }
                 });
+            }
+
+            // Método en caso de que exista un error en la consulta.
+            @Override
+            public void onCancelled(DatabaseError databaseError) { databaseError.getMessage(); }
+        });
+    }
+
+    // Método para obtener el género del personaje cuando el usuario cambie este.
+    public void getGenreCharacterFormChanged(final String keyCharacter, final GenreCharacterFromChanged genreCharacterFromChanged) {
+        // Se crea una nueva consulta para retornar los datos del personaje
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference("personaje");
+
+        // Creamos el query de la consulta de la base de datos.
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot allDataCharacter: dataSnapshot.getChildren()) {
+
+                    if (allDataCharacter.getKey().equals(keyCharacter)) {
+                        genreCharacterFromChanged.genreCharacterFromChanged(allDataCharacter.child("sexo").getValue(String.class));
+                    }
+                }
             }
 
             // Método en caso de que exista un error en la consulta.

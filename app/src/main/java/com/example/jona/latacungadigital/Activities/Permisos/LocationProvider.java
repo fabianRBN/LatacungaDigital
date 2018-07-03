@@ -31,7 +31,7 @@ public class LocationProvider {
     private boolean gpsProviderEnabled, networkProviderEnabled;
 
     private Context context;
-    public LocationProvider(final Context context, LocationListener locationListener ) {
+    public LocationProvider(Context context, LocationListener locationListener ) {
         super();
         this.context = context;
         this.locationManager = (LocationManager)context.getSystemService( Context.LOCATION_SERVICE );
