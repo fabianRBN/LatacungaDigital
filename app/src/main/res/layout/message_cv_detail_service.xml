@@ -19,20 +19,40 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="5px"
-        android:paddingRight="5px">
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
 
-        <TextView
-            android:id="@+id/txt_titulo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:text="Hotel Cotopaxi"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_titulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="5dp"
+                android:paddingEnd="10dp"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <ImageButton
+                android:id="@+id/btn_facebook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/facebookPageText"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:src="@drawable/ic_icons_facebook_24"
+                android:tint="#3B5998" />
+
+
+        </LinearLayout>
 
         <View
             android:id="@+id/divider"
@@ -41,44 +61,182 @@
             android:background="@android:color/darker_gray" />
 
         <TextView
+            android:id="@+id/txt_abierto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="2dp"
+            android:paddingBottom="5dp"
+            android:paddingEnd="10dp"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp" />
+
+        <TextView
             android:id="@+id/txt_categoria"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:text="Tipo de actividad" />
+            android:paddingEnd="10dp"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp" />
 
         <TextView
             android:id="@+id/txt_direccion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:text="Dirección" />
+            android:paddingEnd="10dp"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp" />
 
         <TextView
             android:id="@+id/txt_contacto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:text="Contacto" />
+            android:paddingEnd="10dp"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp" />
+
+        <TextView
+            android:id="@+id/txt_correo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            android:paddingEnd="10dp"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp" />
 
         <TextView
             android:id="@+id/txt_web"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:text="Web" />
+            android:paddingEnd="10dp"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <com.github.florent37.expansionpanel.ExpansionHeader
+            android:id="@+id/expansionHeaderLayout"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:expansion_headerIndicator="@id/headerIndicator"
+            app:expansion_layout="@id/expansionLayout"
+            app:expansion_toggleOnClick="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/vpPlacesInformation"
+                android:paddingBottom="5dp"
+                android:paddingEnd="10dp"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/scheduleTitle" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:adjustViewBounds="true"
+                android:id="@+id/headerIndicator"
+                android:layout_gravity="top|end"
+                android:layout_height="match_parent"
+                android:layout_marginStart="38dp"
+                android:layout_width="wrap_content"
+                android:tint="@color/black"
+                app:srcCompat="@drawable/ic_expansion_header_indicator_grey_24dp" />
+
+        </com.github.florent37.expansionpanel.ExpansionHeader>
+
+        <com.github.florent37.expansionpanel.ExpansionLayout
+            android:id="@+id/expansionLayout"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_siempre_abierto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp" />
+
+                <TextView
+                    android:id="@+id/txt_lunes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp" />
+
+                <TextView
+                    android:id="@+id/txt_martes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp" />
+
+                <TextView
+                    android:id="@+id/txt_miercoles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp" />
+
+                <TextView
+                    android:id="@+id/txt_jueves"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp" />
+
+                <TextView
+                    android:id="@+id/txt_viernes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp" />
+
+                <TextView
+                    android:id="@+id/txt_sabado"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp" />
+
+                <TextView
+                    android:id="@+id/txt_domingo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp" />
+
+            </LinearLayout>
+        </com.github.florent37.expansionpanel.ExpansionLayout>
 
     </LinearLayout>
 

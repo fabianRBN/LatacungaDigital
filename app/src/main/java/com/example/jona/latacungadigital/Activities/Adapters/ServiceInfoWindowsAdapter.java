@@ -1,6 +1,7 @@
 package com.example.jona.latacungadigital.Activities.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ public class ServiceInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter, G
         TextView txtCategoria = (TextView) view.findViewById(R.id.str_categoria);
         TextView txtDireccion = (TextView) view.findViewById(R.id.str_direccion);
         TextView txtContacto = (TextView) view.findViewById(R.id.str_contacto);
+        TextView txtAbierto = (TextView) view.findViewById(R.id.str_abierto);
 
         if(marker.getTag() != null){
             service = (ServiceClass) marker.getTag();
@@ -45,6 +47,18 @@ public class ServiceInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter, G
             txtCategoria.setText(service.getTypeOfActivity());
             txtDireccion.setText(service.getAddress());
             txtContacto.setText(service.getContact());
+            if (service.getHorario().isHorarioDefinido()) {
+                if(service.isOpen()){
+                    txtAbierto.setText("Abierto");
+                    txtAbierto.setTextColor(Color.GREEN);
+                } else {
+                    txtAbierto.setText("Cerrado");
+                    txtAbierto.setTextColor(Color.RED);
+                }
+            }else{
+                txtAbierto.setText("Horario no definido");
+                txtAbierto.setTextColor(Color.DKGRAY);
+            }
         } else {
             txtTitulo.setText("No se pudo leer el servicio");
             txtCategoria.setText("");
