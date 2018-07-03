@@ -80,10 +80,10 @@ dependencies {
     //Librerias para la realidad aumentada
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation (name: 'wikitudesdk', ext: 'aar')
+    implementation(name: 'wikitudesdk', ext: 'aar')
 
     // Librerias para VR
-    implementation  'com.google.vr:sdk-panowidget:1.10.0'
+    implementation 'com.google.vr:sdk-panowidget:1.10.0'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })

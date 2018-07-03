@@ -1,8 +1,16 @@
 package com.example.jona.latacungadigital.Activities.Fragments;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +40,9 @@ public class ListAtractivosFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     public ArrayList<AtractivoModel> listaAtractivo = new ArrayList<>();
     private String filter = "";
+    final AlertDialog alert = null;
+    LocationManager manager;
+
 
     public ListAtractivosFragment() {
         // Required empty public constructor
@@ -53,12 +64,46 @@ public class ListAtractivosFragment extends Fragment {
 
         listView = (ListView) view.findViewById(R.id.listViewAtractivos);
 
-        ConsultarAtractivos("");
+
+
+
 
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        manager = (LocationManager) getContext().getSystemService( Context.LOCATION_SERVICE );
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            showAlert();
+        }else{
+            ConsultarAtractivos("");
+        }
 
+
+
+    }
+
+    private void showAlert() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        dialog.setTitle("Localizacion desactivada")
+                .setMessage("Su ubicación esta desactivada.\npor favor active su ubicación " +
+                        "usa esta app")
+                .setPositiveButton("Configuración de ubicación", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        getContext().startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    }
+                });
+        dialog.show();
+    }
 
     public void ConsultarAtractivos(String arg){
 
@@ -122,6 +167,16 @@ public class ListAtractivosFragment extends Fragment {
     }
 
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(manager!= null){
+            manager = (LocationManager) getContext().getSystemService( Context.LOCATION_SERVICE );
+        }
+
+
+
+    }
 
     /**
      * This interface must be implemented by activities that contain this

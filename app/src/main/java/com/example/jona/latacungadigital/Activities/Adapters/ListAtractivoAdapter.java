@@ -2,13 +2,16 @@ package com.example.jona.latacungadigital.Activities.Adapters;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,10 +56,19 @@ public class ListAtractivoAdapter extends BaseAdapter {
         Criteria criteria = new Criteria();
 
         haversine = new Haversine();
+
         location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
-        start = new Coordenada(location.getLatitude(),location.getLongitude());
+        if(location!= null){
+            start = new Coordenada(location.getLatitude(),location.getLongitude());
+        }else
+        {
+            start = new Coordenada(0,0);
+        }
+
     }
+
+
 
     @Override
     public int getCount() {
