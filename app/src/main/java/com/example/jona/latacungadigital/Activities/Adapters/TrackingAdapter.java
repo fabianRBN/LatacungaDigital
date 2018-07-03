@@ -48,22 +48,19 @@ public class TrackingAdapter extends RecyclerView.Adapter {
         TextView tvNombre;
         TextView tvEmail;
         ImageView ivFoto;
-        Switch swEstado;
 
         public ViewHolderDatos(View itemView) {
             super(itemView);
             tvNombre = (TextView) itemView.findViewById(R.id.tv_nombre);
             tvEmail = (TextView) itemView.findViewById(R.id.tv_email);
             ivFoto = (ImageView) itemView.findViewById(R.id.iv_foto);
-            swEstado = (Switch) itemView.findViewById(R.id.switch1);
         }
 
         public void asignarDatos(TrackinModel trackinModel) {
             tvNombre.setText(trackinModel.getNombre());
             tvEmail.setText(trackinModel.getEmail());
             Picasso.get().load(trackinModel.getPathImagen()).transform(new CircleTransform()).into(ivFoto);
-            if (trackinModel.isAutorizacion())
-                swEstado.setChecked(true);
+
 
         }
     }
