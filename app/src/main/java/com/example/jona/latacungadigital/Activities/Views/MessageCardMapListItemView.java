@@ -82,6 +82,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                 case "consultarAlojamientoEnElArea":
                 case "consultarComidaYBebidaEnElArea":
                 case "consultarRecreacionDiversionEsparcimientoEnElArea":
+                case "attractionOutsideHistoricCenterAction":
                     listService = message.getListService();
                     break;
                 case "attraction_information_intent.attraction_information_intent-yes":
@@ -219,6 +220,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
             case "consultarAlojamientoEnElArea":
             case "consultarComidaYBebidaEnElArea":
             case "consultarRecreacionDiversionEsparcimientoEnElArea":
+            case "attractionOutsideHistoricCenterAction":
                 // Agregar un marcador en cada posicion del servicio
                 for (int cont=0; cont < listService.size(); cont++ ){
                     createMarkerForService(listService.get(cont));
@@ -263,6 +265,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                 case "consultarAlojamientoEnElArea":
                 case "consultarComidaYBebidaEnElArea":
                 case "consultarRecreacionDiversionEsparcimientoEnElArea":
+                case "attractionOutsideHistoricCenterAction":
                     mapaFragment.setListService(listService);
                     break;
                 case "attraction_information_intent.attraction_information_intent-yes":
