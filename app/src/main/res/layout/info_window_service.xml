@@ -38,6 +38,15 @@
             android:background="@android:color/darker_gray" />
 
         <TextView
+            android:id="@+id/str_abierto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="2dp"
+            android:text="Horario no definido"
+            android:textColor="@color/grey_800" />
+
+        <TextView
             android:id="@+id/str_direccion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

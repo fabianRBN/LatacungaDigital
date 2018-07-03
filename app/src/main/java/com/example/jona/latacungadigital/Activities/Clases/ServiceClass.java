@@ -5,9 +5,12 @@ import android.util.Log;
 import com.example.jona.latacungadigital.R;
 import com.google.gson.JsonElement;
 
+import java.util.Calendar;
+
 public class ServiceClass {
     // Variables de la clase obtenidas de la BDD
     private Boolean state;
+
     private String key;
     private String alias;
     private String category;
@@ -16,6 +19,9 @@ public class ServiceClass {
     private String name;
     private String typeOfActivity;
     private String web;
+    private String email;
+    private String facebookPage;
+    private HorarioClass horario;
 
     private double latitude;
     private double longitude;
@@ -127,20 +133,60 @@ public class ServiceClass {
         return icon;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFacebookPage() {
+        return facebookPage;
+    }
+
+    public void setFacebookPage(String facebookPage) {
+        this.facebookPage = facebookPage;
+    }
+
+    public HorarioClass getHorario() {
+        return horario;
+    }
+
+    public void setHorario(HorarioClass horario) {
+        this.horario = horario;
+    }
+
     public void setIcon() {
         Log.d("Categoria de servicio", ": "+ this.category);
         switch (this.category){
             case "Agencia de viajes":
-                this.icon = R.drawable.ic_marker_travel_purple;
+                if(getHorario().isHorarioDefinido() && isOpen()){
+                    this.icon = R.drawable.ic_marker_travel_is_open_purple;
+                } else {
+                    this.icon = R.drawable.ic_marker_travel_purple;
+                }
                 break;
             case "Alojamiento":
-                this.icon = R.drawable.ic_marker_hotel_red;
+                if(getHorario().isHorarioDefinido() && isOpen()){
+                    this.icon = R.drawable.ic_marker_hotel_is_open_red;
+                } else {
+                    this.icon = R.drawable.ic_marker_hotel_red;
+                }
                 break;
             case "Comidas y bebidas":
-                this.icon = R.drawable.ic_marker_restaurant_orange;
+                if(getHorario().isHorarioDefinido() && isOpen()){
+                    this.icon = R.drawable.ic_marker_restaurant_is_open_orange;
+                } else {
+                    this.icon = R.drawable.ic_marker_restaurant_orange;
+                }
                 break;
             case "Recreación, diversión, esparcimiento":
-                this.icon = R.drawable.ic_marker_star_yellow;
+                if(getHorario().isHorarioDefinido() && isOpen()){
+                    this.icon = R.drawable.ic_marker_star_is_open_yellow;
+                } else {
+                    this.icon = R.drawable.ic_marker_star_yellow;
+                }
                 break;
             default:
                 this.icon = 0;
@@ -156,7 +202,11 @@ public class ServiceClass {
             setAlias(values.getAsJsonObject().get("alias").toString().replace("\"", ""));
             setCategory(values.getAsJsonObject().get("categoria").toString().replace("\"", ""));
             setContact(values.getAsJsonObject().get("contacto").toString().replace("\"", ""));
+            setEmail(values.getAsJsonObject().get("correo").toString().replace("\"", ""));
             setAddress(values.getAsJsonObject().get("direccion").toString().replace("\"", ""));
+            setFacebookPage(values.getAsJsonObject().get("facebookPage").toString().replace("\"", ""));
+            setHorario(new HorarioClass());
+            getHorario().setValuesFromJson(values.getAsJsonObject().get("horario"));
             setName(values.getAsJsonObject().get("nombre").toString().replace("\"", ""));
             setPosition(values.getAsJsonObject().get("posicion"));
             setLatitude(Double.parseDouble(getPosition().getAsJsonObject().get("lat").toString()));
@@ -167,6 +217,141 @@ public class ServiceClass {
         } else {
             setState(false); // Para saber si el JSON esta vacio.
         }
+    }
+
+    public boolean isOpen(){
+        boolean isOpen = false;
+        if(!getHorario().isSiempreAbierto()){
+            Calendar calendar = Calendar.getInstance();
+            int cDay = calendar.get(Calendar.DAY_OF_WEEK);
+            int cHour = calendar.get(Calendar.HOUR_OF_DAY);
+            int cMinute = calendar.get(Calendar.MINUTE);
+            int cSuma =  (cHour * 100) + cMinute;
+            switch (cDay){
+                case Calendar.MONDAY:
+                    if(getHorario().getLunes().isAbierto()){
+                        int horaInicio = getHorario().getLunes().getSumaHoraInicio();
+                        int horaFinal = getHorario().getLunes().getSumaHoraFinal();
+                        if(horaInicio < horaFinal){ // Ejemplo De 6:00 AM a 9:00 PM
+                            if(cSuma > horaInicio && cSuma < horaFinal){
+                                isOpen = true;
+                            }
+                        } else { // Ejemplo De 9:00 PM a 2:00 AM
+                            if(cSuma > horaInicio || cSuma < horaFinal){
+                                isOpen = true;
+                            }
+                        }
+                    } else {
+                        isOpen = false;
+                    }
+                    break;
+                case Calendar.TUESDAY:
+                    if(getHorario().getMartes().isAbierto()){
+                        int horaInicio = getHorario().getMartes().getSumaHoraInicio();
+                        int horaFinal = getHorario().getMartes().getSumaHoraFinal();
+                        if(horaInicio < horaFinal){ // Ejemplo De 6:00 AM a 9:00 PM
+                            if(cSuma > horaInicio && cSuma < horaFinal){
+                                isOpen = true;
+                            }
+                        } else { // Ejemplo De 9:00 PM a 2:00 AM
+                            if(cSuma > horaInicio || cSuma < horaFinal){
+                                isOpen = true;
+                            }
+                        }
+                    } else {
+                        isOpen = false;
+                    }
+                    break;
+                case Calendar.WEDNESDAY:
+                    if(getHorario().getMiercoles().isAbierto()){
+                        int horaInicio = getHorario().getMiercoles().getSumaHoraInicio();
+                        int horaFinal = getHorario().getMiercoles().getSumaHoraFinal();
+                        if(horaInicio < horaFinal){ // Ejemplo De 6:00 AM a 9:00 PM
+                            if(cSuma > horaInicio && cSuma < horaFinal){
+                                isOpen = true;
+                            }
+                        } else { // Ejemplo De 9:00 PM a 2:00 AM
+                            if(cSuma > horaInicio || cSuma < horaFinal){
+                                isOpen = true;
+                            }
+                        }
+                    } else {
+                        isOpen = false;
+                    }
+                    break;
+                case Calendar.THURSDAY:
+                    if(getHorario().getJueves().isAbierto()){
+                        int horaInicio = getHorario().getJueves().getSumaHoraInicio();
+                        int horaFinal = getHorario().getJueves().getSumaHoraFinal();
+                        if(horaInicio < horaFinal){ // Ejemplo De 6:00 AM a 9:00 PM
+                            if(cSuma > horaInicio && cSuma < horaFinal){
+                                isOpen = true;
+                            }
+                        } else { // Ejemplo De 9:00 PM a 2:00 AM
+                            if(cSuma > horaInicio || cSuma < horaFinal){
+                                isOpen = true;
+                            }
+                        }
+                    } else {
+                        isOpen = false;
+                    }
+                    break;
+                case Calendar.FRIDAY:
+                    if(getHorario().getViernes().isAbierto()){
+                        int horaInicio = getHorario().getViernes().getSumaHoraInicio();
+                        int horaFinal = getHorario().getViernes().getSumaHoraFinal();
+                        if(horaInicio < horaFinal){ // Ejemplo De 6:00 AM a 9:00 PM
+                            if(cSuma > horaInicio && cSuma < horaFinal){
+                                isOpen = true;
+                            }
+                        } else { // Ejemplo De 9:00 PM a 2:00 AM
+                            if(cSuma > horaInicio || cSuma < horaFinal){
+                                isOpen = true;
+                            }
+                        }
+                    } else {
+                        isOpen = false;
+                    }
+                    break;
+                case Calendar.SATURDAY:
+                    if(getHorario().getSabado().isAbierto()){
+                        int horaInicio = getHorario().getSabado().getSumaHoraInicio();
+                        int horaFinal = getHorario().getSabado().getSumaHoraFinal();
+                        if(horaInicio < horaFinal){ // Ejemplo De 6:00 AM a 9:00 PM
+                            if(cSuma > horaInicio && cSuma < horaFinal){
+                                isOpen = true;
+                            }
+                        } else { // Ejemplo De 9:00 PM a 2:00 AM
+                            if(cSuma > horaInicio || cSuma < horaFinal){
+                                isOpen = true;
+                            }
+                        }
+                    } else {
+                        isOpen = false;
+                    }
+                    break;
+                case Calendar.SUNDAY:
+                    if(getHorario().getDomingo().isAbierto()){
+                        int horaInicio = getHorario().getDomingo().getSumaHoraInicio();
+                        int horaFinal = getHorario().getDomingo().getSumaHoraFinal();
+                        if(horaInicio < horaFinal){ // Ejemplo De 6:00 AM a 9:00 PM
+                            if(cSuma > horaInicio && cSuma < horaFinal){
+                                isOpen = true;
+                            }
+                        } else { // Ejemplo De 9:00 PM a 2:00 AM
+                            if(cSuma > horaInicio || cSuma < horaFinal){
+                                isOpen = true;
+                            }
+                        }
+                    } else {
+                        isOpen = false;
+                    }
+                    break;
+            }
+        } else {
+            isOpen = true;
+        }
+        return isOpen;
     }
 
 }

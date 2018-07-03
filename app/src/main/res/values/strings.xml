@@ -53,4 +53,21 @@ El trozo de texto estándar de Lorem Ipsum usado desde el año 1500 es reproduci
         <item>600</item>
     </string-array>
 
+    <!--Detalle de servicio cardview-->
+    <string name='scheduleTitle'>Horario de atención</string>
+    <string name='facebookPageText'>Facebook page</string>
+    
+    <!--Horario de servicio-->
+    <string name="scheduleNoDefined">Horario no definido</string>
+    <string name="serviceOpen">Abierto</string>
+    <string name="serviceClosed">Cerrado</string>
+
+    <!--Dias de la semana-->
+    <string name="monday">Lunes</string>
+    <string name="tuesday">Martes</string>
+    <string name="wednesday">Miércoles</string>
+    <string name="thursday">Jueves</string>
+    <string name="friday">Viernes</string>
+    <string name="saturday">Sábado</string>
+    <string name="sunday">Domingo</string>
 </resources>
