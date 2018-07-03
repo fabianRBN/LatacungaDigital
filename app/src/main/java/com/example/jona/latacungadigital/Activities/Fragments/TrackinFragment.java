@@ -70,6 +70,7 @@ public class TrackinFragment extends Fragment {
 
         userFirebase = FirebaseAuth.getInstance();
         final String uid = userFirebase.getCurrentUser().getUid();
+        swAutorizar.setChecked(Autorizar(uid));
         ConsultaAmigos(uid);
         ConsultaUsuarios();
 
@@ -162,6 +163,25 @@ public class TrackinFragment extends Fragment {
         return view;
 
 
+    }
+
+    private boolean Autorizar(final String uid) {
+        final boolean[] autorizacion = {false};
+        mdatabase = FirebaseDatabase.getInstance().getReference("cliente");
+        mdatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(uid).child("autorizar").exists()){
+                   autorizacion[0] = Boolean.parseBoolean(dataSnapshot.child(uid).child("autorizar").getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return autorizacion[0];
     }
 
 

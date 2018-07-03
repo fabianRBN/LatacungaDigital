@@ -80,7 +80,7 @@ dependencies {
     //Librerias para la realidad aumentada
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation(name: 'wikitudesdk', ext: 'aar')
+    implementation (name: 'wikitudesdk', ext: 'aar')
 
     // Librerias para VR
     implementation  'com.google.vr:sdk-panowidget:1.10.0'
