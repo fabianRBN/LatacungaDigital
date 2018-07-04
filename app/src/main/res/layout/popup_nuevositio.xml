@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popup_element"
+    android:layout_width="240dp"
+    android:layout_height="285dp"
+    android:background="@drawable/customborder">
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/txt_nombre"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Nombre"/>
+        <EditText
+            android:id="@+id/txt_descripcion"
+            android:layout_width="fill_parent"
+            android:layout_height="150dp"
+            android:text="Descripcion"
+            android:background="@null"
+            android:gravity="top|left"
+            android:inputType="textMultiLine"
+            android:overScrollMode="always"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"
+            android:lines="6"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:scrollHorizontally="false" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_cancelar"
+                android:layout_width="115dp"
+                android:layout_height="wrap_content"
+                android:text="Cancelar"/>
+            <Button
+                android:id="@+id/btn_guardar"
+                android:layout_width="115dp"
+                android:layout_height="wrap_content"
+                android:text="Guardar"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>
