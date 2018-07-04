@@ -16,9 +16,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.CustomInfoWindowsAdapter;
@@ -28,6 +30,7 @@ import com.example.jona.latacungadigital.Activities.Adapters.ServiceInfoWindowsA
 import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
+import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.Activities.Clases.AreaPeligrosa;
 import com.example.jona.latacungadigital.Activities.modelos.TrackinModel;
@@ -68,7 +71,8 @@ import java.util.Random;
 public class MapaFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener{
+        LocationListener,
+        GoogleMap.OnMapLongClickListener {
 
     // Variables de la clase
     private boolean isSerchFromChatBot = false;
@@ -143,15 +147,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         mMapView.getMapAsync(this);
 
         //obtener permisos de ubicacion
-        /*System.out.println("empezo1");
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        String key = mDatabase.child("areaPeligrosa").push().getKey();
-        AreaPeligrosa arePe= new AreaPeligrosa("La Estacion",key, 100, -0.932349, -78.620495);
-        //Cliente cliente = new Cliente( user.getDisplayName(),user.getEmail(),user.getUid(),user.getPhotoUrl().toString()); //instancia de cliente
-        FirebaseDatabase mFirebaseInstance = FirebaseDatabase.getInstance();
-        final DatabaseReference mFirebaseDatabase = mFirebaseInstance.getReference();
-        mFirebaseDatabase.child("areaPeligrosa").child(key).setValue(arePe);//guarda la informacion en firebase
-        System.out.println("empezo2");*/
         setUpLocation();
         mDatabase = FirebaseDatabase.getInstance().getReference("cliente").child(userFirebase.getUid());
         geoFire = new GeoFire(mDatabase);
@@ -510,6 +505,9 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             return;
         }
 
+        //Agregar sitio
+        googleMap.setOnMapLongClickListener(this);
+
         // Habilitar el boton de "Mover a mi ubicacion"
         googleMap.setMyLocationEnabled(true);
 
@@ -645,6 +643,34 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         displayLocation();
+    }
+
+    @Override
+    public void onMapLongClick(LatLng point) {
+
+        //We need to get the instance of the LayoutInflater, use the context of this activity
+        LayoutInflater inflaterT = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        //Inflate the view from a predefined XML layout (no need for root id, using entire layout)
+        View popupNuevoSitio = inflaterT.inflate(R.layout.popup_nuevositio,null);
+        //Get the devices screen density to calculate correct pixel sizes
+        float density= this.getResources().getDisplayMetrics().density;
+        // create a focusable PopupWindow with the given layout and correct size
+        final PopupWindow pw = new PopupWindow(popupNuevoSitio, (int)density*240, (int)density*285, true);
+        pw.showAtLocation(popupNuevoSitio, Gravity.CENTER, 0, 0);
+
+
+        mDatabase = FirebaseDatabase.getInstance().getReference("cliente").child(userFirebase.getUid());
+        String key = mDatabase.push().getKey();
+        Coordenada coordenada = new Coordenada(point.latitude, point.longitude);
+        mDatabase.child("misSitios").child(key).setValue(new AtractivoModel("nombreP", "descripcionP", coordenada,key));
+        googleMap.addMarker(new MarkerOptions()
+                .position(point)
+                .title("nombreP")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
+        Toast.makeText(getActivity(),
+                "New marker added@" + point.toString(), Toast.LENGTH_LONG)
+                .show();
     }
 
     /**
