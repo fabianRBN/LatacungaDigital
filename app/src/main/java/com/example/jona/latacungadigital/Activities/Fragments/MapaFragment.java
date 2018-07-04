@@ -20,6 +20,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -83,6 +85,9 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     private ServiceClass service;
     private LatLng currentUserLatLng;
     private LatLng pointDestination;
+    Button btnGuardar, btnCancelar;
+    EditText edtNombre, edtDescripcion;
+
 
     // Variables de mapa
     MapView mMapView;
@@ -137,6 +142,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         View rootView = inflater.inflate(R.layout.fragment_mapa, container, false);
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
+
+
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -453,6 +460,46 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         });
     }
 
+    // Crear un marcador en el mapa de acuerdo a usuarios amigos
+    private void createMarkerForMySites(){
+        final ArrayList<TrackinModel> listaidUsuarios = new ArrayList<>();
+        mDatabase = FirebaseDatabase.getInstance().getReference("cliente").child(userFirebase.getUid());
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child("misSitios").exists()){
+                    for (DataSnapshot child: dataSnapshot.child("misSitios").getChildren()){
+                        String nombreAtractivo = child.child("nombre").getValue().toString();
+                        String descripcionAtractivo = child.child("descripcion").getValue().toString();
+                        Coordenada coordenada =  child.child("posicion").getValue(Coordenada.class);
+                        LatLng punto = new LatLng( coordenada.getLat(), coordenada.getLng());
+                        //Calculo de la distancia
+                        Location locationA = new Location("punto A");
+                        locationA.setLatitude(coordenada.getLat());
+                        locationA.setLongitude(coordenada.getLng());
+                        //usuario amigo
+                        Location locationB = new Location("punto B");
+                        locationB.setLatitude(currentUserLatLng.latitude);
+                        locationB.setLongitude(currentUserLatLng.longitude);
+
+                        float distance = locationA.distanceTo(locationB);
+                        String formatoDistancia = String.format("%.02f", distance);
+                        MarkerOptions markerOptions = new  MarkerOptions().position(punto)
+                                .title(nombreAtractivo)
+                                .snippet("Distancia: "+formatoDistancia+" m")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        googleMap.addMarker(markerOptions).setTag("MyMarkers");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     // Crear un marcador en el mapa de acuerdo al usuario
     private void createMarkerForUser(LatLng location, String address) {
         if (location == null)
@@ -544,6 +591,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             googleMap.setOnInfoWindowLongClickListener(myOnInfoWindowsClickListener);
 
             dataFirebase(); // Agregar marcadores de atractivos y areas peligrosas
+            createMarkerForMySites(); //Agrega los marcadores personales
             createMarkerForUsers();//Instanciar usuarios aamigos en el mapa
 
         } else { // Si es una solicitud de consulta del chatbot
@@ -646,7 +694,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     }
 
     @Override
-    public void onMapLongClick(LatLng point) {
+    public void onMapLongClick(final LatLng point) {
 
         //We need to get the instance of the LayoutInflater, use the context of this activity
         LayoutInflater inflaterT = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -657,20 +705,32 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         // create a focusable PopupWindow with the given layout and correct size
         final PopupWindow pw = new PopupWindow(popupNuevoSitio, (int)density*240, (int)density*285, true);
         pw.showAtLocation(popupNuevoSitio, Gravity.CENTER, 0, 0);
-
-
-        mDatabase = FirebaseDatabase.getInstance().getReference("cliente").child(userFirebase.getUid());
-        String key = mDatabase.push().getKey();
-        Coordenada coordenada = new Coordenada(point.latitude, point.longitude);
-        mDatabase.child("misSitios").child(key).setValue(new AtractivoModel("nombreP", "descripcionP", coordenada,key));
-        googleMap.addMarker(new MarkerOptions()
-                .position(point)
-                .title("nombreP")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-
-        Toast.makeText(getActivity(),
-                "New marker added@" + point.toString(), Toast.LENGTH_LONG)
-                .show();
+        //Elementos para guardar nuevo sitio
+        edtNombre = (EditText) popupNuevoSitio.findViewById(R.id.txt_nombreSitio);
+        edtDescripcion = (EditText) popupNuevoSitio.findViewById(R.id.txt_descripcionSitio);
+        btnCancelar = (Button) popupNuevoSitio.findViewById(R.id.btn_cancelar);
+        btnGuardar = (Button) popupNuevoSitio.findViewById(R.id.btn_guardar);
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pw.dismiss();
+            }
+        });
+        btnGuardar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDatabase = FirebaseDatabase.getInstance().getReference("cliente").child(userFirebase.getUid());
+                String key = mDatabase.push().getKey();
+                Coordenada coordenada = new Coordenada(point.latitude, point.longitude);
+                mDatabase.child("misSitios").child(key).setValue(new AtractivoModel(edtNombre.getText().toString(),
+                                                            edtDescripcion.getText().toString(), coordenada,key));
+                pw.dismiss();
+                createMarkerForMySites();
+                Toast.makeText(getActivity(),
+                        "Nuevo Sitio " +edtNombre.getText().toString()+" creado ", Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
     }
 
     /**
