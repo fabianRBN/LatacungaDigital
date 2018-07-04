@@ -46,9 +46,9 @@ public class MenuARFragment extends Fragment {
         circleMenu = (CircleMenu) view.findViewById(R.id.circle_menu);
 
         circleMenu.setMainMenu(Color.parseColor("#CDCDCD"), R.mipmap.icon_menu, R.mipmap.icon_cancel);
-        circleMenu.addSubMenu(Color.parseColor("#FF4B32"), R.mipmap.icon_notify)
-                .addSubMenu(Color.parseColor("#8A39FF"), R.mipmap.icon_setting)
-                .addSubMenu(Color.parseColor("#FF6A00"), R.drawable.ic_account_circle_black_24dp);
+        circleMenu.addSubMenu(Color.parseColor("#FF4B32"), R.drawable.ic_photo_size_select_actual_black_24dp)
+                .addSubMenu(Color.parseColor("#8A39FF"), R.drawable.ic_free_breakfast_black_24dp)
+                .addSubMenu(Color.parseColor("#FF6A00"), R.drawable.ic_location_city_black_24dp);
 
 
 
