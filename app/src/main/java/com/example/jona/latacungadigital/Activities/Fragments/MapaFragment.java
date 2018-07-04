@@ -31,6 +31,7 @@ import com.example.jona.latacungadigital.Activities.Adapters.OnMarkerClickListen
 import com.example.jona.latacungadigital.Activities.Adapters.ServiceInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
+import com.example.jona.latacungadigital.Activities.Haversine.Haversine;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
@@ -100,6 +101,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
+    Haversine haversine;
 
     private static int UPDATE_INTERVAL = 5000;
     private static int FATEST_INTERVAL = 3000;
@@ -427,22 +429,17 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_user_dark_blue));
 
                                 //Calculo de la distancia
-                                Location locationA = new Location("punto A");
-                                locationA.setLatitude(latitud);
-                                locationA.setLongitude(longitud);
-                                //usuario amigo
-                                Location locationB = new Location("punto B");
-                                locationB.setLatitude(currentUserLatLng.latitude);
-                                locationB.setLongitude(currentUserLatLng.longitude);
+                                haversine = new Haversine();
+                                Coordenada inicial = new Coordenada(currentUserLatLng.latitude,currentUserLatLng.longitude);//mi coordenada
+                                Coordenada end = new Coordenada(latitud,longitud);// la coordenada del trackeado
+                                double distanciah = (haversine.distance(inicial,end));
+                                String formatoDistancia = String.format("%.02f", distanciah);
 
-                                float distance = locationA.distanceTo(locationB) /1000;
-                                String formatoDistancia = String.format("%.02f", distance);
-
-                                markerOptions.snippet("distancia: "+formatoDistancia+" km");
+                                markerOptions.snippet("Distancia: "+formatoDistancia+" km");
                                 markerOptions.draggable(false);
                                 googleMap.addMarker(markerOptions).setTag("userMarker");
 
-                                if (distance >= 1){
+                                if (distanciah >= 1){
                                     sendNotification("Alerta", String.format(nombre+" se alejo a "+formatoDistancia+" km de distancia de ti"));
                                 }
 
@@ -474,16 +471,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                         Coordenada coordenada =  child.child("posicion").getValue(Coordenada.class);
                         LatLng punto = new LatLng( coordenada.getLat(), coordenada.getLng());
                         //Calculo de la distancia
-                        Location locationA = new Location("punto A");
-                        locationA.setLatitude(coordenada.getLat());
-                        locationA.setLongitude(coordenada.getLng());
-                        //usuario amigo
-                        Location locationB = new Location("punto B");
-                        locationB.setLatitude(currentUserLatLng.latitude);
-                        locationB.setLongitude(currentUserLatLng.longitude);
+                        haversine = new Haversine();
+                        Coordenada inicial = new Coordenada(currentUserLatLng.latitude,currentUserLatLng.longitude);//mi coordenada
+                        double distanciah = (haversine.distance(inicial,coordenada))*1000;
+                        String formatoDistancia = String.format("%.00f", distanciah);
 
-                        float distance = locationA.distanceTo(locationB);
-                        String formatoDistancia = String.format("%.02f", distance);
                         MarkerOptions markerOptions = new  MarkerOptions().position(punto)
                                 .title(nombreAtractivo)
                                 .snippet("Distancia: "+formatoDistancia+" m")

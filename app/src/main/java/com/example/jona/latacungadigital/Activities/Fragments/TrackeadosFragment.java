@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 
 import com.example.jona.latacungadigital.Activities.Adapters.TrackeadosAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.TrackingAdapter;
+import com.example.jona.latacungadigital.Activities.Haversine.Haversine;
+import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.Activities.modelos.TrackeadosModel;
 import com.example.jona.latacungadigital.R;
 import com.google.android.gms.maps.model.LatLng;
@@ -37,6 +39,7 @@ public class TrackeadosFragment extends Fragment {
     private FirebaseAuth userFirebase;
     RecyclerView recyclerView;
     private LatLng currentUserLatLng;
+    Haversine haversine;
 
     public TrackeadosFragment() {
         // Required empty public constructor
@@ -107,16 +110,11 @@ public class TrackeadosFragment extends Fragment {
                             .child("GeoFire").child("l").child("1").getValue().toString());
 
                     //Calculo de la distancia
-                    Location locationA = new Location("punto A");
-                    locationA.setLatitude(latitud);
-                    locationA.setLongitude(longitud);
-                    //usuario amigo
-                    Location locationB = new Location("punto B");
-                    locationB.setLatitude(milatitud);
-                    locationB.setLongitude(milongitud);
-
-                    float distance = locationA.distanceTo(locationB) /1000;
-                    String formatoDistancia = String.format("%.02f", distance);
+                    haversine = new Haversine();
+                    Coordenada inicial = new Coordenada(milatitud,milongitud);//mi coordenada
+                    Coordenada end = new Coordenada(latitud,longitud);// la coordenada del trackeado
+                    double distanciah = (haversine.distance(inicial,end));
+                    String formatoDistancia = String.format("%.02f", distanciah);
                     String distancia = "distancia de ti: "+formatoDistancia+" km";
 
                     TrackeadosModel trac = new TrackeadosModel(nombre, distancia, pathimage, key);
