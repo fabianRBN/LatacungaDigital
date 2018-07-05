@@ -32,6 +32,7 @@ public class WeatherClass {
     private String resultCurrentWeather;
     private Result result;
     private DialogflowClass dialogflowClass;
+    private boolean isWeatherFoundInformation = true; // Para controlar si se encontro la informacion del clima que pide el usuario.
 
     WeatherClass(Context context, Result result, DialogflowClass dialogflowClass) {
         this.result = result;
@@ -74,7 +75,7 @@ public class WeatherClass {
                     dialogflowClass.MessageSendToDialogflow(currentWeather(response)); // Enviamos el clima del dia actual.
                 }
 
-                if (result.getAction().equals("weatherAction")) {
+                if (result.getAction().equals("weatherAction") && isWeatherFoundInformation) {
                     // Preguntamos al usuario si desea saber que vestimenta llevar para su recorrido turistico.
                     dialogflowClass.MessageSendToDialogflow("¿Deseas saber que vestimenta o accesorios usar para tú recorrido turístico?");
                 }
@@ -135,7 +136,7 @@ public class WeatherClass {
                 JSONObject dayForecast = forecastday.getJSONObject(0);
 
                 String date = dayForecast.getString("date"); // Se obtiene la fecha del dia requerido por el usuario.
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale ( "es" , "ES" ));
                 Date formartDate = null;
 
                 try {
@@ -167,10 +168,14 @@ public class WeatherClass {
                         break;
                 }
 
+                isWeatherFoundInformation = true; // Para controlar si se encontro la informacion del clima.
+
             } else {
                 // Enviamos una respuesta de que no se encontro nada.
                 resultCurrentWeather = "Lo siento, no he podido encontrar nada sobre la fecha solicitada por usted. "
                         + " Mi límite máximo para dar un pronóstico del clima es de 16 días a partir del día actual.";
+
+                isWeatherFoundInformation = false; // Para controlar si no se encontro nada de informacion del clima.
             }
 
         } catch (JSONException e) {
@@ -216,16 +221,16 @@ public class WeatherClass {
             recommendation = "Según mi pronóstico el clima " + toBe + " helado, por lo tanto, te " + recommendationTime + " pantalones gruesos que " +
                     "cubran los tobillos, trata de cubrirte el cuello, las manos y la cabeza con accesorios como gorros de lana, guantes o bufandas. " +
                     "Además, " + uses + " calcetines abrigados con calzado alto, chompa muy abrigada.";
-        } else if (degrees > 7 && degrees < 13) { // Clima Frio
+        } else if (degrees >= 7 && degrees < 13) { // Clima Frio
             recommendation = "Según mi pronóstico el clima " + toBe + " frío, por lo tanto, te " + recommendationTime + " pantalón largo de jean o de tela " +
                     "media gruesa, suéter con cuello o chompa con una camiseta por dentro, calcetines gruesos con calzado abrigado.";
-        } else if (degrees > 13 && degrees < 18) { // Clima Fresco
+        } else if (degrees >= 13 && degrees < 18) { // Clima Fresco
             recommendation = "Según mi pronóstico el clima " + toBe + " fresco, por lo tanto, te " + recommendationTime + " pantalón jean o de tela, " +
                     "suéter con una camiseta liviana, calcetines ligeros y calzado cómodo.";
-        } else if (degrees > 18 && degrees < 24) { // Clima Comodo
+        } else if (degrees >= 18 && degrees < 24) { // Clima Comodo
             recommendation = "Según mi pronóstico el clima " + toBe + " cómodo, por lo tanto, te " + recommendationTime + " pantalones ligeros, " +
                     "chaqueta liviana de manga larga, camiseta manga corta, calcetines ligeros y zapatos cómodos.";
-        } else if (degrees > 24) { // Clima Caliente
+        } else if (degrees >= 24) { // Clima Caliente
             recommendation = "Según mi pronóstico el clima " + toBe + " caliente, por lo tanto, te " + recommendationTime + " pantalones ligeros o " +
                     "si esposible " + uses + " shorts, camiseta manga corta, gafas o lentes de sol, calzado abierto o semicerrado que deje respirar tus pies.";
         }
