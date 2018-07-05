@@ -80,7 +80,7 @@ var World = {
               distance: 10 * distanceFactor,
               modelFile: "assets/historia.wt3",
               realSize: 0.001,
-              description: "Historia del atractivo",
+              description: "Historia del atractivo, en linea de tiempo",
               x:0,
               y:0.3
               }
