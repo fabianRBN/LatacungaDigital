@@ -55,7 +55,7 @@ public class TrackinFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        userFirebase = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -70,9 +70,8 @@ public class TrackinFragment extends Fragment {
 
         userFirebase = FirebaseAuth.getInstance();
         final String uid = userFirebase.getCurrentUser().getUid();
-        swAutorizar.setChecked(Autorizar(uid));
         ConsultaAmigos(uid);
-        ConsultaUsuarios();
+        ConsultaUsuarios(uid);
 
         //Autocompletar
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
@@ -120,12 +119,14 @@ public class TrackinFragment extends Fragment {
                 mdatabase = FirebaseDatabase.getInstance().getReference();
                 if (isChecked)
                 {
+                    mdatabase.child("cliente").child(uid).child("autorizar").setValue(true);
                     for (TrackinModel trac: listaAmigos){
                         mdatabase.child("meAutorizaron").child(trac.getKey()).child(uid)
                                 .setValue(new TrackinModel(uid, true));
                     }
                 }else
                     {
+                        mdatabase.child("cliente").child(uid).child("autorizar").setValue(false);
                         for (TrackinModel trac: listaAmigos){
                             mdatabase.child("meAutorizaron").child(trac.getKey()).child(uid)
                                     .setValue(new TrackinModel(uid, false));
@@ -165,32 +166,15 @@ public class TrackinFragment extends Fragment {
 
     }
 
-    private boolean Autorizar(final String uid) {
-        final boolean[] autorizacion = {false};
-        mdatabase = FirebaseDatabase.getInstance().getReference("cliente");
-        mdatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(uid).child("autorizar").exists()){
-                   autorizacion[0] = Boolean.parseBoolean(dataSnapshot.child(uid).child("autorizar").getValue().toString());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        return autorizacion[0];
-    }
-
-
-    private void ConsultaUsuarios() {
+    private void ConsultaUsuarios(final String uid) {
         listaUsuarios.clear();
         mdatabase = FirebaseDatabase.getInstance().getReference("cliente");
         mdatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(uid).child("autorizar").exists()){
+                    swAutorizar.setChecked(Boolean.parseBoolean(dataSnapshot.child(uid).child("autorizar").getValue().toString()));
+                }
                 for (DataSnapshot child: dataSnapshot.getChildren()){
                     if (child.child("nombre").exists())
                         listaUsuarios.add(child.child("nombre").getValue().toString());

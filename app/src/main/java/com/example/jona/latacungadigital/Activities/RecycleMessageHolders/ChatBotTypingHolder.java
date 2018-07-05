@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.example.jona.latacungadigital.Activities.ChatBotActivity;
 import com.example.jona.latacungadigital.Activities.Clases.CharacterClass;
 import com.example.jona.latacungadigital.R;
 
@@ -25,11 +26,26 @@ public class ChatBotTypingHolder extends RecyclerView.ViewHolder {
     public void bind() {
         // Se coloca la imagen del personaje en el chatbot.
         CharacterClass characterClass = new CharacterClass();
-        characterClass.ReadCharacterFromDatabase(new CharacterClass.DataOfCharacters() {
-            @Override
-            public void dataCharacterSelected(String nameCharacter, String imageCharacterURL) {
-                Glide.with(context).load(imageCharacterURL).crossFade().centerCrop().into(circleImageViewTyping);
+        if(isValidContextForGlide(context)){
+            characterClass.ReadCharacterFromDatabase(new CharacterClass.DataOfCharacters() {
+                @Override
+                public void dataCharacterSelected(String nameCharacter, String imageCharacterURL) {
+                    Glide.with(context.getApplicationContext()).load(imageCharacterURL).crossFade().centerCrop().into(circleImageViewTyping);
+                }
+            });
+        }
+    }
+
+    public boolean isValidContextForGlide(final Context context) {
+        if (context == null) {
+            return false;
+        }
+        if (context instanceof ChatBotActivity) {
+            final ChatBotActivity activity = (ChatBotActivity) context;
+            if (activity.isDestroyed() || activity.isFinishing()) {
+                return false;
             }
-        });
+        }
+        return true;
     }
 }

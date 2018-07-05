@@ -37,6 +37,14 @@ public  class AtractivoModel {
 
     }
 
+    //Para guardar en firebase nuevos sitios
+    public AtractivoModel(String nombre, String descripcion, Coordenada posicion, String key) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.posicion = posicion;
+        this.key = key;
+    }
+
     public String getPathImagen() {
         return pathImagen;
     }

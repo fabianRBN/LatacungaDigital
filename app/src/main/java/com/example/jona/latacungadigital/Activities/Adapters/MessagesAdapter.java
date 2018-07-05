@@ -3,6 +3,7 @@ package com.example.jona.latacungadigital.Activities.Adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     private List<MessageCardMapListItemView> listMessageCardMapView;
     private ChatTextFragment chatTextFragment;
     private Context context;
+    private final ExpansionLayoutCollection expansionsCollection = new ExpansionLayoutCollection();
 
     public MessagesAdapter(List<TextMessageModel> listChatModels, Context context) {
         this.listChatModel = listChatModels;
@@ -59,7 +61,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
         } else if (viewType == ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT) { // Si el mensaje es del ChatBot se añade el view de esta al view de la lista de mensajes.
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.message_chatbot, parent, false);
-            return new ChatBotMessageHolder(view, parent.getContext());
+            return new ChatBotMessageHolder(view, context);
         } else if (viewType == ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT_TYPING) { // Si el mensaje es del ChatBotTyping se añade el view de esta al view de la lista de mensajes.
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.chatbot_is_typing, parent, false);
@@ -98,11 +100,12 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 break;
             case ChatBotReferences.VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT:
                 AttractiveAdpater attractiveAdpater = new AttractiveAdpater(context, listChatModel.get(position).getListImagesURL());
-                ExpansionLayoutCollection expansionLayoutCollection = new ExpansionLayoutCollection();
                 ((AttractiveMessageHolder) holder).getViewPager().setAdapter(attractiveAdpater);
                 ((AttractiveMessageHolder) holder).getCircleIndicator().setViewPager(((AttractiveMessageHolder) holder).getViewPager());
                 attractiveAdpater.registerDataSetObserver(((AttractiveMessageHolder) holder).getCircleIndicator().getDataSetObserver());
-                expansionLayoutCollection.add(((AttractiveMessageHolder) holder).getExpansionLayout());
+                expansionsCollection.add(((AttractiveMessageHolder) holder).getExpansionLayout());
+                expansionsCollection.openOnlyOne(true);
+                Log.d("Ncoll", "N = " + expansionsCollection);
                 ((AttractiveMessageHolder) holder).bind(message);
                 break;
             case ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP:
@@ -112,6 +115,9 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             case ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_DETAIL_SERVICE:
                 DetailServiceMessageHolder detailServiceMessageHolder = (DetailServiceMessageHolder) holder;
                 detailServiceMessageHolder.bind(message);
+                expansionsCollection.add(((DetailServiceMessageHolder) holder).getMessageCardDetailServiceView().getExpansionLayout());
+                expansionsCollection.openOnlyOne(true);
+                Log.d("Ncoll", "N = " + expansionsCollection);
                 break;
         }
     }
