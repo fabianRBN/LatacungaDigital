@@ -193,18 +193,8 @@ public class MessageCardDetailServiceView extends LinearLayout {
             txtViernes.setVisibility(View.GONE);
             txtSabado.setVisibility(View.GONE);
             txtDomingo.setVisibility(View.GONE);
-
-            txtSiempreAbierto.setVisibility(View.VISIBLE);
         }else{
             txtSiempreAbierto.setVisibility(View.GONE);
-
-            txtLunes.setVisibility(View.VISIBLE);
-            txtMartes.setVisibility(View.VISIBLE);
-            txtMiercoles.setVisibility(View.VISIBLE);
-            txtJueves.setVisibility(View.VISIBLE);
-            txtViernes.setVisibility(View.VISIBLE);
-            txtSabado.setVisibility(View.VISIBLE);
-            txtDomingo.setVisibility(View.VISIBLE);
         }
     }
 
