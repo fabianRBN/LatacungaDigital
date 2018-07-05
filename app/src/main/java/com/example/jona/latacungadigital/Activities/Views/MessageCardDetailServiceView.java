@@ -16,11 +16,13 @@ import android.widget.TextView;
 
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.R;
+import com.github.florent37.expansionpanel.ExpansionLayout;
 
 public class MessageCardDetailServiceView extends LinearLayout {
     //Variables de la clase
     private Context context;
     private ServiceClass service;
+    private ExpansionLayout expansionLayout;
 
     // Varaibles de acuerdo a los componentes que comprenden el layout: message_cv_detail_service.xml
     protected TextView txtAbierto;
@@ -62,6 +64,8 @@ public class MessageCardDetailServiceView extends LinearLayout {
         txtCorreo = view.findViewById(R.id.txt_correo);
         txtWeb = view.findViewById(R.id.txt_web);
         txtAbierto = view.findViewById(R.id.txt_abierto);
+
+        expansionLayout = view.findViewById(R.id.scheduleExpansionLayout);
 
         txtSiempreAbierto = view.findViewById(R.id.txt_siempre_abierto);
         txtLunes = view.findViewById(R.id.txt_lunes);
@@ -192,5 +196,9 @@ public class MessageCardDetailServiceView extends LinearLayout {
         }else{
             txtSiempreAbierto.setVisibility(View.GONE);
         }
+    }
+
+    public ExpansionLayout getExpansionLayout() {
+        return expansionLayout;
     }
 }

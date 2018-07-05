@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import com.example.jona.latacungadigital.Activities.Adapters.AttractiveInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.CustomInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.MyOnInfoWindowsClickListener;
 import com.example.jona.latacungadigital.Activities.Adapters.OnMarkerClickListenerAdapter;
@@ -549,10 +550,18 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         } else { // Si es una solicitud de consulta del chatbot
             switch (chatBotAction){
                 case "consultarAtractivoEnElArea":
+                    // Establecer la venta de informacion info_window_attractive
+                    AttractiveInfoWindowsAdapter attractiveInfoWindowsAdapter = new AttractiveInfoWindowsAdapter(getContext(),googleMap);
+                    attractiveInfoWindowsAdapter.setMapaFragment(this);
+                    googleMap.setInfoWindowAdapter(attractiveInfoWindowsAdapter);
+                    googleMap.setOnInfoWindowClickListener(attractiveInfoWindowsAdapter);
+                    googleMap.setOnInfoWindowLongClickListener(attractiveInfoWindowsAdapter);
+
                     // Agregar un marcadores de atractivos
                     for (int cont=0; cont < listAttractive.size(); cont++ ){
                         createMarkerForAttractive(listAttractive.get(cont));
                     }
+                    googleMap.setOnMarkerClickListener(new OnMarkerClickListenerAdapter(getContext(),googleMap));
                     break;
                 case "consultarAgenciasDeViajeEnElArea":
                 case "consultarAlojamientoEnElArea":
@@ -576,6 +585,9 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                 case "service_information_intent.service_information_intent-yes":
                     // Crear el marcador del punto Destino
                     if(attractive != null){
+                        // Establecer la venta de informacion info_window_attractive
+                        AttractiveInfoWindowsAdapter attractiveInfoWindows = new AttractiveInfoWindowsAdapter(getContext(),googleMap);
+                        googleMap.setInfoWindowAdapter(attractiveInfoWindows);
                         // Crear marcador para la posicion del atractivo de destino
                         createMarkerForAttractive(attractive);
                     }else {

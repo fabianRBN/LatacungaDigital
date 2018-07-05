@@ -29,6 +29,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     private List<MessageCardMapListItemView> listMessageCardMapView;
     private ChatTextFragment chatTextFragment;
     private Context context;
+    private final ExpansionLayoutCollection expansionsCollection = new ExpansionLayoutCollection();
 
     public MessagesAdapter(List<TextMessageModel> listChatModels, Context context) {
         this.listChatModel = listChatModels;
@@ -98,11 +99,10 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 break;
             case ChatBotReferences.VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT:
                 AttractiveAdpater attractiveAdpater = new AttractiveAdpater(context, listChatModel.get(position).getListImagesURL());
-                ExpansionLayoutCollection expansionLayoutCollection = new ExpansionLayoutCollection();
                 ((AttractiveMessageHolder) holder).getViewPager().setAdapter(attractiveAdpater);
                 ((AttractiveMessageHolder) holder).getCircleIndicator().setViewPager(((AttractiveMessageHolder) holder).getViewPager());
                 attractiveAdpater.registerDataSetObserver(((AttractiveMessageHolder) holder).getCircleIndicator().getDataSetObserver());
-                expansionLayoutCollection.add(((AttractiveMessageHolder) holder).getExpansionLayout());
+                expansionsCollection.add(((AttractiveMessageHolder) holder).getExpansionLayout());
                 ((AttractiveMessageHolder) holder).bind(message);
                 break;
             case ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP:
@@ -112,6 +112,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             case ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_DETAIL_SERVICE:
                 DetailServiceMessageHolder detailServiceMessageHolder = (DetailServiceMessageHolder) holder;
                 detailServiceMessageHolder.bind(message);
+                expansionsCollection.add(((DetailServiceMessageHolder) holder).getMessageCardDetailServiceView().getExpansionLayout());
                 break;
         }
     }

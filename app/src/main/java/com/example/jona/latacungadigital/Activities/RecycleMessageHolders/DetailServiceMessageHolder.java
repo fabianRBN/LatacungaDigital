@@ -24,4 +24,8 @@ public class DetailServiceMessageHolder extends RecyclerView.ViewHolder {
     public void bind(TextMessageModel message) { // Se asigna la informacion consultada a los componentes del layout.
         messageCardDetailServiceViewSetService(message.getService());
     }
+
+    public MessageCardDetailServiceView getMessageCardDetailServiceView() {
+        return messageCardDetailServiceView;
+    }
 }

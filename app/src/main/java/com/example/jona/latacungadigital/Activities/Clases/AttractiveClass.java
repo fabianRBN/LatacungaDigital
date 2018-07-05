@@ -20,10 +20,12 @@ public class AttractiveClass {
 
     private boolean state;
     private String nameAttractive;
+    private String alias;
     private String category;
     private String description;
     private List<String> imagenURL;
     private String address;
+    private String rating;
     private double latitude;
     private double longitude;
 
@@ -50,6 +52,14 @@ public class AttractiveClass {
 
     public void setNameAttractive(String nameAttractive) {
         this.nameAttractive = nameAttractive;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public String getCategory() {
@@ -108,6 +118,14 @@ public class AttractiveClass {
 
     public void setAddress(String address) { this.address = address; }
 
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
     public int getIcon() {
         return icon;
     }
@@ -128,17 +146,8 @@ public class AttractiveClass {
                 Gson gson = new Gson();
                 JsonParser jsonParser = new JsonParser();
                 JsonElement values = jsonParser.parse(gson.toJson(attractiveEntry.getValue())); // Obtenemos los valores del servicio
-
                 setState(true);
-                setDescription(values.getAsJsonObject().get("descripcion").toString().replace("\"", ""));
-                setNameAttractive(values.getAsJsonObject().get("nombre").toString().replace("\"", ""));
-                setCategory(values.getAsJsonObject().get("categoria").toString().replace("\"", ""));
-                setAddress(values.getAsJsonObject().get("direccion").toString().replace("\"", ""));
-                setGallery(values.getAsJsonObject().get("galeria"));
-                setPosition(values.getAsJsonObject().get("posicion"));
-                setLatitude(Double.parseDouble(getPosition().getAsJsonObject().get("lat").toString()));
-                setLongitude(Double.parseDouble(getPosition().getAsJsonObject().get("lng").toString()));
-                setIcon();
+                setValuesFromJson(values);
             }
         } else {
             setState(false); // Para saber si el JSON esta vacio.
@@ -149,18 +158,24 @@ public class AttractiveClass {
     public void readJSONDialogflow(String key, JsonElement values) {
         if (!values.isJsonNull() && !key.isEmpty()) {
             setState(true);
-            setDescription(values.getAsJsonObject().get("descripcion").toString().replace("\"", ""));
-            setNameAttractive(values.getAsJsonObject().get("nombre").toString().replace("\"", ""));
-            setCategory(values.getAsJsonObject().get("categoria").toString().replace("\"", ""));
-            setAddress(values.getAsJsonObject().get("direccion").toString().replace("\"", ""));
-            setGallery(values.getAsJsonObject().get("galeria"));
-            setPosition(values.getAsJsonObject().get("posicion"));
-            setLatitude(Double.parseDouble(getPosition().getAsJsonObject().get("lat").toString()));
-            setLongitude(Double.parseDouble(getPosition().getAsJsonObject().get("lng").toString()));
-            setIcon();
+            setValuesFromJson(values);
         } else {
             setState(false); // Para saber si el JSON esta vacio.
         }
+    }
+
+    private void setValuesFromJson(JsonElement values) {
+        setDescription(values.getAsJsonObject().get("descripcion").toString().replace("\"", ""));
+        setNameAttractive(values.getAsJsonObject().get("nombre").toString().replace("\"", ""));
+        setAlias(values.getAsJsonObject().get("alias").toString().replace("\"", "") );
+        setCategory(values.getAsJsonObject().get("categoria").toString().replace("\"", ""));
+        setAddress(values.getAsJsonObject().get("direccion").toString().replace("\"", ""));
+        setRating(values.getAsJsonObject().get("rating").toString().replace("\"", ""));
+        setGallery(values.getAsJsonObject().get("galeria"));
+        setPosition(values.getAsJsonObject().get("posicion"));
+        setLatitude(Double.parseDouble(getPosition().getAsJsonObject().get("lat").toString()));
+        setLongitude(Double.parseDouble(getPosition().getAsJsonObject().get("lng").toString()));
+        setIcon();
     }
 
     // Método para guardar todas las imagenes en un ArrayList.
