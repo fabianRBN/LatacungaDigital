@@ -3,6 +3,7 @@ package com.example.jona.latacungadigital.Activities.Adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,6 +104,8 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 ((AttractiveMessageHolder) holder).getCircleIndicator().setViewPager(((AttractiveMessageHolder) holder).getViewPager());
                 attractiveAdpater.registerDataSetObserver(((AttractiveMessageHolder) holder).getCircleIndicator().getDataSetObserver());
                 expansionsCollection.add(((AttractiveMessageHolder) holder).getExpansionLayout());
+                expansionsCollection.openOnlyOne(true);
+                Log.d("Ncoll", "N = " + expansionsCollection);
                 ((AttractiveMessageHolder) holder).bind(message);
                 break;
             case ChatBotReferences.VIEW_TYPE_MESSAGE_CARD_VIEW_MAP:
@@ -113,6 +116,8 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 DetailServiceMessageHolder detailServiceMessageHolder = (DetailServiceMessageHolder) holder;
                 detailServiceMessageHolder.bind(message);
                 expansionsCollection.add(((DetailServiceMessageHolder) holder).getMessageCardDetailServiceView().getExpansionLayout());
+                expansionsCollection.openOnlyOne(true);
+                Log.d("Ncoll", "N = " + expansionsCollection);
                 break;
         }
     }
