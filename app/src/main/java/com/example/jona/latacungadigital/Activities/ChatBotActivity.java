@@ -87,15 +87,18 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
                 // Proceso para cambiar de personaje del ChatBot.
                 String keyCharacter = chatFragment.getDialogAppFragment().getCharacterAdapter().getKeyCharacter();
                 CharacterClass characterClass = new CharacterClass();
-                characterClass.updateKeyCharacterSeletedFormUser(keyCharacter);
 
-                // Proceso para obtener el genero del personaje cuando el usuario decida cambiar este.
-                characterClass.getGenreCharacterFormChanged(keyCharacter, new CharacterClass.GenreCharacterFromChanged() {
-                    @Override
-                    public void genreCharacterFromChanged(String genreCharacter) {
-                        chatFragment.getDialogflowClass().setGenreCharacter(genreCharacter);
-                    }
-                });
+                if (chatFragment.getDialogAppFragment().getCharacterAdapter().getPoisitionList() != -1) {
+                    characterClass.updateKeyCharacterSeletedFormUser(keyCharacter);
+
+                    // Proceso para obtener el genero del personaje cuando el usuario decida cambiar este.
+                    characterClass.getGenreCharacterFormChanged(keyCharacter, new CharacterClass.GenreCharacterFromChanged() {
+                        @Override
+                        public void genreCharacterFromChanged(String genreCharacter) {
+                            chatFragment.getDialogflowClass().setGenreCharacter(genreCharacter);
+                        }
+                    });
+                }
                 break;
         }
     }

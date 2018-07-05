@@ -60,7 +60,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
         } else if (viewType == ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT) { // Si el mensaje es del ChatBot se añade el view de esta al view de la lista de mensajes.
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.message_chatbot, parent, false);
-            return new ChatBotMessageHolder(view, parent.getContext());
+            return new ChatBotMessageHolder(view, context);
         } else if (viewType == ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT_TYPING) { // Si el mensaje es del ChatBotTyping se añade el view de esta al view de la lista de mensajes.
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.chatbot_is_typing, parent, false);

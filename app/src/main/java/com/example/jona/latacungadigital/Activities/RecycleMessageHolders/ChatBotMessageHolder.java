@@ -14,9 +14,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatBotMessageHolder extends RecyclerView.ViewHolder {
 
-    BubbleTextView messageText;
-    CircleImageView circleImageView;
-    Context context;
+    private BubbleTextView messageText;
+    private CircleImageView circleImageView;
+    private Context context;
 
     public ChatBotMessageHolder(View itemView, Context context) {
         super(itemView);

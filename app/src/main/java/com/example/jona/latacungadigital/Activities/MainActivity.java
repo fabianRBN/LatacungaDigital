@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.jona.latacungadigital.Activities.Fragments.DialogAppFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.ListAtractivosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
+import com.example.jona.latacungadigital.Activities.Fragments.MenuARFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.TrackeadosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.TrackinFragment;
 import com.example.jona.latacungadigital.Activities.Services.AtractivoService;
@@ -82,9 +83,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
                 case R.id.navigation_ar:
                     // mTextMessage.setText(R.string.title_notifications);
+                    setFragment(new MenuARFragment());
 
-
-                    actividadAR();
+                    //actividadAR();
 
                     return true;
             }

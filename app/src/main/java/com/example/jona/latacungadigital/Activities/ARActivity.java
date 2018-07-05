@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.jona.latacungadigital.R;
@@ -30,6 +29,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener {
     private double longitude;
     private double altitude = 0;
     private float accuracy;
+    private String tipoAR= "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,11 +42,18 @@ public class ARActivity extends AppCompatActivity implements LocationListener {
                 finish();
             }
         });*/
+        Bundle parametros = this.getIntent().getExtras();
+        if(parametros !=null){
+            tipoAR = parametros.getString("tipoAR");
+
+        }
 
         this.architectView = (ArchitectView) this.findViewById(R.id.architectView);
         final ArchitectStartupConfiguration config = new ArchitectStartupConfiguration();
         config.setLicenseKey( "oWjZeBxLExDsXbbef5ylW6vZePQkJDE62FKnOp31hsz+EfEx6k4y8XJo3ir+3B9Vu3X8DAa60VH5gW/y5SjFsLZ4TWoHLcyLL/VFfmGtZNAPpN7jOk/xJ8rmTnVjE3W0iCbBJiD2WDqidCjSz5xRhWirT23wICtyPTCC05qyViRTYWx0ZWRfXwUhvhR3yQlpKY5VdWG6M+BLgaOMYQKgyMEMgJY51vVHJLaRW+KH9v7EhIONDB6xZXmIY87GCFPNhbPB5x8uHrm+beLEjBQvOHcwTg82m7mAg0TCWpw4Unh6VK8cLIruFHE1POkwGzUYevkYli1qYdjOi/wnpe/0S2RnAw36G5OQsVbgi/J7cxLoA8jGPr57IoKkBiP7nC+/BECQxtW8DryPFByZ6T/dyFK9Q0VBi2NGe2Ib4cOUC01Yt/kfqiDli5837Qn3Ii1pssMIbwK1zxHj0AO0ylfxiZ4l8pvb1RqieqilzSg2M7szwPSboI4WRLTqORGS9mPsW15A8MKpboAIuCI/g+oXAqtmuG0bw/iDvF6i5IevNDLRLsx22ipZtIqxZqQxxUOjmNo9YIjCpLp+UnhUHD2Zz9tzMFf9xwSuztwcLq89SCT3YZ55TvaycMztr9iouellYj6N/GB1C4231qvpMiPPZvf/sAaxpDueJP1QTjUkZEmbaAIRMOnoUMMciaRgxkOsJ+pVHFGwPnUvE9X7h0j7xQn8+BkDSsRVForVWPPd6MJahngefEyYR0wqpMUIVe5N" );
         this.architectView.onCreate(config);
+
+
     }
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -55,7 +62,23 @@ public class ARActivity extends AppCompatActivity implements LocationListener {
         architectView.onPostCreate();
 
         try {
-            this.architectView.load("file:///android_asset/servicios/index.html");
+
+
+            switch (tipoAR) {
+                case "servicios":
+                    this.architectView.load("file:///android_asset/servicios/index.html");
+                    break;
+                case "atractivos":
+                    this.architectView.load("file:///android_asset/Lugares/index.html");
+                    break;
+                case "panoramica":
+                    this.architectView.load("file:///android_asset/mirador/index.html");
+                    break;
+                default:
+                    this.architectView.load("file:///android_asset/Lugares/index.html");
+                    break;
+
+            }
             architectView.setLocation(latitude, longitude, altitude, accuracy);
         } catch (Exception e) {
             System.out.println("Error al cargar el asset de Wikitude");
@@ -88,6 +111,9 @@ public class ARActivity extends AppCompatActivity implements LocationListener {
     protected void onDestroy() {
         super.onDestroy();
 
+        if(lm != null){
+            lm = null;
+        }
         architectView.onDestroy();
     }
 
