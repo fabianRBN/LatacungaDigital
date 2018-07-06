@@ -12,6 +12,8 @@ var World = {
         });
 
         this.tracker = new AR.ImageTracker(this.targetCollectionResource, {
+           maximumNumberOfConcurrentlyTrackableTargets: 5,
+           extendedRangeRecognition: AR.CONST.IMAGE_RECOGNITION_RANGE_EXTENSION.OFF,
             onTargetsLoaded: this.trackerLoaded,
             onError: this.trackerError
         });
@@ -28,8 +30,8 @@ var World = {
         this.objectInfo = [{
                 name: "Eje",
                 distance: 0,
-                modelFile: "assets/eje.wt3",
-                realSize: 0.2,
+                modelFile: "assets/music.wt3",
+                realSize: 0.001,
                 description: "Sonido",
                 x:0,
                 y:0
@@ -38,9 +40,9 @@ var World = {
                 name: "Ubicación",
                 distance: 40 * distanceFactor,
                 modelFile: "assets/ubicacion.wt3",
-                realSize: 0.003,
+                realSize: 0.001,
                 description: "Entre las calles Hnas. Páez y Quito.",
-                x:-0.8,
+                x:-0.5,
                 y:0.3
             },
 
@@ -48,9 +50,9 @@ var World = {
                 name: "Construcción",
                 distance: 10 * distanceFactor,
                 modelFile: "assets/construccion.wt3",
-                realSize: 0.003,
-                description: "La iglesia provincial fue edificada en 1650, pero el terremoto de 1797 la destruyó por completo y un nuevo templo surgió a partir de 1850.",
-                x:-0.8,
+                realSize: 0.001,
+                description: "Arquitectura Neoclásica, exibe sus columnas circulares con japitel cónico, arquitraje terminado en cornisa",
+                x:-0.5,
                 y:-0.3
             },
 
@@ -58,9 +60,9 @@ var World = {
                 name: "Descripción",
                 distance: 10 * distanceFactor,
                 modelFile: "assets/descripcion.wt3",
-                realSize: 0.003 ,
-                description: "El convento de los agustinos ha sido noviciado, centro vocacional y centro de estudios superiores, la parte frontal del templo presenta una puerta de madera tallada con ábside circular a cuyos lados se alzan dos columnas que se interrumpen a media altura y luego termina en otro par de dimensiones reducidas que sirven para el arco final del frontispicio. A su vez dos torres aguzadas y un solo nivel culminan esta área frontal.",
-                x:0.8,
+                realSize: 0.001 ,
+                description: "El convento de los agustinos ha sido noviciado, centro vocacional y centro de estudios superiores",
+                x:0.5,
                 y:0.3
             },
 
@@ -68,13 +70,20 @@ var World = {
                 name: "Atractivos",
                 distance: 10 * distanceFactor,
                 modelFile: "assets/atractivos.wt3",
-                realSize: 0.003,
-                description: "-Réplica de la Virgen del Quinche (en el lado izquierdo) y San Agustín-El altar está construido en madera y pan de oro.",
-                x:0.8,
+                realSize: 0.001,
+                description: "Réplica de la Virgen del Quinche <br/> Replica San Agustin",
+                x:0.5,
                 y:-0.3
-            }
-
-
+            },
+            {
+              name: "Historia",
+              distance: 10 * distanceFactor,
+              modelFile: "assets/historia.wt3",
+              realSize: 0.001,
+              description: "Historia del atractivo, en linea de tiempo",
+              x:0,
+              y:0.3
+              }
         ];
 
         var objects = [];
@@ -110,6 +119,7 @@ var World = {
                 this.objectAnimations.push(this.createOrbitAnimation(objects[i], info));
             }
         }
+
         //sonido
         this.sirenSound = new AR.Sound("assets/himno.mp3", {
                     onError : function(){
@@ -124,14 +134,14 @@ var World = {
            this.modeltitle = new AR.Model("assets/tituloSanAgustin.wt3", {
                     onLoaded: this.loadingStep,
                     scale: {
-                        x: 0.005,
-                        y: 0.005,
-                        z: 0.005
+                        x: 0.003,
+                        y: 0.003,
+                        z: 0.003
         			},
         			translate: {
-        				x: -0.7,
+        				x: -0.5,
         				y: 0.8,
-        				z: 0.5
+        				z: 0
         			}
         		});
         var backdropImg = new AR.ImageResource("assets/backdrop.png");
@@ -220,7 +230,10 @@ var World = {
             object.select(true);
             if(object.name == "Eje"){
            World.sirenSound.play();
-            }else{
+            }else if(object.name =="Historia"){
+            Historia.init();
+            }
+            else{
             document.getElementById("info").setAttribute("class", "info");
             document.getElementById("name").innerHTML = object.name;
             document.getElementById("descripcion").innerHTML = object.description;
@@ -297,4 +310,170 @@ var World = {
     }
 };
 
+var Historia ={
+     loaded: false,
+     fechaInfo: null,
+     selectedFecha: null,
+     init: function initFn(){
+      this.targetCollectionResource = new AR.TargetCollectionResource("assets/Lugares.wtc", {
+                 onError: function(errorMessage) {
+                     alert(errorMessage);
+                 }
+             });
+
+             this.tracker = new AR.ImageTracker(this.targetCollectionResource, {
+                maximumNumberOfConcurrentlyTrackableTargets: 5,
+                extendedRangeRecognition: AR.CONST.IMAGE_RECOGNITION_RANGE_EXTENSION.OFF,
+                 onTargetsLoaded: this.trackerLoaded,
+                 onError: this.trackerError
+             });
+                  var sizeFactor = 0.01;
+                  var distanceFactor = 0.01;
+          this.fechaInfo=[{
+          name:"linea",
+          distance: 0,
+          modelFile: "assets/linea.wt3",
+          realSize: 0.001,
+          description: "linea de tiempo del lugar",
+          x:0,
+          y:-0.8,
+          z:0
+          },
+          {
+          name:"1579",
+          distance: 10 * distanceFactor,
+          modelFile: "assets/1579.wt3",
+          realSize: 0.001,
+          description: "Los Agustinos construyeron un suntuoso templo llamado  'San Bernabé'",
+          x:-0.8,
+          y:-0.6,
+          z:0
+          },
+          {
+           name:"1650",
+           distance: 10 * distanceFactor,
+           modelFile: "assets/1650.wt3",
+           realSize: 0.001,
+           description: "Fue destruido y se lo volvió a edificar en 1650",
+           x:-0.5,
+           y:-0.6,
+           z:0
+          },
+          {
+           name:"1738",
+           distance: 10 * distanceFactor,
+           modelFile: "assets/1738.wt3",
+           realSize: 0.001,
+           description: "Fue destruido por el terremoto de 1738",
+           x:-0.2,
+           y:-0.6,
+           z:0
+           },
+            {
+            name:"1757",
+            distance: 10 * distanceFactor,
+            modelFile: "assets/1757.wt3",
+            realSize: 0.001,
+            description: "Fue reconstruido nuevamente, pero sufrió daños el 22 de febrero de 1757",
+            x:0.1,
+            y:-0.6,
+            z:0
+            },
+           {
+           name:"1797",
+           distance: 10 * distanceFactor,
+           modelFile: "assets/1797.wt3",
+           realSize: 0.001,
+           description: "El terremoto de 1797 lo destruyó totalmente",
+           x:0.4,
+           y:-0.6,
+           z:0
+           },
+           {
+           name:"1820",
+           distance: 10 * distanceFactor,
+           modelFile: "assets/1820.wt3",
+           realSize: 0.001,
+           description: "Ocupado por fuerzas militares españolas fracción del Batallon de los Andes",
+           x:0.7,
+           y:-0.6,
+           z:0
+           },
+           {
+           name:"1850",
+           distance: 10 * distanceFactor,
+           modelFile: "assets/1850.wt3",
+           realSize: 0.001,
+           description: "Nueva Edificacion,copia de San Pedro de Roma concebido por el padre Nicolas Herrera",
+           x:1,
+           y:-0.6,
+           z:0
+           }
+          ];
+          var fechas=[];
+          for (var i=0;i<this.fechaInfo.length; i++){
+          var info=this.fechaInfo[i];
+          fechas[i]=new AR.Model(info.modelFile,{
+          scale:{
+          x:info.realSize,
+          y:info.realSize,
+          z:info.realSize
+          },
+          translate:{
+          x:info.x,
+          y:info.y,
+          z:info.z
+          }
+          });
+          info.fechaModel=fechas[i];
+          info.select=this.selectFecha;
+          fechas[i].onClick=this.fechaClicked(info);
+          }
+          var overlay = new AR.ImageTrackable(this.tracker, "SanAgustin", {
+                      drawables: {
+                          cam: fechas
+                      },
+                      onImageRecognized: this.trackerEnterFov,
+                      onImageLost: this.trackerExitFov,
+                      onError: function(errorMessage) {
+                          alert(errorMessage);
+                      }
+                  });
+                   AR.context.onScreenClick = this.screenClick;
+     },
+           selectFecha: function selectFechaFn(select) {
+             if (select) {
+                 if (Historia.selectedFecha!== null) {
+                     Historia.selectedFecha.select(false);
+                 }
+                 Historia.selectedFecha = this;
+             } else {
+                 this.fechaModel.scale = {
+                     x: 0,
+                     y: 0,
+                     z: 0
+                 };
+             }
+         },
+
+         fechaClicked: function fechaClickedFn(object) {
+             return function() {
+                 object.select(true);
+                 document.getElementById("info").setAttribute("class", "info");
+                 document.getElementById("name").innerHTML = object.name;
+                 document.getElementById("descripcion").innerHTML = object.description;
+                 document.getElementById("info").setAttribute("class", "infoVisible");
+                 return true;
+             };
+         },
+
+         screenClick: function onScreenClickFn() {
+             if (Historia.selectedFecha !== null) {
+                 Historia.selectedFecha.select(false);
+                 Historia.selectedFecha = null;
+             }
+             document.getElementById("info").setAttribute("class", "info");
+
+         }
+};
 World.init();

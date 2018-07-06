@@ -196,7 +196,7 @@ public class DialogflowClass {
                     sendAttractiveToMapMessage(result);
                     break;
                 case "consultarAtractivoEnElArea":
-                    sendAttractiveListToMapMessage(result, "");
+                    sendAttractiveListToMapMessage(result, "Atractivos turísticos");
                     break;
                 case "consultarAgenciasDeViajeEnElArea":
                 case "attractionOutsideHistoricCenterAction":

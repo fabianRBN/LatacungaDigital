@@ -25,12 +25,14 @@ import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import com.example.jona.latacungadigital.Activities.Adapters.AttractiveInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.CustomInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.MyOnInfoWindowsClickListener;
 import com.example.jona.latacungadigital.Activities.Adapters.OnMarkerClickListenerAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.ServiceInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
+import com.example.jona.latacungadigital.Activities.Haversine.Haversine;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
@@ -100,6 +102,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
+    Haversine haversine;
 
     private static int UPDATE_INTERVAL = 5000;
     private static int FATEST_INTERVAL = 3000;
@@ -427,22 +430,17 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_user_dark_blue));
 
                                 //Calculo de la distancia
-                                Location locationA = new Location("punto A");
-                                locationA.setLatitude(latitud);
-                                locationA.setLongitude(longitud);
-                                //usuario amigo
-                                Location locationB = new Location("punto B");
-                                locationB.setLatitude(currentUserLatLng.latitude);
-                                locationB.setLongitude(currentUserLatLng.longitude);
+                                haversine = new Haversine();
+                                Coordenada inicial = new Coordenada(currentUserLatLng.latitude,currentUserLatLng.longitude);//mi coordenada
+                                Coordenada end = new Coordenada(latitud,longitud);// la coordenada del trackeado
+                                double distanciah = (haversine.distance(inicial,end));
+                                String formatoDistancia = String.format("%.02f", distanciah);
 
-                                float distance = locationA.distanceTo(locationB) /1000;
-                                String formatoDistancia = String.format("%.02f", distance);
-
-                                markerOptions.snippet("distancia: "+formatoDistancia+" km");
+                                markerOptions.snippet("Distancia: "+formatoDistancia+" km");
                                 markerOptions.draggable(false);
                                 googleMap.addMarker(markerOptions).setTag("userMarker");
 
-                                if (distance >= 1){
+                                if (distanciah >= 1){
                                     sendNotification("Alerta", String.format(nombre+" se alejo a "+formatoDistancia+" km de distancia de ti"));
                                 }
 
@@ -474,16 +472,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                         Coordenada coordenada =  child.child("posicion").getValue(Coordenada.class);
                         LatLng punto = new LatLng( coordenada.getLat(), coordenada.getLng());
                         //Calculo de la distancia
-                        Location locationA = new Location("punto A");
-                        locationA.setLatitude(coordenada.getLat());
-                        locationA.setLongitude(coordenada.getLng());
-                        //usuario amigo
-                        Location locationB = new Location("punto B");
-                        locationB.setLatitude(currentUserLatLng.latitude);
-                        locationB.setLongitude(currentUserLatLng.longitude);
+                        haversine = new Haversine();
+                        Coordenada inicial = new Coordenada(currentUserLatLng.latitude,currentUserLatLng.longitude);//mi coordenada
+                        double distanciah = (haversine.distance(inicial,coordenada))*1000;
+                        String formatoDistancia = String.format("%.00f", distanciah);
 
-                        float distance = locationA.distanceTo(locationB);
-                        String formatoDistancia = String.format("%.02f", distance);
                         MarkerOptions markerOptions = new  MarkerOptions().position(punto)
                                 .title(nombreAtractivo)
                                 .snippet("Distancia: "+formatoDistancia+" m")
@@ -597,10 +590,18 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         } else { // Si es una solicitud de consulta del chatbot
             switch (chatBotAction){
                 case "consultarAtractivoEnElArea":
+                    // Establecer la venta de informacion info_window_attractive
+                    AttractiveInfoWindowsAdapter attractiveInfoWindowsAdapter = new AttractiveInfoWindowsAdapter(getContext(),googleMap);
+                    attractiveInfoWindowsAdapter.setMapaFragment(this);
+                    googleMap.setInfoWindowAdapter(attractiveInfoWindowsAdapter);
+                    googleMap.setOnInfoWindowClickListener(attractiveInfoWindowsAdapter);
+                    googleMap.setOnInfoWindowLongClickListener(attractiveInfoWindowsAdapter);
+
                     // Agregar un marcadores de atractivos
                     for (int cont=0; cont < listAttractive.size(); cont++ ){
                         createMarkerForAttractive(listAttractive.get(cont));
                     }
+                    googleMap.setOnMarkerClickListener(new OnMarkerClickListenerAdapter(getContext(),googleMap));
                     break;
                 case "consultarAgenciasDeViajeEnElArea":
                 case "consultarAlojamientoEnElArea":
@@ -624,6 +625,9 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                 case "service_information_intent.service_information_intent-yes":
                     // Crear el marcador del punto Destino
                     if(attractive != null){
+                        // Establecer la venta de informacion info_window_attractive
+                        AttractiveInfoWindowsAdapter attractiveInfoWindows = new AttractiveInfoWindowsAdapter(getContext(),googleMap);
+                        googleMap.setInfoWindowAdapter(attractiveInfoWindows);
                         // Crear marcador para la posicion del atractivo de destino
                         createMarkerForAttractive(attractive);
                     }else {

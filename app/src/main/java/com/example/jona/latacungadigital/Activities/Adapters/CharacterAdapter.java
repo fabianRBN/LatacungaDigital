@@ -21,7 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CharacterAdapter extends RecyclerView.Adapter {
 
     private List<CharacterModel> characterModelList;
-    private int mSelectedItem = -1;
+    private int mSelectedItem = -1, poisitionList;
     private String keyCharacter;
 
     public CharacterAdapter(List<CharacterModel> characterModelList) {
@@ -29,6 +29,8 @@ public class CharacterAdapter extends RecyclerView.Adapter {
     }
 
     public String getKeyCharacter() { return keyCharacter; }
+
+    public int getPoisitionList() { return poisitionList; }
 
     @NonNull
     @Override
@@ -86,6 +88,8 @@ public class CharacterAdapter extends RecyclerView.Adapter {
                     notifyItemRangeChanged(0, characterModelList.size());
                 }
             };
+
+            poisitionList = mSelectedItem; // Para no guardar la posicion -1.
 
             radioButton.setOnClickListener(clickListener);
             linearLayout.setOnClickListener(clickListener);
