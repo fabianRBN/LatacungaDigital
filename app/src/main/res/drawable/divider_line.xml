@@ -6,8 +6,8 @@
         android:left="5dp">
 
         <shape>
-            <size android:height="2dp" />
-            <solid android:color="#000000" />
+            <size android:height="1dp" />
+            <solid android:color="@android:color/darker_gray" />
         </shape>
     </item>
 
