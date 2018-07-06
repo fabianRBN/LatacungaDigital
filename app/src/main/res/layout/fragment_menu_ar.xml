@@ -2,13 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/fondo5"
+
     tools:context="com.example.jona.latacungadigital.Activities.Fragments.MenuARFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cropToPadding="false"
+            android:src="@drawable/fondo5"
+            android:scaleType="centerCrop"
+            />
 
         <com.hitomi.cmlibrary.CircleMenu
             android:id="@+id/circle_menu"

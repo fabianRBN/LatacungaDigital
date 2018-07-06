@@ -213,7 +213,7 @@ public class AtractivoService extends Service {
     }
 
     public void geofireAtractivo(LatLng location , final String nombreAtractivo, final String keyAtractivo, final int id_notificacion){
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), 0.5f);
+        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), 0.1f);
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
