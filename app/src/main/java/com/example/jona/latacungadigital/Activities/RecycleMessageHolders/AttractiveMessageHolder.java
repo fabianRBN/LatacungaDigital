@@ -43,9 +43,10 @@ public class AttractiveMessageHolder extends RecyclerView.ViewHolder {
 
         // Se envia la categoria y la descripcion del atractivo a su respetivo TextView.
         txtInformationAttractive.setText(Html.fromHtml("<b>Categoría: </b>" + message.getCategoryAttactive() + "<br><br>" +
-                "<b>Descripción: </b>" + message.getDescriptionAttractive()));
+                "<b>Descripción: </b>" + message.getDescriptionAttractive().replaceAll("\\\\n", "<br><br>").
+                replaceAll("\\\\", "\"")));
 
-        txtMoreInformation.setText("Ver información");
+        txtMoreInformation.setText("Ver Información");
 
         expansionLayout.addListener(new ExpansionLayout.Listener() {
             @Override
@@ -53,7 +54,7 @@ public class AttractiveMessageHolder extends RecyclerView.ViewHolder {
                 if (expanded) {
                     txtMoreInformation.setText("Ocultar Información");
                 } else {
-                    txtMoreInformation.setText("Ver información");
+                    txtMoreInformation.setText("Ver Información");
                 }
             }
         });
