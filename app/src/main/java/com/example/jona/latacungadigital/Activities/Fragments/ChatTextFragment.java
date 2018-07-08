@@ -43,8 +43,6 @@ import com.example.jona.latacungadigital.Activities.References.ChatBotReferences
 import com.example.jona.latacungadigital.Activities.Views.MessageCardMapListItemView;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,8 +115,6 @@ public class ChatTextFragment extends Fragment {
 
         txtMessageUserSend = view.findViewById(R.id.txtUserMessageSend); // Instanciar la varibale con el id del Edit Text.
 
-        txtMessageWelcome = view.findViewById(R.id.txtMessageWelcome); // Instanciar la varibale con el id del Text View.
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         linearLayoutManager.setStackFromEnd(true);
         rvListMessages.setLayoutManager(linearLayoutManager);
@@ -135,8 +131,6 @@ public class ChatTextFragment extends Fragment {
 
         dialogAppFragment = new DialogAppFragment();
 
-        GiveWelcomeMessage(); // Dar el mensaje de Bienvenida al usuario.
-
         SetupActionBar(); // Para dar el titulo y el subtitulo que va a tener el Action Bar.
         setHasOptionsMenu(true); // Para habilitar las opciones del Toolbar.
 
@@ -148,7 +142,6 @@ public class ChatTextFragment extends Fragment {
             public void onClick(View v) {
                 if (!txtMessageUserSend.getText().toString().equals("")) { // Si el mensaje es diferente de nulo significa que es un mensaje de texto.
                     dialogflowClass.CreateMessage(txtMessageUserSend.getText().toString()); // Para enviar un mensaje del usuario o de Dialogflow.
-                    GiveWelcomeMessage();
                 } else { // Caso contrario es un mensaje de voz.
                     startSpeech();
                 }
@@ -332,18 +325,6 @@ public class ChatTextFragment extends Fragment {
         return saveListMessageClass.readStateSwitch();
     }
 
-    // Método para obtener el usuario Logeado de la aplicación.
-    private String getCurrentUserSigned() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String nameUser = "";
-
-        if (user != null) { // Si el usuario esta logeado.
-            nameUser = user.getDisplayName(); // Obtenemos el nombre del usuario logeado.
-        }
-
-        return nameUser; // Retornamos el nombre del usuario.
-    }
-
     public void getGenreCharacter() {
         // Cuando cambie el switch leemos el genero del personaje.
         CharacterClass characterClass = new CharacterClass();
@@ -355,19 +336,10 @@ public class ChatTextFragment extends Fragment {
         });
     }
 
-    // Método para establecer el mensaje de bienvenida.
-    private String setWelcomeMessage() {
-        return "Saludos " + getCurrentUserSigned() + ", aquí usted puede preguntar acerca de los lugares turísticos, " +
-                "relacionados al centro histórico de Latacunga.";
-    }
-
     // Método para dar el mensaje unicamente cuando recien entra al chat bot.
     private void GiveWelcomeMessage() {
         if (dialogflowClass.getListMessagesText().size() == 0) {
-            txtMessageWelcome.setVisibility(View.VISIBLE);
-            txtMessageWelcome.setText(setWelcomeMessage());
-        } else {
-            txtMessageWelcome.setVisibility(View.GONE);
+            dialogflowClass.SendMessageTextToDialogflow("Hola"); // El chat bot enviara un mensaje de bienvenida al usuario.
         }
     }
 
@@ -466,7 +438,7 @@ public class ChatTextFragment extends Fragment {
                 view.mapViewOnResume();
             }
         }
-        if(isMessageToSend){
+        if (isMessageToSend) {
             getDialogflowClass().CreateMessage(messageToSend);
             isMessageToSend = false;
         }
@@ -485,7 +457,7 @@ public class ChatTextFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if(listMessageCardMapView != null){
+        if (listMessageCardMapView != null) {
             for (MessageCardMapListItemView view : listMessageCardMapView) {
                 view.mapViewOnPause();
             }
@@ -501,7 +473,7 @@ public class ChatTextFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(listMessageCardMapView != null){
+        if (listMessageCardMapView != null) {
             for (MessageCardMapListItemView view : listMessageCardMapView) {
                 view.mapViewOnStop();
             }
@@ -517,7 +489,7 @@ public class ChatTextFragment extends Fragment {
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        if(listMessageCardMapView != null){
+        if (listMessageCardMapView != null) {
             for (MessageCardMapListItemView view : listMessageCardMapView) {
                 view.mapViewOnLowMemory();
             }
@@ -527,7 +499,7 @@ public class ChatTextFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(listMessageCardMapView != null){
+        if (listMessageCardMapView != null) {
             for (MessageCardMapListItemView view : listMessageCardMapView) {
                 view.mapViewOnDestroy();
             }
