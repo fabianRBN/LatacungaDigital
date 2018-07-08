@@ -6,6 +6,8 @@ var ServerInformation = {
 	POIDATA_SERVER_ARG_NR_POIS: "nrPois"
 };
 
+var descripcionSeleccionada="En el combinado nórdico el tópico se hace carne en cada uno de sus futbolistas. La obsesión por defender de Anderson también posee el alma de este futbolista atípico. Atípico porque, cuando iba camino de ser estrella (fue el mejor jugador de la Euro sub-21 de 2009), su rendimiento irregular lo convirtió en promesa incumplida siempre a la sombra de Ibrahimovic. ";
+
 // implementation of AR-Experience (aka "World")
 var World = {
 
@@ -74,6 +76,10 @@ var World = {
 		// set distance slider to 100%
 		$("#panel-distance-range").val(100);
 		$("#panel-distance-range").slider("refresh");
+
+		// set distance slider to 100%
+        		$("#panel-distance-range-exact").val(1);
+        		$("#panel-distance-range-exact").slider("refresh");
 	},
 
 	// sets/updates distances of all makers so they are available way faster than calling (time-consuming) distanceToUser() method all the time
@@ -112,6 +118,7 @@ var World = {
             title: currentMarker.poiData.title,
             description: currentMarker.poiData.description
         };
+
 		/*
 			The sendJSONObject method can be used to send data from javascript to the native code.
 		*/
@@ -159,12 +166,14 @@ var World = {
 
            		$("#poi-detail-distance").html(distanceToUserValue);
 
+               // descripcionSeleccionada = marker.poiData.description;
            		// show panel
            		$("#panel-poidetail").panel("open", 123);
 
            		$(".ui-panel-dismiss").unbind("mousedown");
 
            		$("#panel-poidetail").on("panelbeforeclose", function(event, ui) {
+           		    responsiveVoice.cancel();
            			World.currentMarker.setDeselected(World.currentMarker);
            		});
 	},
@@ -192,6 +201,10 @@ var World = {
 
 		// get current slider value (0..100);
 		var slider_value = $("#panel-distance-range").val();
+
+		var slider_value_exact = $("#panel-distance-range-exact").val();
+
+		slider_value = slider_value / slider_value_exact ;
 
 		// max range relative to the maximum distance of all visible places
 		var maxRangeMeters = Math.round(World.getMaxDistance() * (slider_value / 100));
@@ -254,6 +267,9 @@ var World = {
 				World.updateRangeValues();
 			});
 
+            $('#panel-distance-range-exact').change(function() {
+				World.updateRangeValues();
+			});
 			World.updateRangeValues();
 			World.handlePanelMovements();
 
@@ -318,6 +334,24 @@ var World = {
 	}
 
 };
+
+
+function escucharDes(){
+
+    if(responsiveVoice.isPlaying()) {
+      responsiveVoice.resume();
+    }else{
+
+        var voicelist = ["Spanish Latin American Male","Spanish Latin American Female"];
+
+
+        var item = voicelist[Math.floor(Math.random()*voicelist.length)];
+
+
+        responsiveVoice.speak(descripcionSeleccionada,item);
+    }
+
+}
 
 
 /* forward locationChanges to custom function */

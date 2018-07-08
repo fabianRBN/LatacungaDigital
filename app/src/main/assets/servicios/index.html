@@ -28,6 +28,10 @@
     <script type="text/javascript" src="jquery/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="jquery/jquery.mobile-1.3.2.min.js"></script>
 
+    <!-- voz -->
+
+    <script src='https://code.responsivevoice.org/responsivevoice.js'></script>
+
     <!-- marker representation-->
     <script src="js/marker.js"></script>
 
@@ -94,6 +98,10 @@
 
             <!-- more button-->
             <a href="javascript: World.onPoiDetailMoreButtonClicked();" data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true">More</a>
+
+            <input onclick='escucharDes();' type='button' value='🔊 Play' />
+            <input onclick='responsiveVoice.pause();' type='button' value='🔊 Play' />
+
         </div>
     </div>
 
@@ -118,7 +126,11 @@
             <h4> Visible: <a id="panel-distance-places"></a></h4>
 
             <!-- default slider -->
-            <input id="panel-distance-range" type="range" data-highlight="true" name="rangeSlider" min="0" max="100" value="100" data-show-value="false" step="5" data-popup-enabled="false">
+            <h4> Rango de covertura</h4>
+            <input id="panel-distance-range" type="range" data-highlight="true" name="rangeSlider" min="1" max="100" value="100" data-show-value="false" step="0.05" data-popup-enabled="false">
+            <h4> Ajuste de exactitud en covertura</h4>
+            <input id="panel-distance-range-exact" type="range" data-highlight="true" name="rangeSlider2" min="1" max="100" value="1" data-show-value="false" step="1" data-popup-enabled="false">
+
         </div>
     </div>
 

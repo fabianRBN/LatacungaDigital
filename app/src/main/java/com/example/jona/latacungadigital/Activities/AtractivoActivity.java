@@ -68,10 +68,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import me.relex.circleindicator.CircleIndicator;
+
 public class AtractivoActivity extends AppCompatActivity {
 
     public TextView txtTitulo, txtDescripcion, txtCategoria, txtRatingTotal;
     public ViewPager viewPager;
+    public CircleIndicator circleIndicator;
 
     public LinearLayout layout_comentario, layout_editar_comentario, layout_lista_comentarios;
     public CardView card_view_360;
@@ -133,12 +136,21 @@ public class AtractivoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_atractivo);
 
         Appbar = (AppBarLayout)findViewById(R.id.appbar);
+
         viewPager = (ViewPager) findViewById(R.id.viewPager);
+        circleIndicator = (CircleIndicator) findViewById(R.id.ciViewPagerImages);
 
 
         CoolToolbar = (CollapsingToolbarLayout)findViewById(R.id.ctolbar);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolAtractivo);
+
         setSupportActionBar(toolbar);
+
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
         
         layout_comentario = (LinearLayout) findViewById(R.id.layou_comentario);
         layout_editar_comentario = (LinearLayout ) findViewById(R.id.layout_editar_coemtario);
@@ -303,6 +315,8 @@ public class AtractivoActivity extends AppCompatActivity {
                 }
                 ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getApplicationContext(), listaImagenes , width,height);
                 viewPager.setAdapter(viewPagerAdapter);
+                circleIndicator.setViewPager(viewPager);
+                viewPagerAdapter.registerDataSetObserver(circleIndicator.getDataSetObserver());
 
                 if(dataSnapshot.child("posicion").getValue() != null){
                     final Coordenada coordenada = dataSnapshot.child("posicion").getValue(Coordenada.class);
@@ -478,7 +492,7 @@ public class AtractivoActivity extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeStream(open);
         //Bitmap bitmap= getBitmapFromURL("");
         final VrPanoramaView.Options options = new VrPanoramaView.Options();
-        options.inputType = VrPanoramaView.Options.TYPE_STEREO_OVER_UNDER;
+        options.inputType = VrPanoramaView.Options.TYPE_MONO;
         vr_pan_view.setEventListener(new VrPanoramaEventListener() {
             @Override
             public void onDisplayModeChanged(int newDisplayMode) {
@@ -586,5 +600,10 @@ public class AtractivoActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 
 }

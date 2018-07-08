@@ -1,5 +1,7 @@
 package com.example.jona.latacungadigital.Activities.Adapters;
 
+import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
@@ -13,6 +15,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.signature.StringSignature;
+import com.example.jona.latacungadigital.Activities.Parser.CircleTransform;
 import com.example.jona.latacungadigital.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -62,7 +66,8 @@ public class ViewPagerAdapter extends PagerAdapter {
         ImageView imageView= (ImageView) view.findViewById(R.id.imageView_custom_viewpager);
         // Set imagen
         System.out.println("imagenes :" +width+" "+heigth);
-        Glide.with(context).load(imagenes.get(position)).asBitmap().override(this.width,500).centerCrop().listener(new RequestListener<String, Bitmap>() {
+
+        Glide.with(context).load(imagenes.get(position)).asBitmap().centerCrop().listener(new RequestListener<String, Bitmap>() {
             @Override
             public boolean onException(Exception e, String model, com.bumptech.glide.request.target.Target<Bitmap> target, boolean isFirstResource) {
                 e.printStackTrace();
@@ -76,6 +81,8 @@ public class ViewPagerAdapter extends PagerAdapter {
             }
 
         }).into(imageView);
+
+
 
         ViewPager vp = (ViewPager) container;
         vp.addView(view,0);
