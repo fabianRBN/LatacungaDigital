@@ -91,7 +91,7 @@ public class DialogflowClass {
 
     // Método para enviar el mensaje a Dialogflow.
     @SuppressLint("StaticFieldLeak")
-    private void SendMessageTextToDialogflow(final String message) {
+    public void SendMessageTextToDialogflow(final String message) {
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery(message); // Enviamos la pregunta del usuario a Dialogflow.
 

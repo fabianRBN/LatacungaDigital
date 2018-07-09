@@ -155,10 +155,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                if(newText != "") {
+                    setFragment(listAtractivosFragment);
+                    listAtractivosFragment.listaAtractivo.clear();
+                    listAtractivosFragment.ConsultarAtractivos(newText);
 
-                setFragment(listAtractivosFragment);
-                listAtractivosFragment.listaAtractivo.clear();
-                listAtractivosFragment.ConsultarAtractivos(newText);
+                }
                 return true;
             }
         });

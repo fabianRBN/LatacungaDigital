@@ -32,6 +32,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,16 +69,21 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import me.relex.circleindicator.CircleIndicator;
+
 public class AtractivoActivity extends AppCompatActivity {
 
     public TextView txtTitulo, txtDescripcion, txtCategoria, txtRatingTotal;
     public ViewPager viewPager;
+    public CircleIndicator circleIndicator; // Indicador de viewpager imagenes
+
 
     public LinearLayout layout_comentario, layout_editar_comentario, layout_lista_comentarios;
     public CardView card_view_360;
 
     String atractivoKey;
     String usuarioKey;
+    String nombreAtractivo="";
     String distancia;
 
     private DatabaseReference mDatabase;
@@ -132,14 +138,25 @@ public class AtractivoActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_atractivo);
 
+
+
         Appbar = (AppBarLayout)findViewById(R.id.appbar);
+
         viewPager = (ViewPager) findViewById(R.id.viewPager);
+        circleIndicator = (CircleIndicator) findViewById(R.id.ciViewPagerImages);
 
 
         CoolToolbar = (CollapsingToolbarLayout)findViewById(R.id.ctolbar);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolAtractivo);
+
         setSupportActionBar(toolbar);
-        
+
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
         layout_comentario = (LinearLayout) findViewById(R.id.layou_comentario);
         layout_editar_comentario = (LinearLayout ) findViewById(R.id.layout_editar_coemtario);
         card_view_360 = (CardView) findViewById(R.id.card_view_360);
@@ -211,11 +228,23 @@ public class AtractivoActivity extends AppCompatActivity {
             txtDescripcion.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
         }
 
+        parametros();
+
+
+
+
+    }
+    public void parametros(){
         Bundle parametros = this.getIntent().getExtras();
         if(parametros !=null){
 
             this.atractivoKey = getIntent().getExtras().getString("atractivoKey");
             this.distancia = getIntent().getExtras().getString("distancia");
+            this.nombreAtractivo = getIntent().getExtras().getString("atractivoNombre");
+
+            if(getSupportActionBar() != null){
+                getSupportActionBar().setTitle(nombreAtractivo);
+            }
             NameOfFile = this.atractivoKey.toString();
             mDatabase = FirebaseDatabase.getInstance().getReference().child("atractivo").child(this.atractivoKey);
             // Recupera toda la informacion del atractivo
@@ -231,8 +260,6 @@ public class AtractivoActivity extends AppCompatActivity {
 
 
         }
-
-
     }
 
     @Override
@@ -303,6 +330,8 @@ public class AtractivoActivity extends AppCompatActivity {
                 }
                 ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getApplicationContext(), listaImagenes , width,height);
                 viewPager.setAdapter(viewPagerAdapter);
+                circleIndicator.setViewPager(viewPager);
+                viewPagerAdapter.registerDataSetObserver(circleIndicator.getDataSetObserver());
 
                 if(dataSnapshot.child("posicion").getValue() != null){
                     final Coordenada coordenada = dataSnapshot.child("posicion").getValue(Coordenada.class);
@@ -478,7 +507,7 @@ public class AtractivoActivity extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeStream(open);
         //Bitmap bitmap= getBitmapFromURL("");
         final VrPanoramaView.Options options = new VrPanoramaView.Options();
-        options.inputType = VrPanoramaView.Options.TYPE_STEREO_OVER_UNDER;
+        options.inputType = VrPanoramaView.Options.TYPE_MONO;
         vr_pan_view.setEventListener(new VrPanoramaEventListener() {
             @Override
             public void onDisplayModeChanged(int newDisplayMode) {
@@ -586,5 +615,10 @@ public class AtractivoActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 
 }

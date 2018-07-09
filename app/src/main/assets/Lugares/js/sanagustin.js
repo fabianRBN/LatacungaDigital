@@ -5,7 +5,7 @@ var World = {
     selectedObject: null,
 
     init: function initFn() {
-        this.targetCollectionResource = new AR.TargetCollectionResource("assets/Lugares.wtc", {
+        this.targetCollectionResource = new AR.TargetCollectionResource("assets/SanAgustin.wtc", {
             onError: function(errorMessage) {
                 alert(errorMessage);
             }
@@ -147,16 +147,20 @@ var World = {
         var backdropImg = new AR.ImageResource("assets/backdrop.png");
         var backdrop = [new AR.ImageDrawable(backdropImg, 2)];
 
-        var overlay = new AR.ImageTrackable(this.tracker, "SanAgustin", {
-            drawables: {
-                cam: backdrop.concat(objects,this.modeltitle)
-            },
-            onImageRecognized: this.trackerEnterFov,
-            onImageLost: this.trackerExitFov,
-            onError: function(errorMessage) {
-                alert(errorMessage);
-            }
-        });
+        for (var i = 1; i <= 18; i++) {
+        var overlay = new AR.ImageTrackable(this.tracker, "SanAgustin"+i, {
+                    drawables: {
+                        cam: backdrop.concat(objects,this.modeltitle)
+                    },
+                    onImageRecognized: this.trackerEnterFov,
+                    onImageLost: this.trackerExitFov,
+                    onError: function(errorMessage) {
+                        alert(errorMessage);
+                    }
+                });
+
+        }
+
 
         AR.context.onScreenClick = this.screenClick;
     },
@@ -231,7 +235,9 @@ var World = {
             if(object.name == "Eje"){
            World.sirenSound.play();
             }else if(object.name =="Historia"){
-            Historia.init();
+            //World.AnimationGroup.destroy();
+            //AnimationGroup=null;
+            //Historia.init();
             }
             else{
             document.getElementById("info").setAttribute("class", "info");
@@ -429,7 +435,7 @@ var Historia ={
           info.select=this.selectFecha;
           fechas[i].onClick=this.fechaClicked(info);
           }
-          var overlay = new AR.ImageTrackable(this.tracker, "SanAgustin", {
+          var overlay = new AR.ImageTrackable(this.tracker, "SanAgustin4", {
                       drawables: {
                           cam: fechas
                       },
