@@ -28,12 +28,9 @@ public class TaskRequestDirections  extends AsyncTask<String,Void,String> implem
     Polyline polyline;
     SharedPreferences prefs;
 
-    AccesoInternet accesoInternet;
-
     public TaskRequestDirections(GoogleMap googleMap, Context context) {
         this.googleMap = googleMap;
         this.context = context;
-        accesoInternet = new AccesoInternet();
     }
 
     public Polyline getPolyline() {
@@ -70,7 +67,7 @@ public class TaskRequestDirections  extends AsyncTask<String,Void,String> implem
     protected String doInBackground(String... strings) {
         String responseString = "";
         try {
-            if (accesoInternet.isNetDisponible(context)) { // Proceso solo cuando exista internet.
+            if (AccesoInternet.getInstance(context).isOnline()) { // Proceso solo cuando exista internet.
                 responseString = requestDirection(strings[0]);
             } else {
                 this.cancel(true); // Cancelamos el hilo si no hay internet existe un error.
@@ -94,7 +91,7 @@ public class TaskRequestDirections  extends AsyncTask<String,Void,String> implem
         InputStream inputStream = null;
         HttpURLConnection httpURLConnection = null;
         try {
-            if (accesoInternet.isNetDisponible(context)) { // Proceso solo cuando exista internet.
+            if (AccesoInternet.getInstance(context).isOnline()) { // Proceso solo cuando exista internet.
                 URL url = new URL(reqUrl);
                 httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.connect();

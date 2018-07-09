@@ -47,8 +47,7 @@ public class DialogflowClass {
     private EditText txtMessageUserSend;
     private boolean isTextToSpeech = false;
     private String genreCharacter;
-
-    private AccesoInternet accesoInternet; // Variable para controlar que el usuario este conectado a Internet.
+    private WeatherClass weatherModel;
 
     public DialogflowClass(Context context, List<TextMessageModel> listMessagesText, RecyclerView rvListMessages, MessagesAdapter messagesAdapter,
                            EditText txtMessageUserSend) {
@@ -57,8 +56,8 @@ public class DialogflowClass {
         this.rvListMessages = rvListMessages;
         this.messagesAdapter = messagesAdapter;
         this.txtMessageUserSend = txtMessageUserSend;
-        accesoInternet = new AccesoInternet();
         streamPlayerClass = new StreamPlayerClass();
+        weatherModel = new WeatherClass();
     }
 
     // Getters and Setters
@@ -102,7 +101,7 @@ public class DialogflowClass {
             @Override
             protected void onPreExecute() {
                 // Se envia el mensaje solo si hay internet.
-                if (accesoInternet.isNetDisponible(context)) {
+                if (AccesoInternet.getInstance(context).isOnline()) {
                     MessageTypingToDialogflow();
                 }
             }
@@ -112,7 +111,7 @@ public class DialogflowClass {
             @Override
             protected AIResponse doInBackground(AIRequest... aiRequests) {
 
-                if (accesoInternet.isNetDisponible(context)) { // Se envia el mensaje cuando haya solo internet en la aplicacion.
+                if (AccesoInternet.getInstance(context).isOnline()) { // Se envia el mensaje cuando haya solo internet en la aplicacion.
                     try {
                         return aiDataService.request(aiRequest); // Retornamos la respuesta de Dialogflow.
                     } catch (AIServiceException e) {
@@ -168,11 +167,10 @@ public class DialogflowClass {
         if (response != null) {
             Result result = response.getResult();
             String action = result.getAction(); // Variable para reconocer la acción según la pregunta del usuario.
-
             switch (action) {
                 case "weatherAction":
                     if(!result.getParameters().isEmpty()){
-                        WeatherClass weatherModel = new WeatherClass(context, result, this);
+                        weatherModel.setVariables(this.context, this, result);
                         weatherModel.WeatherResponse();
                     } else {
                         String speech = result.getFulfillment().getSpeech();
@@ -180,8 +178,8 @@ public class DialogflowClass {
                     }
                     break;
                 case "weather_intent.weather_intent-yes":
-                    WeatherClass weatherModel = new WeatherClass(context, result, this);
-                    weatherModel.WeatherResponse();
+                    String recommendation = weatherModel.recommendAccordingWeather();
+                    MessageSendToDialogflow(recommendation);
                     break;
                 case "attractionInformationAction":
                     sendAttractiveToCardViewInformation(result);

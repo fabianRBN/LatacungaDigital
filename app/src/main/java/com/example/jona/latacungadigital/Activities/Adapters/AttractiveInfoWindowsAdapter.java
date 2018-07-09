@@ -1,6 +1,7 @@
 package com.example.jona.latacungadigital.Activities.Adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,6 +9,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
 import com.example.jona.latacungadigital.Activities.ChatBotActivity;
 import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
@@ -35,7 +37,7 @@ public class AttractiveInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter
         this.mapaFragment = mapaFragment;
     }
 
-    private void renderWindow(Marker marker, View view){
+    private void renderWindow(final Marker marker, View view){
         ImageView imgAtractivo = (ImageView) view.findViewById(R.id.img_atractivo);
         TextView txtTitulo = (TextView) view.findViewById(R.id.str_titulo);
         TextView txtCategoria = (TextView) view.findViewById(R.id.str_categoria);
@@ -54,6 +56,20 @@ public class AttractiveInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter
             Glide.with(mContext).load(attractive.getListImages().get(0))
                     .asBitmap()
                     .override(100,100)
+                    .listener(new RequestListener<String, Bitmap>() {
+                        @Override
+                        public boolean onException(Exception e, String model, com.bumptech.glide.request.target.Target<Bitmap> target, boolean isFirstResource) {
+                            e.printStackTrace();
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, String model, com.bumptech.glide.request.target.Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            if(!isFromMemoryCache) marker.showInfoWindow();
+                            return false;
+                        }
+
+                    })
                     .into(imgAtractivo);
         } else {
             txtTitulo.setText("No se pudo leer el attractivo");

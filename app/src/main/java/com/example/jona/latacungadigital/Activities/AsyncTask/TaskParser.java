@@ -2,7 +2,6 @@ package com.example.jona.latacungadigital.Activities.AsyncTask;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
@@ -33,7 +32,6 @@ public class TaskParser extends AsyncTask<String, Void, List<List<HashMap<String
 
     Polyline polyline;
     SharedPreferences prefs;
-    AccesoInternet accesoInternet;
 
     public AsyncResponse delegate = null;
 
@@ -41,7 +39,6 @@ public class TaskParser extends AsyncTask<String, Void, List<List<HashMap<String
         this.googleMap = googleMap;
         this.context = context;
         this.delegate = delegate;
-        accesoInternet = new AccesoInternet();
     }
 
 
@@ -59,7 +56,7 @@ public class TaskParser extends AsyncTask<String, Void, List<List<HashMap<String
             JSONObject jsonObject;
             List<List<HashMap<String, String>>> routes = null;
             try {
-                if (accesoInternet.isNetDisponible(context)) {
+                if (AccesoInternet.getInstance(context).isOnline()) {
                     jsonObject = new JSONObject(strings[0]);
                     DirectionsParser directionsParser = new DirectionsParser();
                     routes = directionsParser.parse(jsonObject);

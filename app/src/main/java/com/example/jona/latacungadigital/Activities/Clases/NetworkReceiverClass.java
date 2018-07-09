@@ -40,10 +40,7 @@ public class NetworkReceiverClass extends BroadcastReceiver {
         String colorSnackBarSatats;
         int timeToShowMessage;
 
-        // Para saber si esta conectado a internet.
-        AccesoInternet accesoInternet = new AccesoInternet();
-
-        if (accesoInternet.isNetDisponible(context)) { // Si esl dispositivo esta conectado al Internet.
+        if (AccesoInternet.getInstance(context).isOnline()) { // Si esl dispositivo esta conectado al Internet.
             actionBar.setSubtitle("En línea");
             messageStatus = "Conexión exitosa.";
             colorSnackBarSatats = "FF04C607";

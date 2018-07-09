@@ -104,8 +104,7 @@ public class ChatTextFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         listMessagesText = new ArrayList<>(); // Incializar la lista de los mensajes de texto.
-        listMessageCardMapView = new ArrayList<>();
-
+        listMessageCardMapView = new ArrayList<>(); // Incializar la lista de los mensajes con mapas.
         view = inflater.inflate(R.layout.fragment_chat_text, container, false);
 
         Toolbar toolBarChatBot = view.findViewById(R.id.toolBarChatBot); // Instanciar la variable con el Id del Toolbar.

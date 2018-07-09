@@ -1,9 +1,6 @@
 package com.example.jona.latacungadigital.Activities.Clases;
 
-import  android.content.Context;
-
-import ai.api.model.AIOutputContext;
-import ai.api.model.Result;
+import android.content.Context;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -26,6 +23,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import ai.api.model.AIOutputContext;
+import ai.api.model.Result;
+
 public class WeatherClass {
 
     private RequestQueue queue;
@@ -33,38 +33,30 @@ public class WeatherClass {
     private Result result;
     private DialogflowClass dialogflowClass;
     private boolean isWeatherFoundInformation = true; // Para controlar si se encontro la informacion del clima que pide el usuario.
+    private double degrees;
+    private boolean futureTime;
+    private String currentDate;
 
-    WeatherClass(Context context, Result result, DialogflowClass dialogflowClass) {
-        this.result = result;
+    WeatherClass() { }
+
+    public void setVariables(Context context, DialogflowClass dialogflowClass, Result result) {
         this.dialogflowClass = dialogflowClass;
-        queue = Volley.newRequestQueue(context);
-    }
-
-    public void WeatherResponse() {
-
-        String urlAPIXU;
-        String urlCurrentWeather = "https://api.apixu.com/v1/current.json?key=" + ChatBotReferences.APIXU_API_CLIENT + "&q=Latacunga&lang=es";
-        String urlForecast = "https://api.apixu.com/v1/forecast.json?key=" + ChatBotReferences.APIXU_API_CLIENT +
-                "&q=Latacunga&lang=es&dt=" + getDateFromDialogflow();
+        queue = Volley.newRequestQueue(context.getApplicationContext());
+        this.result = result;
 
         // Se obtiene la fecha del día actual.
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        final String currentDate = dateFormat.format(new Date());
+        currentDate = dateFormat.format(new Date());
+    }
 
-        if (!getDateFromDialogflow().equals("")) {
-            if (getDateFromDialogflow().equals(currentDate)) {
-                urlAPIXU = urlCurrentWeather;
-            } else {
-                urlAPIXU = urlForecast;
-            }
-        } else {
-            urlAPIXU = urlCurrentWeather;
-        }
+    public void WeatherResponse() {
+        String urlAPIXU;
+        urlAPIXU = getUrlAPIXU();
 
+        // Enviamos una peticion a la API
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, urlAPIXU, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
                 if (!getDateFromDialogflow().equals("")) {
                     if (getDateFromDialogflow().equals(currentDate)) {
                         dialogflowClass.MessageSendToDialogflow(currentWeather(response)); // Enviamos el clima del dia actual.
@@ -74,7 +66,6 @@ public class WeatherClass {
                 } else {
                     dialogflowClass.MessageSendToDialogflow(currentWeather(response)); // Enviamos el clima del dia actual.
                 }
-
                 if (result.getAction().equals("weatherAction") && isWeatherFoundInformation) {
                     // Preguntamos al usuario si desea saber que vestimenta llevar para su recorrido turistico.
                     dialogflowClass.MessageSendToDialogflow("¿Deseas saber que vestimenta o accesorios usar para tú recorrido turístico?");
@@ -103,19 +94,13 @@ public class WeatherClass {
             String windPerHour = jsonObjectCurrent.getString("wind_kph") + "km/h"; // Velocidad del viento en kilómetros por hora.
             String currentCondition = jsonObjectCurrent.getJSONObject("condition").getString("text"); // Condición en la que se encuentra el clima.
 
-            switch (result.getAction()) {
-                case "weatherAction":
-                    // Enviamos la respuesta con los datos obtenidos de la API del clima.
-                    resultCurrentWeather = "La ciudad de " + locationName + " se encuentra " + currentCondition + " con una humedad del "
-                            + humidity + ". Además, la velocidad del viento ésta a " + windPerHour + " con una temperatura de "
-                            + degreesC + " o " + degreesF + ".";
-                    break;
-                case "weather_intent.weather_intent-yes":
-                    // Recomendamos que usar segun el clima, se tomo en cuenta los grados centigrados para dar la recomendacion.
-                    resultCurrentWeather = recommendAccordingWeather(Math.round(jsonObjectCurrent.getDouble("temp_c")), false);
-                    break;
-            }
+            this.degrees = Math.round(jsonObjectCurrent.getDouble("temp_c"));
+            this.futureTime = false;
 
+            // Enviamos la respuesta con los datos obtenidos de la API del clima.
+            resultCurrentWeather = "La ciudad de " + locationName + " se encuentra " + currentCondition + " con una humedad del "
+                    + humidity + ". Además, la velocidad del viento ésta a " + windPerHour + " con una temperatura de "
+                    + degreesC + " o " + degreesF + ".";
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -155,21 +140,15 @@ public class WeatherClass {
                 String windPerHour = jsonObjectDaysForecast.getString("maxwind_kph") + "km/h"; // Velocidad del viento en kilómetros por hora.
                 String currentCondition = jsonObjectDaysForecast.getJSONObject("condition").getString("text"); // Condición en la que se encuentra el clima.
 
-                switch (result.getAction()) {
-                    case "weatherAction":
-                        // Enviamos la respuesta con los datos obtenidos de la API del clima.
-                        resultCurrentWeather = "La ciudad de " + locationName + " en el día " + dateConvert + ", se encontrará con " + currentCondition +
-                                ", con una humedad promedio del " + humidity + ". Además, la velocidad máxima del viento éstará a " + windPerHour +
-                                " con una temperatura máxima de " + degreesC + " o " + degreesF + ".";
-                        break;
-                    case "weather_intent.weather_intent-yes":
-                        // Recomendamos que usar segun el clima, se tomo en cuenta los grados centigrados para dar la recomendacion.
-                        resultCurrentWeather = recommendAccordingWeather(Math.round(jsonObjectDaysForecast.getDouble("maxtemp_c")), true);
-                        break;
-                }
+                this.degrees = Math.round(jsonObjectDaysForecast.getDouble("maxtemp_c"));
+                this.futureTime = true;
+
+                // Enviamos la respuesta con los datos obtenidos de la API del clima.
+                resultCurrentWeather = "La ciudad de " + locationName + " en el día " + dateConvert + ", se encontrará con " + currentCondition +
+                        ", con una humedad promedio del " + humidity + ". Además, la velocidad máxima del viento éstará a " + windPerHour +
+                        " con una temperatura máxima de " + degreesC + " o " + degreesF + ".";
 
                 isWeatherFoundInformation = true; // Para controlar si se encontro la informacion del clima.
-
             } else {
                 // Enviamos una respuesta de que no se encontro nada.
                 resultCurrentWeather = "Lo siento, no he podido encontrar nada sobre la fecha solicitada por usted. "
@@ -198,12 +177,28 @@ public class WeatherClass {
                 }
             }
         }
-
         return parameterNumberDays; // Retornamos la fecha consultado de Dialogflow.
     }
 
+    // Obtener la url para la api basado en la fecha
+    private String getUrlAPIXU(){
+        String urlCurrentWeather = "https://api.apixu.com/v1/current.json?key=" + ChatBotReferences.APIXU_API_CLIENT + "&q=Latacunga&lang=es";
+        String urlForecast = "https://api.apixu.com/v1/forecast.json?key=" + ChatBotReferences.APIXU_API_CLIENT +
+                "&q=Latacunga&lang=es&dt=" + getDateFromDialogflow();
+
+        if (!getDateFromDialogflow().equals("")) {
+            if (getDateFromDialogflow().equals(currentDate)) {
+                return urlCurrentWeather;
+            } else {
+                return urlForecast;
+            }
+        } else {
+            return urlCurrentWeather;
+        }
+    }
+
     // Método para determinar el tipo de clima de la ciudad.
-    private String recommendAccordingWeather(double degrees, boolean futureTime) {
+    public String recommendAccordingWeather() {
         String recommendation = "", toBe, uses, recommendationTime;
 
         if (!futureTime) {
@@ -234,7 +229,6 @@ public class WeatherClass {
             recommendation = "Según mi pronóstico el clima " + toBe + " caliente, por lo tanto, te " + recommendationTime + " pantalones ligeros o " +
                     "si esposible " + uses + " shorts, camiseta manga corta, gafas o lentes de sol, calzado abierto o semicerrado que deje respirar tus pies.";
         }
-
         return recommendation;
     }
 }

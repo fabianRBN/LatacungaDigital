@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
-import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.AsyncTask.TaskRequestDirections;
 import com.example.jona.latacungadigital.Activities.AtractivoActivity;
@@ -26,13 +25,11 @@ public class MyOnInfoWindowsClickListener implements GoogleMap.OnInfoWindowClick
     private Context context;
     LatLng puntoOrigen = new LatLng(-0.9337192,-78.6174786);
     GoogleMap googleMap;
-    AccesoInternet accesoInternet;
     EstadoGPS estadoGPS;
 
     public MyOnInfoWindowsClickListener(Context context, GoogleMap googleMap) {
         this.context = context;
         this.googleMap = googleMap;
-        accesoInternet = new AccesoInternet();
         estadoGPS = new EstadoGPS(context,googleMap);
         posicionPorGps();
     }
@@ -43,10 +40,8 @@ public class MyOnInfoWindowsClickListener implements GoogleMap.OnInfoWindowClick
         LatLng puntoFinal = new LatLng(marker.getPosition().latitude,marker.getPosition().longitude);
 
         puntoOrigen = estadoGPS.puntoOrigen;
-        if(accesoInternet.isOnlineNet()) {
+        if(AccesoInternet.getInstance(context).isOnline()) {
             distanciaGoogle(puntoOrigen, puntoFinal);
-        }else{
-            Toast.makeText(context,"No tiene acceso a internet",Toast.LENGTH_SHORT).show();
         }
     }
 
