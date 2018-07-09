@@ -9,13 +9,19 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.ListAtractivoAdapter;
 import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
@@ -33,12 +39,17 @@ import java.util.ArrayList;
 
 public class ListAtractivosFragment extends Fragment {
 
-    private String FRAGMENT_TAG = "ListaAtractivos";
+    private String FRAGMENT_TAG = "ListaAtractivos"; // TAG de identificacion de Fragmento
 
-    private ListView listView;
+    private ListView listView; //  listview donde se cargaran la lista de atractivos
+
+    public ProgressBar progressBar; // Spinner indicador de la carga de atractivos
+
+    private SwipeRefreshLayout swipeContainer; // permite recargar los datos
+
     private DatabaseReference mDatabase;
     private OnFragmentInteractionListener mListener;
-    public ArrayList<AtractivoModel> listaAtractivo = new ArrayList<>();
+    public ArrayList<AtractivoModel> listaAtractivo = new ArrayList<>(); // Array de atractivos
     private String filter = "";
     final AlertDialog alert = null;
     LocationManager manager;
@@ -64,9 +75,24 @@ public class ListAtractivosFragment extends Fragment {
 
         listView = (ListView) view.findViewById(R.id.listViewAtractivos);
 
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar_atractivos);
 
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.srlContainer);
 
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Update data in ListView
+                        verificarGPS();
+                        swipeContainer.setRefreshing(false);
+                    }
+                }, 3000);
 
+            }
+        });
 
         return view;
     }
@@ -74,15 +100,22 @@ public class ListAtractivosFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        // Permite la verificacion del gps
+
+
+        verificarGPS();
+
+    }
+
+    private void verificarGPS(){
         manager = (LocationManager) getContext().getSystemService( Context.LOCATION_SERVICE );
         if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+
+
             showAlert();
         }else{
             ConsultarAtractivos("");
         }
-
-
-
     }
 
     private void showAlert() {
@@ -107,6 +140,7 @@ public class ListAtractivosFragment extends Fragment {
 
     public void ConsultarAtractivos(String arg){
 
+        progressBar.setVisibility(View.GONE);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("atractivo");
         mDatabase.keepSynced(true);
         Query query = mDatabase.orderByChild("nombre").startAt(arg).endAt(arg+"\uf8ff");

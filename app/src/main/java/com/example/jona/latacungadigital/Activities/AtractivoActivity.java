@@ -32,6 +32,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,13 +75,15 @@ public class AtractivoActivity extends AppCompatActivity {
 
     public TextView txtTitulo, txtDescripcion, txtCategoria, txtRatingTotal;
     public ViewPager viewPager;
-    public CircleIndicator circleIndicator;
+    public CircleIndicator circleIndicator; // Indicador de viewpager imagenes
+
 
     public LinearLayout layout_comentario, layout_editar_comentario, layout_lista_comentarios;
     public CardView card_view_360;
 
     String atractivoKey;
     String usuarioKey;
+    String nombreAtractivo="";
     String distancia;
 
     private DatabaseReference mDatabase;
@@ -135,6 +138,8 @@ public class AtractivoActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_atractivo);
 
+
+
         Appbar = (AppBarLayout)findViewById(R.id.appbar);
 
         viewPager = (ViewPager) findViewById(R.id.viewPager);
@@ -149,9 +154,9 @@ public class AtractivoActivity extends AppCompatActivity {
         if(getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        
         layout_comentario = (LinearLayout) findViewById(R.id.layou_comentario);
         layout_editar_comentario = (LinearLayout ) findViewById(R.id.layout_editar_coemtario);
         card_view_360 = (CardView) findViewById(R.id.card_view_360);
@@ -223,11 +228,23 @@ public class AtractivoActivity extends AppCompatActivity {
             txtDescripcion.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
         }
 
+        parametros();
+
+
+
+
+    }
+    public void parametros(){
         Bundle parametros = this.getIntent().getExtras();
         if(parametros !=null){
 
             this.atractivoKey = getIntent().getExtras().getString("atractivoKey");
             this.distancia = getIntent().getExtras().getString("distancia");
+            this.nombreAtractivo = getIntent().getExtras().getString("atractivoNombre");
+
+            if(getSupportActionBar() != null){
+                getSupportActionBar().setTitle(nombreAtractivo);
+            }
             NameOfFile = this.atractivoKey.toString();
             mDatabase = FirebaseDatabase.getInstance().getReference().child("atractivo").child(this.atractivoKey);
             // Recupera toda la informacion del atractivo
@@ -243,8 +260,6 @@ public class AtractivoActivity extends AppCompatActivity {
 
 
         }
-
-
     }
 
     @Override

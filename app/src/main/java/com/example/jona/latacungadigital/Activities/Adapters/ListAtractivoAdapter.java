@@ -119,6 +119,7 @@ public class ListAtractivoAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent(context, AtractivoActivity.class);
                 intent.putExtra("atractivoKey", listAtractivo.get(position).getKey());
+                intent.putExtra("atractivoNombre", listAtractivo.get(position).getNombre());
                 intent.putExtra("distancia", finalDistanciaStr);
                 context.startActivity(intent);
             }
