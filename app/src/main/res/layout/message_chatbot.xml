@@ -9,6 +9,7 @@
         android:id="@+id/chatBotImage"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:src="@drawable/ic_chat_bot_profile_default"
         android:layout_centerVertical="true"/>
 
     <com.github.library.bubbleview.BubbleTextView

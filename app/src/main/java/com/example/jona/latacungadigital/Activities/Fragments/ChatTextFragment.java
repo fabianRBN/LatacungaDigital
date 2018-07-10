@@ -130,7 +130,9 @@ public class ChatTextFragment extends Fragment {
 
         dialogAppFragment = new DialogAppFragment();
 
-        SetupActionBar(); // Para dar el titulo y el subtitulo que va a tener el Action Bar.
+        // Se envia false para no mostrar el mensaje de "Conexión exitosa" al inicio de la actividad.
+        SetupActionBar(false); // Para dar el titulo y el subtitulo que va a tener el Action Bar.
+
         setHasOptionsMenu(true); // Para habilitar las opciones del Toolbar.
 
         ChangeIconButton(); // Se llama al método de cambiar de icono.
@@ -262,9 +264,11 @@ public class ChatTextFragment extends Fragment {
     }
 
     // Método para establecer el nombre del personaje y si esta activo de acuerdo a la conexión a internet.
-    private void SetupActionBar() {
+    private void SetupActionBar(boolean statusTSnackbar) {
         actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
         if (actionBar != null) {
+            actionBar.setTitle("No Definido"); // Se le da un titulo ya establecido.
+
             CharacterClass characterClass = new CharacterClass();
             characterClass.ReadCharacterFromDatabase(new CharacterClass.DataOfCharacters() {
                 @Override
@@ -275,8 +279,7 @@ public class ChatTextFragment extends Fragment {
 
             IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
-            // Se envia false para no mostrar el mensaje de "Conexión exitosa" al inicio de la actividad.
-            networkReceiverClass = new NetworkReceiverClass(actionBar, getActivity(), false);
+            networkReceiverClass = new NetworkReceiverClass(actionBar, getActivity(), statusTSnackbar);
             if (!receiversRegistered) {
                 getActivity().registerReceiver(networkReceiverClass, filter);
                 receiversRegistered = true;
@@ -429,6 +432,14 @@ public class ChatTextFragment extends Fragment {
         if (isPermitSaveMessages()) ReadListMessageFromSharedPreferences(); // Se leen los mensajes guardados del chat.
 
         getGenreCharacter(); // Obtenemos el genero del personaje.
+
+        if (!receiversRegistered) {
+            if (networkReceiverClass.isStatusTSnackbar()) { // Para saber el estado actual de internet.
+                SetupActionBar(false); // Si existe internet no mostramos el TSnackbar.
+            } else {
+                SetupActionBar(true); // Si no hay internet mostramos el TSnackbar con su respectivo mensaje.
+            }
+        }
 
         isSwicthChanged = true; // Para que al momento de que la app se resuma se pueda controlar el estado del Switch de la voz del personaje.
 

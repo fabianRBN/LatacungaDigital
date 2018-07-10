@@ -20,13 +20,15 @@ public class NetworkReceiverClass extends BroadcastReceiver {
     ActionBar actionBar;
     TSnackbar snackbar;
     Activity activityChatBot;
-    private boolean showMessageToStartActivity;
+    private boolean showMessageToStartActivity, statusTSnackbar = false;
 
     public NetworkReceiverClass(ActionBar actionBar, Activity activityChatBot, boolean showMessageToStartActivity) {
         this.actionBar = actionBar;
         this.activityChatBot = activityChatBot;
         this.showMessageToStartActivity = showMessageToStartActivity;
     }
+
+    public boolean isStatusTSnackbar() { return statusTSnackbar; }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -40,17 +42,19 @@ public class NetworkReceiverClass extends BroadcastReceiver {
         String colorSnackBarSatats;
         int timeToShowMessage;
 
-        if (AccesoInternet.getInstance(context).isOnline()) { // Si esl dispositivo esta conectado al Internet.
+        if (AccesoInternet.getInstance(context).isOnline()) { // Si el dispositivo esta conectado al Internet.
             actionBar.setSubtitle("En línea");
             messageStatus = "Conexión exitosa.";
             colorSnackBarSatats = "FF04C607";
             timeToShowMessage = TSnackbar.LENGTH_SHORT;
+            statusTSnackbar = true; // Para saber que esta conectado a internet.
         } else {
             actionBar.setSubtitle("Desconectado");
             messageStatus = "No hay conexión a Internet.";
             colorSnackBarSatats = "FFD90214";
             timeToShowMessage = TSnackbar.LENGTH_INDEFINITE;
             showMessageToStartActivity = true;
+            statusTSnackbar = false; // Para saber que no esta conectado a internet.
         }
 
         if (showMessageToStartActivity) { // No se va a mostrar el mensaje al inicio de la actividad.

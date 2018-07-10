@@ -1,5 +1,6 @@
 package com.example.jona.latacungadigital.Activities.Fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -22,6 +23,7 @@ import com.example.jona.latacungadigital.Activities.modelos.CharacterModel;
 import com.example.jona.latacungadigital.R;
 
 import java.util.List;
+import java.util.Objects;
 
 public class DialogAppFragment extends DialogFragment {
 
@@ -70,16 +72,16 @@ public class DialogAppFragment extends DialogFragment {
                 builder.setTitle("Eliminar Mensajes");
                 builder.setMessage("¿Desea eliminar los mensajes?");
                 break;
-             case ChatBotReferences.DIALOG_CHANGE_CHARACTER:
-                 LayoutInflater inflater = getActivity().getLayoutInflater();
-                 View view = inflater.inflate(R.layout.character_recycle_view, null);
+            case ChatBotReferences.DIALOG_CHANGE_CHARACTER:
+                 LayoutInflater inflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
+                 @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.character_recycle_view, null);
 
                  final RecyclerView rvListCharacters = view.findViewById(R.id.rvListCharacters);
                  LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                  rvListCharacters.setLayoutManager(linearLayoutManager);
 
                  // Para añadir un linea horizontal entre los items del Recycle View.
-                 rvListCharacters.addItemDecoration(new DividerItemDecoration(getContext(), linearLayoutManager.getOrientation()));
+                 rvListCharacters.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()), linearLayoutManager.getOrientation()));
 
                  // Para evitar que parpadee el item del Recycle View.
                  RecyclerView.ItemAnimator animator = rvListCharacters.getItemAnimator();

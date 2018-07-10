@@ -50,11 +50,8 @@ public class WeatherClass {
     }
 
     public void WeatherResponse() {
-        String urlAPIXU;
-        urlAPIXU = getUrlAPIXU();
-
         // Enviamos una peticion a la API
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, urlAPIXU, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getUrlAPIXU(), null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (!getDateFromDialogflow().equals("")) {
