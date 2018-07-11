@@ -71,8 +71,8 @@ public class WeatherClass {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                dialogflowClass.MessageSendToDialogflow("Lo siento, el servidor del clima esta temporalmente caído, por el momento no puedo ofrecerle " +
-                        " una respuesta a su pregunta. Por favor, intentelo más luego.");
+                dialogflowClass.MessageSendToDialogflow("Lo siento, ocurrio un error inesperado o el servidor del clima esta temporalmente caído, " +
+                        "por el momento no puedo ofrecerle una respuesta a su pregunta. Por favor, intentelo más luego.");
             }
         });
         queue.add(jsonObjectRequest);

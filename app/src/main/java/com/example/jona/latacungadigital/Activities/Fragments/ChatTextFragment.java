@@ -280,6 +280,8 @@ public class ChatTextFragment extends Fragment {
             IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
             networkReceiverClass = new NetworkReceiverClass(actionBar, getActivity(), statusTSnackbar);
+            // Se le asigna la clase DialogflowClass para controlar la lista de mensajes.
+            networkReceiverClass.setDialogflowClass(dialogflowClass);
             if (!receiversRegistered) {
                 getActivity().registerReceiver(networkReceiverClass, filter);
                 receiversRegistered = true;
@@ -295,6 +297,8 @@ public class ChatTextFragment extends Fragment {
             SaveListMessageClass saveListMessageClass = new SaveListMessageClass(dialogflowClass.getListMessagesText(), view.getContext());
             // Asiganamos la lista cargada a la lista de la clase DialogflowClass.
             dialogflowClass.setListMessagesText(saveListMessageClass.ReadListMessages());
+            // Para remover la vista de chat is bot is typing si esque se queda guardado en la lista de mensajes.
+            if (dialogflowClass.getListMessagesText().size() != 0) dialogflowClass.RemoveMessageTypingToDialogflow();
             // Adaptamos la lista de mensajes leidos al adaptador del Recycle View para poner los mensajes.
             dialogflowClass.addMessagesAdapter(dialogflowClass.getListMessagesText());
         }
@@ -429,7 +433,11 @@ public class ChatTextFragment extends Fragment {
     public void onResume() {
         super.onResume();
         // Se leen los mensajes si el usuario a marcado la opcion "Mensajes en el Chat" en la parte de configuracion de la app.
-        if (isPermitSaveMessages()) ReadListMessageFromSharedPreferences(); // Se leen los mensajes guardados del chat.
+        if (isPermitSaveMessages()) {
+            ReadListMessageFromSharedPreferences(); // Se leen los mensajes guardados del chat.
+        } else {
+            GiveWelcomeMessage(); // Caso de que no este activado el chat bot le va dar el mensaje de bienvenida.
+        }
 
         getGenreCharacter(); // Obtenemos el genero del personaje.
 

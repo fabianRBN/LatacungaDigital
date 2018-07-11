@@ -21,6 +21,7 @@ public class NetworkReceiverClass extends BroadcastReceiver {
     TSnackbar snackbar;
     Activity activityChatBot;
     private boolean showMessageToStartActivity, statusTSnackbar = false;
+    private DialogflowClass dialogflowClass;
 
     public NetworkReceiverClass(ActionBar actionBar, Activity activityChatBot, boolean showMessageToStartActivity) {
         this.actionBar = actionBar;
@@ -28,7 +29,12 @@ public class NetworkReceiverClass extends BroadcastReceiver {
         this.showMessageToStartActivity = showMessageToStartActivity;
     }
 
+    // Getters and Setters.
     public boolean isStatusTSnackbar() { return statusTSnackbar; }
+
+    public DialogflowClass getDialogflowClass() { return dialogflowClass; }
+
+    public void setDialogflowClass(DialogflowClass dialogflowClass) { this.dialogflowClass = dialogflowClass; }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -37,6 +43,9 @@ public class NetworkReceiverClass extends BroadcastReceiver {
 
     // Método para verificar el estado de conexion y segun eso mostrar un mensaje al usuario.
     private void ShowMessagesConection(Context context) {
+        // Para remover la vista de chat is bot is typing si esque existe un error al momento de que el disposito no tenga Internet.
+        if (getDialogflowClass().getListMessagesText().size() != 0) getDialogflowClass().RemoveMessageTypingToDialogflow();
+
         // Declaracion de parametros para colocarlos en el SnackBar segun la conexion.
         String messageStatus;
         String colorSnackBarSatats;
@@ -48,6 +57,9 @@ public class NetworkReceiverClass extends BroadcastReceiver {
             colorSnackBarSatats = "FF04C607";
             timeToShowMessage = TSnackbar.LENGTH_SHORT;
             statusTSnackbar = true; // Para saber que esta conectado a internet.
+
+            // El chat bot enviara un mensaje de bienvenida al usuario si esque no hay internet.
+            if (dialogflowClass.getListMessagesText().size() == 0) dialogflowClass.SendMessageTextToDialogflow("Hola");
         } else {
             actionBar.setSubtitle("Desconectado");
             messageStatus = "No hay conexión a Internet.";

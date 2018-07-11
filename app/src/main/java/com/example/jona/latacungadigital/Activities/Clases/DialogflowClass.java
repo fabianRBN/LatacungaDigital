@@ -116,7 +116,6 @@ public class DialogflowClass {
                         return aiDataService.request(aiRequest); // Retornamos la respuesta de Dialogflow.
                     } catch (AIServiceException e) {
                         e.printStackTrace();
-                        RemoveMessageTypingToDialogflow(); // Eliminamos la vista de chat bot is typing si existe un error.
                         this.cancel(true); // Cancelamos el envio de mensaje si existe un error.
                     }
                 } else {
@@ -217,9 +216,12 @@ public class DialogflowClass {
         }
     }
 
-    private void RemoveMessageTypingToDialogflow() {
-        listMessagesText.remove(listMessagesText.size() - 1);
-        addMessagesAdapter(listMessagesText);
+    public void RemoveMessageTypingToDialogflow() {
+        if (listMessagesText.size() != 0 &&
+                (ChatBotReferences.VIEW_TYPE_MESSAGE_CHATBOT_TYPING == listMessagesText.get(listMessagesText.size() - 1).getViewTypeMessage())) {
+            listMessagesText.remove(listMessagesText.size() - 1);
+            addMessagesAdapter(listMessagesText);
+        }
     }
 
     // Método para enviar la respuesta al usuario.
