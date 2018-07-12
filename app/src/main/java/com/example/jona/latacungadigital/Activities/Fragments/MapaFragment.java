@@ -33,6 +33,7 @@ import com.example.jona.latacungadigital.Activities.Adapters.ServiceInfoWindowsA
 import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.Activities.Haversine.Haversine;
+import com.example.jona.latacungadigital.Activities.MainActivity;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
@@ -657,14 +658,16 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                                     .setContentTitle(title)
                                     .setContentText(content);
         NotificationManager manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-        Intent intent = new Intent(getActivity(),MapaFragment.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(getActivity(),0,intent,PendingIntent.FLAG_IMMUTABLE);
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.putExtra("OpenMapFragment", "mapa");
+
+        PendingIntent contentIntent = PendingIntent.getActivity(getActivity(),0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);
         Notification notification = builder.build();
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         notification.defaults |= Notification.DEFAULT_SOUND;
 
-        manager.notify(new Random().nextInt(),notification);
+        manager.notify(new Random().nextInt(), notification);
     }
 
     @Override
