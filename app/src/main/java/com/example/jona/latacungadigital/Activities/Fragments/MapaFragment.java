@@ -675,6 +675,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     private void createClima() {
         WeatherClass wc;
 
+
     }
 
     private void sendNotification(String title, String content, LatLng latlong) {
