@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -25,6 +24,7 @@ public class NetworkReceiverClass extends BroadcastReceiver {
     Context context;  // Guarda el contexto del fragmento o actividad en la que se muestra el snackbar
     LocationManager manager;
     private boolean showMessageToStartActivity, statusTSnackbar = false;
+    private DialogflowClass dialogflowClass;
 
     public NetworkReceiverClass(ActionBar actionBar, Activity activityChatBot, boolean showMessageToStartActivity) {
         this.actionBar = actionBar;
@@ -32,7 +32,12 @@ public class NetworkReceiverClass extends BroadcastReceiver {
         this.showMessageToStartActivity = showMessageToStartActivity;
     }
 
+    // Getters and Setters.
     public boolean isStatusTSnackbar() { return statusTSnackbar; }
+
+    public DialogflowClass getDialogflowClass() { return dialogflowClass; }
+
+    public void setDialogflowClass(DialogflowClass dialogflowClass) { this.dialogflowClass = dialogflowClass; }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -48,6 +53,9 @@ public class NetworkReceiverClass extends BroadcastReceiver {
     }
     // Método para verificar el estado de conexion y segun eso mostrar un mensaje al usuario.
     private void ShowMessagesConection(Context context) {
+        // Para remover la vista de chat is bot is typing si esque existe un error al momento de que el disposito no tenga Internet.
+        if (getDialogflowClass().getListMessagesText().size() != 0) getDialogflowClass().RemoveMessageTypingToDialogflow();
+
         // Declaracion de parametros para colocarlos en el SnackBar segun la conexion.
         String messageStatus;
         String colorSnackBarSatats;
@@ -72,6 +80,9 @@ public class NetworkReceiverClass extends BroadcastReceiver {
                 statusTSnackbar = false; // Para saber que no esta conectado a internet.
             }
 
+
+            // El chat bot enviara un mensaje de bienvenida al usuario si esque no hay internet.
+            if (dialogflowClass.getListMessagesText().size() == 0) dialogflowClass.SendMessageTextToDialogflow("Hola");
         } else {
             // Si el fragmento que lo llama es listaAtractivos no requiere editar titulo debido al buscador que cuenta en el actionBar
             // Debido a eso se coloco la condicional para el funcionamiento unicamnete en el chatbot
@@ -81,9 +92,7 @@ public class NetworkReceiverClass extends BroadcastReceiver {
             timeToShowMessage = TSnackbar.LENGTH_INDEFINITE;
             showMessageToStartActivity = true;
             statusTSnackbar = false; // Para saber que no esta conectado a internet.
-
         }
-
 
         if (showMessageToStartActivity) { // No se va a mostrar el mensaje al inicio de la actividad.
             // Se crea el SnackBar con los parametros de la vista.
@@ -100,6 +109,7 @@ public class NetworkReceiverClass extends BroadcastReceiver {
                     actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, context.getResources().getDisplayMetrics());
                 }
             }
+
             // Creamos una varibales para obtener la vista del snackBar.
             View snackbarView = snackbar.getView();
             // Si el fragmento que lo llama es listaAtractivos no requiere editar titulo debido al buscador que cuenta en el actionBar
@@ -114,7 +124,6 @@ public class NetworkReceiverClass extends BroadcastReceiver {
             textView.setTextColor(Color.WHITE); // Damos un color blanco a las letras del Text View.
 
             snackbar.show(); // Mostramos el mensaje de estado de conexión.
-
         }
     }
 }
