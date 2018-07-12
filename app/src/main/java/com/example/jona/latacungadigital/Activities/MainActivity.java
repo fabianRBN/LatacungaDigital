@@ -1,11 +1,8 @@
 package com.example.jona.latacungadigital.Activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 
@@ -24,7 +21,6 @@ import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MenuARFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.TrackeadosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.TrackinFragment;
-import com.example.jona.latacungadigital.Activities.Services.AtractivoService;
 import com.example.jona.latacungadigital.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -34,8 +30,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.common.api.ResultCallback;
-
-import java.util.prefs.PreferenceChangeListener;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener,
         ListAtractivosFragment.OnFragmentInteractionListener, DialogAppFragment.NoticeDialogListener, TrackinFragment.OnFragmentInteractionListener,
@@ -137,10 +131,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         };
 
-
     }
-
-
 
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
@@ -246,8 +237,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         firebaseAuth.addAuthStateListener(firebaseAuthListener);
 
+    }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        openMapFragmentFromNotification();
     }
 
     // Metodo para detener los procesos de Firebase.
@@ -259,7 +254,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             firebaseAuth.removeAuthStateListener(firebaseAuthListener);
         }
     }
-
 
     @Override
     protected void onRestart() {
@@ -275,6 +269,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_fragment, fragment);
         fragmentTransaction.commit();
+    }
+
+    private void openMapFragmentFromNotification() {
+        String extras = getIntent().getStringExtra("OpenMapFragment");
+        if (extras != null && extras.equals("mapa")) {
+            setFragment(new MapaFragment());
+        }
+
     }
 
     @Override
