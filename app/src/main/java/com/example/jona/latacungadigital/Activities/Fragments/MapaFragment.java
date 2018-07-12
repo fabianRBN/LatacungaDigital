@@ -12,8 +12,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
@@ -23,19 +25,28 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.jona.latacungadigital.Activities.Adapters.AttractiveInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.CustomInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.MyOnInfoWindowsClickListener;
 import com.example.jona.latacungadigital.Activities.Adapters.OnMarkerClickListenerAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.ServiceInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
+import com.example.jona.latacungadigital.Activities.Clases.DialogflowClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.Activities.Clases.WeatherClass;
 import com.example.jona.latacungadigital.Activities.Haversine.Haversine;
 import com.example.jona.latacungadigital.Activities.MainActivity;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
+import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
 import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.Activities.Clases.AreaPeligrosa;
@@ -71,6 +82,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -149,10 +163,20 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         View rootView = inflater.inflate(R.layout.fragment_mapa, container, false);
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
+
+        //Flotante que redirige al mapa
+        FloatingActionButton fabClima = (FloatingActionButton) rootView.findViewById(R.id.fab_clima);
+        fabClima.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createClima();
+            }
+        });
+
         try {
             dataArg = getArguments().getString("dato");
         } catch (Exception ex){
-            System.out.println("paso: "+ex);
+            System.out.println("Error: "+ex);
         }
 
 
@@ -606,7 +630,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             dataFirebase(); // Agregar marcadores de atractivos y areas peligrosas
             createMarkerForMySites(); //Agrega los marcadores personales
             createMarkerForUsers();//Agregar marcadores de usuarios amigos en el mapa
-            createClima();
 
         } else { // Si es una solicitud de consulta del chatbot
             switch (chatBotAction){
@@ -672,10 +695,45 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    //Muestra el popup del clima actual
     private void createClima() {
-        WeatherClass wc;
-
-
+        RequestQueue queue = Volley.newRequestQueue(getContext().getApplicationContext());
+        String urlCurrentWeather = "https://api.apixu.com/v1/current.json?key=" + ChatBotReferences.APIXU_API_CLIENT + "&q=Latacunga&lang=es";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, urlCurrentWeather, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONObject jsonObjectCurrent = response.getJSONObject("current");
+                    String humidity = jsonObjectCurrent.getInt("humidity") + "%"; // Porcentaje de la humedad.
+                    String degreesC = Math.round(jsonObjectCurrent.getDouble("temp_c")) + "°C";
+                    String currentCondition = jsonObjectCurrent.getJSONObject("condition").getString("text"); // Condición en la que se encuentra el clima.
+                    //We need to get the instance of the LayoutInflater, use the context of this activity
+                    LayoutInflater inflaterT = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    //Inflate the view from a predefined XML layout (no need for root id, using entire layout)
+                    View popupclima = inflaterT.inflate(R.layout.popup_clima,null);
+                    //Get the devices screen density to calculate correct pixel sizes
+                    float density= getContext().getResources().getDisplayMetrics().density;
+                    // create a focusable PopupWindow with the given layout and correct size
+                    final PopupWindow pw = new PopupWindow(popupclima, (int)density*300, (int)density*100, true);
+                    pw.showAtLocation(popupclima, Gravity.LEFT, 0, 0);
+                    //Elementos para guardar nuevo sitio
+                    TextView nombreCiudad = (TextView) popupclima.findViewById(R.id.tv_ciudad);
+                    nombreCiudad.setText("Latacunga");
+                    TextView climaCiudad = (TextView) popupclima.findViewById(R.id.tv_clima);
+                    climaCiudad.setText("Clima:"+currentCondition);
+                    TextView temCiudad = (TextView) popupclima.findViewById(R.id.tv_temperatura);
+                    temCiudad.setText("Humedad: "+humidity+" ,"+degreesC);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("Error"+error);
+            }
+        });
+        queue.add(jsonObjectRequest);
     }
 
     private void sendNotification(String title, String content, LatLng latlong) {

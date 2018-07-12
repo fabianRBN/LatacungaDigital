@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.jona.latacungadigital.Activities.Fragments.MapaFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -10,6 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
        />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_clima"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="65dp"
+        android:background="@color/celeste"
+        android:src="@drawable/ic_clima" />
 
 
 </FrameLayout>

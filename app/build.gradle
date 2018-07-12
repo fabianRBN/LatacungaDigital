@@ -77,6 +77,9 @@ dependencies {
     // Para expandir/colpasar un panel.
     implementation 'com.github.florent37:expansionpanel:1.1.1'
 
+    //Para dar opciones al flotante
+    implementation'com.github.fafaldo:fab-toolbar:1.2.0'
+
     //Librerias para la realidad aumentada
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
