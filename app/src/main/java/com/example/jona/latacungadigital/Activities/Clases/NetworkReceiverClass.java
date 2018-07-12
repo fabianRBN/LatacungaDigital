@@ -53,9 +53,11 @@ public class NetworkReceiverClass extends BroadcastReceiver {
     }
     // Método para verificar el estado de conexion y segun eso mostrar un mensaje al usuario.
     private void ShowMessagesConection(Context context) {
-        // Para remover la vista de chat is bot is typing si esque existe un error al momento de que el disposito no tenga Internet.
-        if (getDialogflowClass().getListMessagesText().size() != 0) getDialogflowClass().RemoveMessageTypingToDialogflow();
-
+        if(actionBar != null) {
+            // Para remover la vista de chat is bot is typing si esque existe un error al momento de que el disposito no tenga Internet.
+            if (getDialogflowClass().getListMessagesText().size() != 0)
+                getDialogflowClass().RemoveMessageTypingToDialogflow();
+        }
         // Declaracion de parametros para colocarlos en el SnackBar segun la conexion.
         String messageStatus;
         String colorSnackBarSatats;
@@ -80,9 +82,11 @@ public class NetworkReceiverClass extends BroadcastReceiver {
                 statusTSnackbar = false; // Para saber que no esta conectado a internet.
             }
 
-
-            // El chat bot enviara un mensaje de bienvenida al usuario si esque no hay internet.
-            if (dialogflowClass.getListMessagesText().size() == 0) dialogflowClass.SendMessageTextToDialogflow("Hola");
+            if(actionBar!=null) {
+                // El chat bot enviara un mensaje de bienvenida al usuario si esque no hay internet.
+                if (dialogflowClass.getListMessagesText().size() == 0)
+                    dialogflowClass.SendMessageTextToDialogflow("Hola");
+            }
         } else {
             // Si el fragmento que lo llama es listaAtractivos no requiere editar titulo debido al buscador que cuenta en el actionBar
             // Debido a eso se coloco la condicional para el funcionamiento unicamnete en el chatbot

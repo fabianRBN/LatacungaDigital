@@ -41,6 +41,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class ListAtractivosFragment extends Fragment {
@@ -229,6 +230,21 @@ public class ListAtractivosFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (receiversRegistered) Objects.requireNonNull(getActivity()).unregisterReceiver(networkReceiverClass);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        // Para parar la comunicación del broadcast cuando se pare la actividad.
+        if (receiversRegistered) {
+            Objects.requireNonNull(getActivity()).unregisterReceiver(networkReceiverClass);
+            receiversRegistered = false;
+        }
+    }
 
     @Override
     public void onPause() {
