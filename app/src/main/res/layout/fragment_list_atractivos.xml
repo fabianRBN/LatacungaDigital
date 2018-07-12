@@ -2,20 +2,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/fragmentLista"
     tools:context="com.example.jona.latacungadigital.Activities.Fragments.ListAtractivosFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="56dp"
         android:id="@+id/srlContainer"
     >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="56dp"
-
+            android:id="@+id/content"
             android:orientation="vertical"
             >
             <ListView
@@ -35,11 +36,17 @@
                 android:id="@+id/progressBar_atractivos"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
-                android:paddingBottom="45dp"
                 style="?android:attr/progressBarStyleLarge"
                 />
         </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:id="@+id/content"
+            android:orientation="horizontal"></LinearLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
+
 
 
 

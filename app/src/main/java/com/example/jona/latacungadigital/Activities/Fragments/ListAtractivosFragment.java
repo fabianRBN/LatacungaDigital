@@ -5,8 +5,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +17,7 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +27,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidadvance.topsnackbar.TSnackbar;
 import com.example.jona.latacungadigital.Activities.Adapters.ListAtractivoAdapter;
+import com.example.jona.latacungadigital.Activities.Clases.NetworkReceiverClass;
 import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.R;
@@ -48,6 +54,12 @@ public class ListAtractivosFragment extends Fragment {
     private SwipeRefreshLayout swipeContainer; // permite recargar los datos
 
     private DatabaseReference mDatabase;
+
+    private NetworkReceiverClass networkReceiverClass;
+    private boolean receiversRegistered; // Variable para controlar el brodcast de la conexion a internet.
+
+
+    private TSnackbar snackbar; // muestra la notificacion de  conneccion a internet o wifi
     private OnFragmentInteractionListener mListener;
     public ArrayList<AtractivoModel> listaAtractivo = new ArrayList<>(); // Array de atractivos
     private String filter = "";
@@ -73,11 +85,15 @@ public class ListAtractivosFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list_atractivos, container, false);
 
+
         listView = (ListView) view.findViewById(R.id.listViewAtractivos);
 
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar_atractivos);
 
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.srlContainer);
+
+        // Se envia false para no mostrar el mensaje de "Conexión exitosa" al inicio de la actividad.
+        SetupActionBar(false); // Para dar el titulo y el subtitulo que va a tener el Action Bar.
 
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -107,16 +123,29 @@ public class ListAtractivosFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!receiversRegistered) {
+            if (networkReceiverClass.isStatusTSnackbar()) { // Para saber el estado actual de internet.
+                SetupActionBar(false); // Si existe internet no mostramos el TSnackbar.
+            } else {
+                SetupActionBar(true); // Si no hay internet mostramos el TSnackbar con su respectivo mensaje.
+            }
+        }
+    }
+
     private void verificarGPS(){
         manager = (LocationManager) getContext().getSystemService( Context.LOCATION_SERVICE );
         if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-
 
             showAlert();
         }else{
             ConsultarAtractivos("");
         }
     }
+
+
 
     private void showAlert() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
@@ -208,7 +237,22 @@ public class ListAtractivosFragment extends Fragment {
             manager = (LocationManager) getContext().getSystemService( Context.LOCATION_SERVICE );
         }
 
+    }
+    private void SetupActionBar(boolean statusTSnackbar) {
 
+            // Registra la actividad del la conexion a internet
+            IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+            // Registra la actividad del GPS
+            IntentFilter filterGPS = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
+
+            networkReceiverClass = new NetworkReceiverClass(null, getActivity(), statusTSnackbar);
+
+            if (!receiversRegistered) {
+                //Registro de los filtros
+                getActivity().registerReceiver(networkReceiverClass, filter);
+                getActivity().registerReceiver(networkReceiverClass, filterGPS);
+                receiversRegistered = true;
+            }
 
     }
 
@@ -227,3 +271,5 @@ public class ListAtractivosFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 }
+
+
