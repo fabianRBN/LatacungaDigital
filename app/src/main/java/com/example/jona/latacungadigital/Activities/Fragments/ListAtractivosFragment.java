@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -44,7 +45,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 
-public class ListAtractivosFragment extends Fragment {
+public class ListAtractivosFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener  {
 
     private String FRAGMENT_TAG = "ListaAtractivos"; // TAG de identificacion de Fragmento
 
@@ -93,10 +94,17 @@ public class ListAtractivosFragment extends Fragment {
 
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.srlContainer);
 
+        swipeContainer.setOnRefreshListener(this);
+        //Podemos espeficar si queremos, un patron de colores diferente al patrón por defecto.
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         // Se envia false para no mostrar el mensaje de "Conexión exitosa" al inicio de la actividad.
         SetupActionBar(false); // Para dar el titulo y el subtitulo que va a tener el Action Bar.
 
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        /*swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 new Handler().postDelayed(new Runnable() {
@@ -109,7 +117,9 @@ public class ListAtractivosFragment extends Fragment {
                 }, 3000);
 
             }
-        });
+        });*/
+
+
 
         return view;
     }
@@ -269,6 +279,39 @@ public class ListAtractivosFragment extends Fragment {
                 getActivity().registerReceiver(networkReceiverClass, filterGPS);
                 receiversRegistered = true;
             }
+            listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                    int filaSuperior = (
+                            listaAtractivo == null//Si la lista esta vacía ó
+                                    || listView.getChildCount() == 0) ? 0 : listView.getChildAt(0).getTop();//Estamos en el elemento superior
+                    swipeContainer.setEnabled(filaSuperior >= 0); //Activamos o desactivamos el swipe layout segun corresponda
+                }
+            });
+    }
+
+
+
+    @Override
+    public void onRefresh() {
+        //Aqui ejecutamos el codigo necesario para refrescar nuestra interfaz grafica.
+        //Antes de ejecutarlo, indicamos al swipe layout que muestre la barra indeterminada de progreso.
+        swipeContainer.setRefreshing(true);
+
+        //Vamos a simular un refresco con un handle.
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                //Se supone que aqui hemos realizado las tareas necesarias de refresco, y que ya podemos ocultar la barra de progreso
+                swipeContainer.setRefreshing(false);
+
+            }
+        }, 3000);
 
     }
 
