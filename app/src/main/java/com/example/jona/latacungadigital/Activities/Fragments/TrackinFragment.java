@@ -99,6 +99,7 @@ public class TrackinFragment extends Fragment {
                                 }
                             }
                         }
+                        textView.setText("");
                         ConsultaAmigos(uid);
                         view.refreshDrawableState();
                     }

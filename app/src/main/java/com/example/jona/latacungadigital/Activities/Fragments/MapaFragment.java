@@ -32,6 +32,7 @@ import com.example.jona.latacungadigital.Activities.Adapters.OnMarkerClickListen
 import com.example.jona.latacungadigital.Activities.Adapters.ServiceInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
+import com.example.jona.latacungadigital.Activities.Clases.WeatherClass;
 import com.example.jona.latacungadigital.Activities.Haversine.Haversine;
 import com.example.jona.latacungadigital.Activities.MainActivity;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
@@ -50,6 +51,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -90,6 +92,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     private LatLng pointDestination;
     Button btnGuardar, btnCancelar;
     EditText edtNombre, edtDescripcion;
+    String dataArg;
 
 
     // Variables de mapa
@@ -146,7 +149,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         View rootView = inflater.inflate(R.layout.fragment_mapa, container, false);
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-
+        try {
+            dataArg = getArguments().getString("dato");
+        } catch (Exception ex){
+            System.out.println("paso: "+ex);
+        }
 
 
         try {
@@ -306,7 +313,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     Double longitud = Double.parseDouble(child.child("longitud").getValue().toString());
                     AreaPeligrosa areaPeligrosa = new AreaPeligrosa(nombreArea, idArea, radio, latitud, longitud);
                     listaAreaPeligrosa.add(areaPeligrosa);
-                    LatLng dangerousArea = new LatLng(areaPeligrosa.getLatitud(), areaPeligrosa.getLongitud());
+                    final LatLng dangerousArea = new LatLng(areaPeligrosa.getLatitud(), areaPeligrosa.getLongitud());
                     googleMap.addCircle(new CircleOptions()
                             .center(dangerousArea)
                             .radius(areaPeligrosa.getRadio())
@@ -319,12 +326,12 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
                         @Override
                         public void onKeyEntered(String key, GeoLocation location) {
-                            sendNotification("Alerta", String.format("Entraste en un área Peligrosa"));
+                            sendNotification("Alerta", String.format("Entraste en un área Peligrosa"),dangerousArea);
                         }
 
                         @Override
                         public void onKeyExited(String key) {
-                            sendNotification("Alerta", String.format(" Esta cerca un área Peligrosa"));
+                            sendNotification("Alerta", String.format(" Esta cerca un área Peligrosa"), dangerousArea);
 
                         }
 
@@ -434,6 +441,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                                 haversine = new Haversine();
                                 Coordenada inicial = new Coordenada(currentUserLatLng.latitude,currentUserLatLng.longitude);//mi coordenada
                                 Coordenada end = new Coordenada(latitud,longitud);// la coordenada del trackeado
+                                LatLng latlong = new LatLng(end.getLat(), end.getLng());
                                 double distanciah = (haversine.distance(inicial,end));
                                 String formatoDistancia = String.format("%.02f", distanciah);
 
@@ -441,8 +449,10 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                                 markerOptions.draggable(false);
                                 googleMap.addMarker(markerOptions).setTag("userMarker");
 
-                                if (distanciah >= 1){
-                                    sendNotification("Alerta", String.format(nombre+" se alejo a "+formatoDistancia+" km de distancia de ti"));
+                                if (distanciah >= 1 ){
+                                    if (dataArg == null)
+                                        sendNotification("Alerta", String.format(nombre+" se alejo a "+formatoDistancia+" km de distancia de ti"), latlong);
+
                                 }
 
                             }
@@ -539,7 +549,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     public void onMapReady(GoogleMap mMap) {
         googleMap = mMap;
         googleMap.clear();
-
         // Validar si la aplicacion tiene el permiso de Localizacion
         if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
@@ -556,8 +565,18 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         LatLngBounds centroHistorico = new LatLngBounds(
                 new LatLng(-0.9364, -78.6163), new LatLng(-0.9301, -78.6129));
         if (!isSerchFromChatBot) {
-            CameraPosition cameraPosition = new CameraPosition.Builder().target(centroHistorico.getCenter()).zoom(15).build();
-            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            if (dataArg != null){
+                String[] latlong =  getArguments().getString("dato").split(",");
+                double latitude = Double.parseDouble(latlong[0]);
+                double longitude = Double.parseDouble(latlong[1]);
+                LatLng datatoLatLon = new LatLng(latitude, longitude);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(datatoLatLon, 12);
+                googleMap.animateCamera(cameraUpdate);
+            } else
+            {
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(centroHistorico.getCenter()).zoom(15).build();
+                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
         } else {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centroHistorico.getCenter(), 15));
         }
@@ -586,7 +605,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
 
             dataFirebase(); // Agregar marcadores de atractivos y areas peligrosas
             createMarkerForMySites(); //Agrega los marcadores personales
-            createMarkerForUsers();//Instanciar usuarios aamigos en el mapa
+            createMarkerForUsers();//Agregar marcadores de usuarios amigos en el mapa
+            createClima();
 
         } else { // Si es una solicitud de consulta del chatbot
             switch (chatBotAction){
@@ -652,14 +672,19 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    private void sendNotification(String title, String content) {
+    private void createClima() {
+        WeatherClass wc;
+
+    }
+
+    private void sendNotification(String title, String content, LatLng latlong) {
         Notification.Builder builder = new Notification.Builder(getActivity())
                                     .setSmallIcon(R.mipmap.ic_launcher_round)
                                     .setContentTitle(title)
                                     .setContentText(content);
         NotificationManager manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         Intent intent = new Intent(getActivity(), MainActivity.class);
-        intent.putExtra("OpenMapFragment", "mapa");
+        intent.putExtra("OpenMapFragment", latlong.latitude+","+latlong.longitude);
 
         PendingIntent contentIntent = PendingIntent.getActivity(getActivity(),0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);

@@ -4,11 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.AsyncTask.TaskRequestDirections;
 import com.example.jona.latacungadigital.Activities.AtractivoActivity;
+import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
+import com.example.jona.latacungadigital.Activities.Haversine.Haversine;
+import com.example.jona.latacungadigital.Activities.MainActivity;
 import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
+import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -26,6 +31,7 @@ public class MyOnInfoWindowsClickListener implements GoogleMap.OnInfoWindowClick
     LatLng puntoOrigen = new LatLng(-0.9337192,-78.6174786);
     GoogleMap googleMap;
     EstadoGPS estadoGPS;
+    Haversine haversine;
 
     public MyOnInfoWindowsClickListener(Context context, GoogleMap googleMap) {
         this.context = context;
@@ -65,6 +71,13 @@ public class MyOnInfoWindowsClickListener implements GoogleMap.OnInfoWindowClick
         String url = taskRequestDirections.getRequestUrl(puntoOrigen,punto);
 
         taskRequestDirections.execute(url);
+        //Calculo de la distancia
+        haversine = new Haversine();
+        Coordenada inicial = new Coordenada(puntoOrigen.latitude,puntoOrigen.longitude);//mi coordenada
+        Coordenada end = new Coordenada(punto.latitude,punto.longitude);// la coordenada del trackeado
+        double distanciah = (haversine.distance(inicial,end))*1000;
+        String formatoDistancia = String.format("%.00f", distanciah);
+        Toast.makeText(context,"distancia de ti: "+formatoDistancia+" m", Toast.LENGTH_LONG).show();
 
     }
 

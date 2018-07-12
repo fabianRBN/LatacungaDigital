@@ -19,6 +19,7 @@ import com.example.jona.latacungadigital.Activities.Adapters.TrackingAdapter;
 import com.example.jona.latacungadigital.Activities.Haversine.Haversine;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.Activities.modelos.TrackeadosModel;
+import com.example.jona.latacungadigital.Activities.modelos.TrackinModel;
 import com.example.jona.latacungadigital.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
@@ -86,7 +87,7 @@ public class TrackeadosFragment extends Fragment {
     }
 
     private void ConsultaAmigosAutorizados(final String uid) {
-        final ArrayList<String> listaidUsuarios = new ArrayList<>();
+        final ArrayList<TrackinModel> listaidUsuarios = new ArrayList<>();
         listaidUsuarios.clear();
         listaAmigosAutrizados.clear();
         mdatabase = FirebaseDatabase.getInstance().getReference();
@@ -95,30 +96,36 @@ public class TrackeadosFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot child: dataSnapshot.child("meAutorizaron").child(uid).getChildren()){
-                    listaidUsuarios.add(child.getKey());
+                    boolean autorizado = Boolean.parseBoolean(child.child("autorizacion").getValue().toString());
+                    listaidUsuarios.add(new TrackinModel(child.getKey(),autorizado));
                 }
-                for (String key: listaidUsuarios) {
-                    String nombre = dataSnapshot.child("cliente").child(key).child("nombre").getValue().toString();
-                    String pathimage = dataSnapshot.child("cliente").child(key).child("pathImagen").getValue().toString();
-                    double latitud = Double.parseDouble(dataSnapshot.child("cliente").child(key)
-                            .child("GeoFire").child("l").child("0").getValue().toString());
-                    double longitud = Double.parseDouble(dataSnapshot.child("cliente").child(key)
-                            .child("GeoFire").child("l").child("1").getValue().toString());
-                    double milatitud = Double.parseDouble(dataSnapshot.child("cliente").child(uid)
-                            .child("GeoFire").child("l").child("0").getValue().toString());
-                    double milongitud = Double.parseDouble(dataSnapshot.child("cliente").child(uid)
-                            .child("GeoFire").child("l").child("1").getValue().toString());
+                for (TrackinModel tm: listaidUsuarios) {
+                    if (tm.isAutorizacion()){
+                        String key = tm.getKey();
+                        System.out.println("key "+key);
+                        System.out.println("key "+dataSnapshot.child("cliente").child(key).child("pathImagen").getValue().toString());
+                        String nombre = dataSnapshot.child("cliente").child(key).child("nombre").getValue().toString();
+                        String pathimage = dataSnapshot.child("cliente").child(key).child("pathImagen").getValue().toString();
+                        double latitud = Double.parseDouble(dataSnapshot.child("cliente").child(key)
+                                .child("GeoFire").child("l").child("0").getValue().toString());
+                        double longitud = Double.parseDouble(dataSnapshot.child("cliente").child(key)
+                                .child("GeoFire").child("l").child("1").getValue().toString());
+                        double milatitud = Double.parseDouble(dataSnapshot.child("cliente").child(uid)
+                                .child("GeoFire").child("l").child("0").getValue().toString());
+                        double milongitud = Double.parseDouble(dataSnapshot.child("cliente").child(uid)
+                                .child("GeoFire").child("l").child("1").getValue().toString());
 
-                    //Calculo de la distancia
-                    haversine = new Haversine();
-                    Coordenada inicial = new Coordenada(milatitud,milongitud);//mi coordenada
-                    Coordenada end = new Coordenada(latitud,longitud);// la coordenada del trackeado
-                    double distanciah = (haversine.distance(inicial,end));
-                    String formatoDistancia = String.format("%.02f", distanciah);
-                    String distancia = "distancia de ti: "+formatoDistancia+" km";
+                        //Calculo de la distancia
+                        haversine = new Haversine();
+                        Coordenada inicial = new Coordenada(milatitud,milongitud);//mi coordenada
+                        Coordenada end = new Coordenada(latitud,longitud);// la coordenada del trackeado
+                        double distanciah = (haversine.distance(inicial,end));
+                        String formatoDistancia = String.format("%.02f", distanciah);
+                        String distancia = "distancia de ti: "+formatoDistancia+" km";
 
-                    TrackeadosModel trac = new TrackeadosModel(nombre, distancia, pathimage, key);
-                    listaAmigosAutrizados.add(trac);
+                        TrackeadosModel trac = new TrackeadosModel(nombre, distancia, pathimage, key);
+                        listaAmigosAutrizados.add(trac);
+                    }
                 }
                 recyclerView.setAdapter(new TrackeadosAdapter( listaAmigosAutrizados));
             }

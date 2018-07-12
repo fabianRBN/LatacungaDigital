@@ -56,7 +56,7 @@ El trozo de texto estándar de Lorem Ipsum usado desde el año 1500 es reproduci
     <!--Detalle de servicio cardview-->
     <string name='scheduleTitle'>Horario de atención</string>
     <string name='facebookPageText'>Facebook page</string>
-    
+
     <!--Horario de servicio-->
     <string name="scheduleNoDefined">Horario no definido</string>
     <string name="serviceOpen">Abierto</string>

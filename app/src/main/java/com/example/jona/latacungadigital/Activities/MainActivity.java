@@ -1,6 +1,10 @@
 package com.example.jona.latacungadigital.Activities;
 
+import android.app.FragmentManager;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +20,7 @@ import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Fragments.DialogAppFragment;
+import com.example.jona.latacungadigital.Activities.Fragments.FiltroCategoriasFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.ListAtractivosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MenuARFragment;
@@ -31,9 +36,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.common.api.ResultCallback;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener,
         ListAtractivosFragment.OnFragmentInteractionListener, DialogAppFragment.NoticeDialogListener, TrackinFragment.OnFragmentInteractionListener,
-        TrackeadosFragment.OnFragmentInteractionListener {
+        TrackeadosFragment.OnFragmentInteractionListener, FiltroCategoriasFragment.OnFragmentInteractionListener {
 
     private GoogleApiClient googleApiClient; // Variable para manejar los datos de Google.
 
@@ -44,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private static final int DIALOG_SIGN_OFF = 1; // Para saber que tipo de Dialogo es.
 
     private MapaFragment mapaFragment = new MapaFragment();
+    private FiltroCategoriasFragment categoriasFragment = new FiltroCategoriasFragment();
     private ListAtractivosFragment listAtractivosFragment = new ListAtractivosFragment();
 
     // Variables para identificar  en el fragmento que nos encontramos
@@ -66,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     return true;
                 case R.id.navigation_mapa:
                    // mTextMessage.setText(R.string.title_dashboard);
-                    setFragment(mapaFragment);
+                    setFragment(categoriasFragment);
 
                     return true;
                 case R.id.navigation_chat:
@@ -100,7 +108,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         setFragment(listAtractivosFragment);
 
+        SensorManager sensorManager = (SensorManager)
+                getSystemService(SENSOR_SERVICE);
 
+        List<Sensor> listaSensores = sensorManager.
+                getSensorList(Sensor.TYPE_ALL);
+
+        for(Sensor sensor: listaSensores) {
+
+            System.out.println("sensor "+sensor.getName());
+
+        }
+        listaSensores = sensorManager.getSensorList(Sensor.TYPE_TEMPERATURE);
+
+        if (!listaSensores.isEmpty()) {
+
+            Sensor temperatureSensor = listaSensores.get(0);
+            System.out.println("sensor2 "+listaSensores.get(0));
+            sensorManager.registerListener((SensorEventListener) this, temperatureSensor,
+                    SensorManager.SENSOR_DELAY_UI);}
 
         //mTextMessage = findViewById(R.id.message);
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -273,8 +299,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private void openMapFragmentFromNotification() {
         String extras = getIntent().getStringExtra("OpenMapFragment");
-        if (extras != null && extras.equals("mapa")) {
-            setFragment(new MapaFragment());
+        if (extras != null ) {
+            //Redirijo al fragment con el argumento extras
+            MapaFragment mf = new MapaFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.main_fragment, mf).commit();
+
+            Bundle data = new Bundle();
+            data.putString("dato", extras);
+            mf.setArguments(data);
         }
 
     }
