@@ -1,10 +1,6 @@
 package com.example.jona.latacungadigital.Activities;
 
-import android.app.FragmentManager;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,7 +32,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.common.api.ResultCallback;
 
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener,
         ListAtractivosFragment.OnFragmentInteractionListener, DialogAppFragment.NoticeDialogListener, TrackinFragment.OnFragmentInteractionListener,
@@ -107,26 +102,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         setContentView(R.layout.activity_main);
 
         setFragment(listAtractivosFragment);
-
-        SensorManager sensorManager = (SensorManager)
-                getSystemService(SENSOR_SERVICE);
-
-        List<Sensor> listaSensores = sensorManager.
-                getSensorList(Sensor.TYPE_ALL);
-
-        for(Sensor sensor: listaSensores) {
-
-            System.out.println("sensor "+sensor.getName());
-
-        }
-        listaSensores = sensorManager.getSensorList(Sensor.TYPE_TEMPERATURE);
-
-        if (!listaSensores.isEmpty()) {
-
-            Sensor temperatureSensor = listaSensores.get(0);
-            System.out.println("sensor2 "+listaSensores.get(0));
-            sensorManager.registerListener((SensorEventListener) this, temperatureSensor,
-                    SensorManager.SENSOR_DELAY_UI);}
 
         //mTextMessage = findViewById(R.id.message);
         BottomNavigationView navigation = findViewById(R.id.navigation);

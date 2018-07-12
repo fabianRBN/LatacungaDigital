@@ -70,15 +70,12 @@ public class TrackeadosFragment extends Fragment {
         fabMapa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Se presionó el FAB", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 MapaFragment mf = new MapaFragment();
-                //fr.setArguments(bn);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.main_fragment, mf);
-                transaction.addToBackStack(null);
-
-                // Commit a la transacción
-                transaction.commit();
+                transaction.replace(R.id.main_fragment, mf).commit();
+                Bundle data = new Bundle();
+                data.putString("trackeo", "trackeo");
+                mf.setArguments(data);
             }
         });
 

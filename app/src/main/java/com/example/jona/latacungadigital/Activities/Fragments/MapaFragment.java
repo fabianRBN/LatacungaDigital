@@ -107,7 +107,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     Button btnGuardar, btnCancelar;
     EditText edtNombre, edtDescripcion;
     String dataArg;
-
+    String dataArgTrac;
 
     // Variables de mapa
     MapView mMapView;
@@ -173,8 +173,13 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-        try {
+        try { //Analiza argumento de notificacion
             dataArg = getArguments().getString("dato");
+        } catch (Exception ex){
+            System.out.println("Error: "+ex);
+        }
+        try { //Analiza argumento de trackeo
+            dataArgTrac = getArguments().getString("trackeo");
         } catch (Exception ex){
             System.out.println("Error: "+ex);
         }
@@ -589,7 +594,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         LatLngBounds centroHistorico = new LatLngBounds(
                 new LatLng(-0.9364, -78.6163), new LatLng(-0.9301, -78.6129));
         if (!isSerchFromChatBot) {
-            if (dataArg != null){
+            if (dataArg != null){//Si es una solicitud de la Notificacion
                 String[] latlong =  getArguments().getString("dato").split(",");
                 double latitude = Double.parseDouble(latlong[0]);
                 double longitude = Double.parseDouble(latlong[1]);
@@ -626,11 +631,12 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             googleMap.setInfoWindowAdapter(new CustomInfoWindowsAdapter(getContext()));
             googleMap.setOnInfoWindowClickListener( myOnInfoWindowsClickListener);
             googleMap.setOnInfoWindowLongClickListener(myOnInfoWindowsClickListener);
-
-            dataFirebase(); // Agregar marcadores de atractivos y areas peligrosas
-            createMarkerForMySites(); //Agrega los marcadores personales
-            createMarkerForUsers();//Agregar marcadores de usuarios amigos en el mapa
-
+            if (dataArgTrac != null){//Si es una solicitud de trackeo
+                createMarkerForUsers();//Agregar marcadores de usuarios amigos en el mapa
+            } else {
+                dataFirebase(); // Agregar marcadores de atractivos y areas peligrosas
+                createMarkerForMySites(); //Agrega los marcadores personales
+            }
         } else { // Si es una solicitud de consulta del chatbot
             switch (chatBotAction){
                 case "consultarAtractivoEnElArea":

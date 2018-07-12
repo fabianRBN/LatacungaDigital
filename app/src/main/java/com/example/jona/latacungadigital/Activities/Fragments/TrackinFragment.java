@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.TrackingAdapter;
 import com.example.jona.latacungadigital.Activities.Clases.TrackingClass;
@@ -67,6 +68,7 @@ public class TrackinFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         swAutorizar = (Switch) view.findViewById(R.id.switch1);
+        swAutorizar.setChecked(false);
 
         userFirebase = FirebaseAuth.getInstance();
         final String uid = userFirebase.getCurrentUser().getUid();
@@ -99,6 +101,7 @@ public class TrackinFragment extends Fragment {
                                 }
                             }
                         }
+                        swAutorizar.setChecked(false);
                         textView.setText("");
                         ConsultaAmigos(uid);
                         view.refreshDrawableState();
@@ -136,28 +139,20 @@ public class TrackinFragment extends Fragment {
             }
         });
 
-        //Flotante que redirige al mapa
+        //Flotante que redirige a la lista que me han autorizado
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Snackbar.make(view, "Se presionó el FAB", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                MapaFragment mf = new MapaFragment();
-                //fr.setArguments(bn);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.main_fragment, mf);
-                transaction.addToBackStack(null);
-
-                // Commit a la transacción
-                transaction.commit();*/
-                TrackeadosFragment tf = new TrackeadosFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.main_fragment, tf);
-                transaction.addToBackStack(null);
-
-                // Commit a la transacción
-                transaction.commit();
+                if (swAutorizar.isChecked()){
+                    TrackeadosFragment tf = new TrackeadosFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_fragment, tf);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                } else {
+                    Toast.makeText(getContext(),"Debe poner ON en el Switch superior", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -173,12 +168,15 @@ public class TrackinFragment extends Fragment {
         mdatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(uid).child("autorizar").exists()){
+                /*if (dataSnapshot.child(uid).child("autorizar").exists()){
                     swAutorizar.setChecked(Boolean.parseBoolean(dataSnapshot.child(uid).child("autorizar").getValue().toString()));
-                }
+                }*/
                 for (DataSnapshot child: dataSnapshot.getChildren()){
-                    if (child.child("nombre").exists())
-                        listaUsuarios.add(child.child("nombre").getValue().toString());
+                    if (child.child("nombre").exists()){
+                        if (!child.getKey().equals(uid))
+                            listaUsuarios.add(child.child("nombre").getValue().toString());
+                    }
+
 
                 }
             }
