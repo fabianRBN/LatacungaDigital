@@ -62,6 +62,7 @@
             android:name=".Activities.ARActivity"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_ar"
+            android:screenOrientation="userLandscape"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.SplashActivity"

@@ -1,11 +1,14 @@
 var World = {
+
     loaded: false,
     objectInfo: null,
     rotating: false,
     selectedObject: null,
 
     init: function initFn() {
-        this.targetCollectionResource = new AR.TargetCollectionResource("assets/SanAgustin.wtc", {
+
+
+        this.targetCollectionResource = new AR.TargetCollectionResource("assets/prueba11.wtc", {
             onError: function(errorMessage) {
                 alert(errorMessage);
             }
@@ -24,65 +27,74 @@ var World = {
         this.ejeLocation = {
             x: 0,
             y: 0,
-            z: 0.5
+            z: 0
         };
 
         this.objectInfo = [{
-                name: "Eje",
+                name: "Titulo",
                 distance: 0,
-                modelFile: "assets/music.wt3",
+                modelFile: "assets/tituloSanAgustin.wt3",
+                realSize: 0.002,
+                description: "lugar",
+                x:-0.5,
+                y:0.8
+            },
+            {
+                name: "Musica",
+                distance: 0,
+                modelFile: "assets/tarjetamusica.wt3",
                 realSize: 0.001,
                 description: "Sonido",
-                x:0,
-                y:0
+                x:-1,
+                y:0.8
             },
             {
                 name: "Ubicación",
                 distance: 40 * distanceFactor,
-                modelFile: "assets/ubicacion.wt3",
+                modelFile: "assets/tarjetaubicacion.wt3",
                 realSize: 0.001,
                 description: "Entre las calles Hnas. Páez y Quito.",
-                x:-0.5,
+                x:-1,
                 y:0.3
             },
 
             {
                 name: "Construcción",
                 distance: 10 * distanceFactor,
-                modelFile: "assets/construccion.wt3",
+                modelFile: "assets/tarjetaconstruccion.wt3",
                 realSize: 0.001,
                 description: "Arquitectura Neoclásica, exibe sus columnas circulares con japitel cónico, arquitraje terminado en cornisa",
-                x:-0.5,
-                y:-0.3
+                x:-1,
+                y:-0.2
             },
 
             {
                 name: "Descripción",
                 distance: 10 * distanceFactor,
-                modelFile: "assets/descripcion.wt3",
+                modelFile: "assets/tarjetadescripcion.wt3",
                 realSize: 0.001 ,
                 description: "El convento de los agustinos ha sido noviciado, centro vocacional y centro de estudios superiores",
-                x:0.5,
-                y:0.3
+                x:1,
+                y:0.8
             },
 
             {
                 name: "Atractivos",
                 distance: 10 * distanceFactor,
-                modelFile: "assets/atractivos.wt3",
+                modelFile: "assets/tarjetaatractivo.wt3",
                 realSize: 0.001,
                 description: "Réplica de la Virgen del Quinche <br/> Replica San Agustin",
-                x:0.5,
-                y:-0.3
+                x:1,
+                y:0.3
             },
             {
               name: "Historia",
               distance: 10 * distanceFactor,
-              modelFile: "assets/historia.wt3",
+              modelFile: "assets/tarjetahistoria.wt3",
               realSize: 0.001,
               description: "Historia del atractivo, en linea de tiempo",
-              x:0,
-              y:0.3
+              x:1,
+              y:-0.3
               }
         ];
 
@@ -131,7 +143,7 @@ var World = {
                 });
                 this.sirenSound.load();
         //Titulo del nombre del lugar escaneado
-           this.modeltitle = new AR.Model("assets/tituloSanAgustin.wt3", {
+          /* this.modeltitle = new AR.Model("assets/tituloSanAgustin.wt3", {
                     onLoaded: this.loadingStep,
                     scale: {
                         x: 0.003,
@@ -143,14 +155,15 @@ var World = {
         				y: 0.8,
         				z: 0
         			}
-        		});
-        var backdropImg = new AR.ImageResource("assets/backdrop.png");
-        var backdrop = [new AR.ImageDrawable(backdropImg, 2)];
+        		});*/
+       // var backdropImg = new AR.ImageResource("assets/backdrop.png");
+      //  var backdrop = [new AR.ImageDrawable(backdropImg, 2)];
 
         for (var i = 1; i <= 18; i++) {
         var overlay = new AR.ImageTrackable(this.tracker, "SanAgustin"+i, {
                     drawables: {
-                        cam: backdrop.concat(objects,this.modeltitle)
+                        //cam: backdrop.concat(objects,this.modeltitle)
+                        cam:  objects
                     },
                     onImageRecognized: this.trackerEnterFov,
                     onImageLost: this.trackerExitFov,
@@ -160,7 +173,35 @@ var World = {
                 });
 
         }
+          /*var label = new AR.Label("Hola prueba 1", 0.1, {
+                         offsetY: 0.1,
+                         verticalAnchor: AR.CONST.VERTICAL_ANCHOR.TOP,
+                         opacity: 0.9,
+                         zOrder: 1,
+                         style: {
+                             textColor: '#FFFFFF',
+                             backgroundColor: '#00000005'
+                         }
+                     });*/
+          /* var imgOne = new AR.ImageResource("assets/HistoriaSanAgustin.png");
+           		var overlayOne = new AR.ImageDrawable(imgOne, 1, {
+           			translate: {
+           				x:-0.15
+           			}
 
+           		});
+
+
+           var overlay1 = new AR.ImageTrackable(this.tracker, "SanAgustin19", {
+                               drawables: {
+                                   cam:  overlayOne
+                               },
+                               onImageRecognized: this.trackerEnterFov,
+                               onImageLost: this.trackerExitFov,
+                               onError: function(errorMessage) {
+                                   alert(errorMessage);
+                               }
+                           });*/
 
         AR.context.onScreenClick = this.screenClick;
     },
@@ -232,9 +273,9 @@ var World = {
     objectClicked: function objectClickedFn(object) {
         return function() {
             object.select(true);
-            if(object.name == "Eje"){
+            if(object.name == "Musica"){
            World.sirenSound.play();
-            }else if(object.name =="Historia"){
+            }else if(object.name =="Titulo"){
             //World.AnimationGroup.destroy();
             //AnimationGroup=null;
             //Historia.init();
@@ -260,7 +301,7 @@ var World = {
         document.getElementById("info").setAttribute("class", "info");
         World.sirenSound.stop();
     },
-
+/*
     toggleAnimateobjects: function toggleAnimateobjectsFn() {
         if (!this.objectAnimations[0].isRunning()) {
             if (!this.rotating) {
@@ -280,7 +321,7 @@ var World = {
         }
 
         return true;
-    },
+    },*/
 
     removeLoadingBar: function() {
         if (!World.loaded) {
@@ -304,18 +345,21 @@ var World = {
 
     trackerEnterFov: function trackerEnterFovFn() {
         World.removeLoadingBar();
-        document.getElementById('toggleAnimationBtn').style.display = "block";
+       // document.getElementById('toggleAnimationBtn').style.display = "block";
         if (World.selectedObject !== null) {
             document.getElementById("info").setAttribute("class", "infoVisible");
         }
     },
 
     trackerExitFov: function trackerExitFovFn() {
-        document.getElementById('toggleAnimationBtn').style.display = "none";
+       // document.getElementById('toggleAnimationBtn').style.display = "none";
         document.getElementById("info").setAttribute("class", "info");
-    }
+    },
+
 };
 
+World.init();
+/*
 var Historia ={
      loaded: false,
      fechaInfo: null,
@@ -400,7 +444,7 @@ var Historia ={
            distance: 10 * distanceFactor,
            modelFile: "assets/1820.wt3",
            realSize: 0.001,
-           description: "Ocupado por fuerzas militares españolas fracción del Batallon de los Andes",
+           description: "Ocupado por fuerzas militares españolas una fracción del Batallón de los Andes",
            x:0.7,
            y:-0.6,
            z:0
@@ -481,5 +525,5 @@ var Historia ={
              document.getElementById("info").setAttribute("class", "info");
 
          }
-};
-World.init();
+};*/
+
