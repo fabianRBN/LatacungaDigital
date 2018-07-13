@@ -24,13 +24,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/blue_100"
-            android:text="Nombre"/>
+            android:hint="Nombre del Sitio"/>
         <EditText
             android:id="@+id/txt_descripcionSitio"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:background="@color/blue_50"
-            android:text="Descripcion"
+            android:hint="Descripcion"
             android:gravity="top|left"
             android:inputType="textMultiLine"
             android:overScrollMode="always"

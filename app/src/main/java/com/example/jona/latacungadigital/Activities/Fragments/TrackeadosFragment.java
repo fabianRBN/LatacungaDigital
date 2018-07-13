@@ -13,6 +13,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.TrackeadosAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.TrackingAdapter;
@@ -60,6 +62,7 @@ public class TrackeadosFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_friendsAutorizados);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
+        final EditText et_distancia = (EditText) view.findViewById(R.id.txt_distanciaTrackeo);
 
         userFirebase = FirebaseAuth.getInstance();
         final String uid = userFirebase.getCurrentUser().getUid();
@@ -70,12 +73,16 @@ public class TrackeadosFragment extends Fragment {
         fabMapa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MapaFragment mf = new MapaFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.main_fragment, mf).commit();
-                Bundle data = new Bundle();
-                data.putString("trackeo", "trackeo");
-                mf.setArguments(data);
+                if (et_distancia.getText() != null){
+                    MapaFragment mf = new MapaFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_fragment, mf).commit();
+                    Bundle data = new Bundle();
+                    data.putString("trackeo", et_distancia.getText().toString());
+                    mf.setArguments(data);
+                } else {
+                    Toast.makeText(getContext(),"Debe colocar una distancia de alejamiento valida", Toast.LENGTH_LONG).show();
+                }
             }
         });
 

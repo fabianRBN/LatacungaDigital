@@ -26,6 +26,47 @@
             android:textSize="30dp"
             android:gravity="center"/>
     </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/blue_100">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight=".7"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_distanciamax"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Distancia de alejamiento"
+                        android:textSize="20dp"
+                        android:gravity="bottom"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight=".2"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@+id/txt_distanciaTrackeo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight=".1"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_enmetros"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="(m)"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_friendsAutorizados"
         android:layout_width="match_parent"

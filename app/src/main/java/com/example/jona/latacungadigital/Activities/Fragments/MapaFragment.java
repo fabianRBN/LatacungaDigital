@@ -477,8 +477,12 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                                 markerOptions.snippet("Distancia: "+formatoDistancia+" km");
                                 markerOptions.draggable(false);
                                 googleMap.addMarker(markerOptions).setTag("userMarker");
+                                double distmax = 1;
+                                if (dataArgTrac != null){
+                                    distmax = Double.parseDouble(getArguments().getString("trackeo"))/1000;
+                                }
 
-                                if (distanciah >= 1 ){
+                                if (distanciah >= distmax){
                                     if (dataArg == null)
                                         sendNotification("Alerta", String.format(nombre+" se alejo a "+formatoDistancia+" km de distancia de ti"), latlong);
 
@@ -508,7 +512,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                 if (dataSnapshot.child("misSitios").exists()){
                     for (DataSnapshot child: dataSnapshot.child("misSitios").getChildren()){
                         String nombreAtractivo = child.child("nombre").getValue().toString();
-                        String descripcionAtractivo = child.child("descripcion").getValue().toString();
                         Coordenada coordenada =  child.child("posicion").getValue(Coordenada.class);
                         LatLng punto = new LatLng( coordenada.getLat(), coordenada.getLng());
                         //Calculo de la distancia
@@ -599,7 +602,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                 double latitude = Double.parseDouble(latlong[0]);
                 double longitude = Double.parseDouble(latlong[1]);
                 LatLng datatoLatLon = new LatLng(latitude, longitude);
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(datatoLatLon, 12);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(datatoLatLon, 13);
                 googleMap.animateCamera(cameraUpdate);
             } else
             {
@@ -631,7 +634,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             googleMap.setInfoWindowAdapter(new CustomInfoWindowsAdapter(getContext()));
             googleMap.setOnInfoWindowClickListener( myOnInfoWindowsClickListener);
             googleMap.setOnInfoWindowLongClickListener(myOnInfoWindowsClickListener);
-            if (dataArgTrac != null){//Si es una solicitud de trackeo
+            if ((dataArgTrac != null) || (dataArg != null)){//Si es una solicitud de trackeo
                 createMarkerForUsers();//Agregar marcadores de usuarios amigos en el mapa
             } else {
                 dataFirebase(); // Agregar marcadores de atractivos y areas peligrosas
