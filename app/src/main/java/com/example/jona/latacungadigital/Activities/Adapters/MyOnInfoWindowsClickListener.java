@@ -77,7 +77,7 @@ public class MyOnInfoWindowsClickListener implements GoogleMap.OnInfoWindowClick
         Coordenada end = new Coordenada(punto.latitude,punto.longitude);// la coordenada del trackeado
         double distanciah = (haversine.distance(inicial,end))*1000;
         String formatoDistancia = String.format("%.00f", distanciah);
-        //Toast.makeText(context,"distancia de ti: "+formatoDistancia+" m", Toast.LENGTH_LONG).show();
+        Toast.makeText(context,"distancia de ti: "+formatoDistancia+" m", Toast.LENGTH_LONG).show();
 
     }
 

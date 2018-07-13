@@ -23,8 +23,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.PopupWindow;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -135,6 +137,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     private FirebaseUser userFirebase = FirebaseAuth.getInstance().getCurrentUser();
     private static ArrayList<MarkerOptions> listaMarkadores = new ArrayList<MarkerOptions>();
     private static ArrayList<AreaPeligrosa> listaAreaPeligrosa = new ArrayList<AreaPeligrosa>();
+    private ArrayList<String> listaFiltrarAtractivos = new ArrayList<>();
+    private ArrayList<String> listaFiltrarServicios = new ArrayList<>();
 
     public static void setListaAreaPeligrosa(ArrayList<AreaPeligrosa> listaAreaPeligrosa) {
         MapaFragment.listaAreaPeligrosa = listaAreaPeligrosa;
@@ -164,15 +168,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-        //Flotante que redirige al mapa
-        FloatingActionButton fabClima = (FloatingActionButton) rootView.findViewById(R.id.fab_clima);
-        fabClima.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createClima();
-            }
-        });
-
         try { //Analiza argumento de notificacion
             dataArg = getArguments().getString("dato");
         } catch (Exception ex){
@@ -182,6 +177,28 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             dataArgTrac = getArguments().getString("trackeo");
         } catch (Exception ex){
             System.out.println("Error: "+ex);
+        }
+
+        //Flotante que muestra popup del clima
+        FloatingActionButton fabClima = (FloatingActionButton) rootView.findViewById(R.id.fab_clima);
+        fabClima.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createClima();
+            }
+        });
+
+        //Flotante que redirige al mapa
+        FloatingActionButton fabFiltro = (FloatingActionButton) rootView.findViewById(R.id.fab_filtro);
+        fabFiltro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                crearPopupFiltro();
+            }
+        });
+
+        if ((dataArgTrac!=null) || (dataArg !=null)){
+            fabFiltro.setVisibility(rootView.INVISIBLE);
         }
 
 
@@ -702,6 +719,296 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     break;
             }
         }
+    }
+    //Se muestra el popup para filtrar los actrativos
+    private void crearPopupFiltro(){
+        //We need to get the instance of the LayoutInflater, use the context of this activity
+        LayoutInflater inflaterT = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        //Inflate the view from a predefined XML layout (no need for root id, using entire layout)
+        final View popupfiltro = inflaterT.inflate(R.layout.popup_filtroatractivos,null);
+        //Get the devices screen density to calculate correct pixel sizes
+        float density= getContext().getResources().getDisplayMetrics().density;
+        // create a focusable PopupWindow with the given layout and correct size
+        final PopupWindow pw = new PopupWindow(popupfiltro, (int)density*300, (int)density*400, true);
+        pw.showAtLocation(popupfiltro, Gravity.LEFT, 0, 0);
+        listaFiltrarServicios.clear();
+        listaFiltrarAtractivos.clear();
+        //Actualizar lista de atractivos
+        Switch sw_ManiCul = (Switch) popupfiltro.findViewById(R.id.sw_atractivo1);
+        sw_ManiCul.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+                    listaFiltrarAtractivos.add("Manifestaciones Culturales");
+                }else
+                {
+                    listaFiltrarAtractivos.remove("Manifestaciones Culturales");
+                }
+            }
+        });
+        Switch sw_Museo = (Switch) popupfiltro.findViewById(R.id.sw_atractivo2);
+        sw_Museo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+                    listaFiltrarAtractivos.add("Museo");
+                }else
+                {
+                    listaFiltrarAtractivos.remove("Museo");
+                }
+            }
+        });
+        Switch sw_Arqui = (Switch) popupfiltro.findViewById(R.id.sw_atractivo3);
+        sw_Arqui.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+                    listaFiltrarAtractivos.add("Arquitectura");
+                }else
+                {
+                    listaFiltrarAtractivos.remove("Arquitectura");
+                }
+            }
+        });
+        Switch sw_Parque = (Switch) popupfiltro.findViewById(R.id.sw_atractivo4);
+        sw_Parque.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+                    listaFiltrarAtractivos.add("Parque");
+                }else
+                {
+                    listaFiltrarAtractivos.remove("Parque");
+                }
+            }
+        });
+
+        //Actualizar lista de servicios
+        Switch sw_Agencias = (Switch) popupfiltro.findViewById(R.id.sw_atractivo5);
+        sw_Agencias.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+                    listaFiltrarServicios.add("Agencia de viajes");
+                }else
+                {
+                    listaFiltrarServicios.remove("Agencia de viajes");
+                }
+            }
+        });
+        Switch sw_Alojamiento = (Switch) popupfiltro.findViewById(R.id.sw_atractivo6);
+        sw_Alojamiento.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+                    listaFiltrarServicios.add("Alojamiento");
+                }else
+                {
+                    listaFiltrarServicios.remove("Alojamiento");
+                }
+            }
+        });
+        Switch sw_ComiBebidas = (Switch) popupfiltro.findViewById(R.id.sw_atractivo7);
+        sw_ComiBebidas.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+                    listaFiltrarServicios.add("Comidas y bebidas");
+                }else
+                {
+                    listaFiltrarServicios.remove("Comidas y bebidas");
+                }
+            }
+        });
+        Switch sw_Recreacion = (Switch) popupfiltro.findViewById(R.id.sw_atractivo8);
+        sw_Recreacion.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+                    listaFiltrarServicios.add("Recreación, diversión, esparcimiento");
+                }else
+                {
+                    listaFiltrarServicios.remove("Recreación, diversión, esparcimiento");
+                }
+            }
+        });
+
+        //Estado de los switch
+       /* if (!listaFiltrarAtractivos.isEmpty()){
+            for (String itemlis: listaFiltrarAtractivos) {
+                if (itemlis.equals("Manifestaciones Culturales")) {
+                    sw_ManiCul.setChecked(true);
+                }else
+                if (itemlis.equals("Museo")){
+                    sw_Museo.setChecked(true);
+                }else
+                if (itemlis.equals("Arquitectura")){
+                    sw_Arqui.setChecked(true);
+                }else
+                if (itemlis.equals("Parque"))
+                    sw_Parque.setChecked(true);
+            }
+        }
+        if (!listaFiltrarServicios.isEmpty()){
+            for (String itemlis: listaFiltrarServicios) {
+                if (itemlis.equals("Agencia de viajes")) {
+                    sw_Agencias.setChecked(true);
+                }else
+                if (itemlis.equals("Alojamiento")) {
+                    sw_Alojamiento.setChecked(true);
+                }else
+                if (itemlis.equals("Comidas y bebidas")) {
+                    sw_ComiBebidas.setChecked(true);
+                }else
+                if (itemlis.equals("Recreación, diversión, esparcimiento"))
+                    sw_Recreacion.setChecked(true);
+            }
+        }*/
+
+        Button btnCancelarFil = (Button) popupfiltro.findViewById(R.id.btn_cancelarfil);
+        btnCancelarFil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listaFiltrarServicios.clear();
+                listaFiltrarAtractivos.clear();
+                pw.dismiss();
+            }
+        });
+        Button btnFiltrar = (Button) popupfiltro.findViewById(R.id.btn_filtrar);
+        btnFiltrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filtrarMarkers(listaFiltrarAtractivos, listaFiltrarServicios);
+                pw.dismiss();
+            }
+        });
+    }
+
+    //Filtra los markers con las preferencias del usuario
+    private void filtrarMarkers(final ArrayList<String> listAtrac, final ArrayList<String> listServ){
+        final OnMarkerClickListenerAdapter onMarkerClickListenerAdapter = new OnMarkerClickListenerAdapter(getContext(),googleMap);
+        googleMap.clear();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.keepSynced(true);
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Recupera lista de Areas Peligrosas
+                for (DataSnapshot child: dataSnapshot.child("areaPeligrosa").getChildren()){
+
+                    String nombreArea = child.child("nombre").getValue().toString();
+                    String idArea = child.child("id").getValue().toString();
+                    Double radio = Double.parseDouble(child.child("radio").getValue().toString());
+                    Double latitud = Double.parseDouble(child.child("latitud").getValue().toString());
+                    Double longitud = Double.parseDouble(child.child("longitud").getValue().toString());
+                    AreaPeligrosa areaPeligrosa = new AreaPeligrosa(nombreArea, idArea, radio, latitud, longitud);
+                    listaAreaPeligrosa.add(areaPeligrosa);
+                    final LatLng dangerousArea = new LatLng(areaPeligrosa.getLatitud(), areaPeligrosa.getLongitud());
+                    googleMap.addCircle(new CircleOptions()
+                            .center(dangerousArea)
+                            .radius(areaPeligrosa.getRadio())
+                            .strokeColor(Color.RED)
+                            .fillColor(0x220000FF)
+                            .strokeWidth(5.0f));
+                    //Equivalencias de distancia de GeoFire
+                    // 0.1f = 0.1km = 100m
+                    GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(dangerousArea.latitude, dangerousArea.longitude), 0.1f);
+                    geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                        @Override
+                        public void onKeyEntered(String key, GeoLocation location) {
+                            sendNotification("Alerta", String.format("Entraste en un área Peligrosa"),dangerousArea);
+                        }
+
+                        @Override
+                        public void onKeyExited(String key) {
+                            sendNotification("Alerta", String.format(" Esta cerca un área Peligrosa"), dangerousArea);
+
+                        }
+
+                        @Override
+                        public void onKeyMoved(String key, GeoLocation location) {
+                            Log.d("Alerta", String.format(" moved within the dangerous area "));
+                        }
+
+                        @Override
+                        public void onGeoQueryReady() {
+
+                        }
+
+                        @Override
+                        public void onGeoQueryError(DatabaseError error) {
+                            Log.e("ERROR", ""+error);
+                        }
+                    });
+
+                }
+                setListaAreaPeligrosa(listaAreaPeligrosa);
+                //Crea marcadores de los atractivos
+                for (DataSnapshot child: dataSnapshot.child("atractivo").getChildren()){
+                    if (child.child("categoria").exists()){
+                        String categoria = child.child("categoria").getValue().toString();
+                        for (String itemlist: listAtrac) {
+                            if (categoria.equals(itemlist)){
+                                String nombreAtractivo = child.child("nombre").getValue().toString();
+                                String descripcionAtractivo = child.child("descripcion").getValue().toString();
+                                String snippit ="";
+                                String pathImagen= "";
+                                for(DataSnapshot galeria: child.child("galeria").getChildren()){
+                                    pathImagen = galeria.child("imagenURL").getValue().toString();
+                                }
+                                snippit = descripcionAtractivo +"&##"+pathImagen+"&##"+child.getKey();
+                                Coordenada coordenada =  child.child("posicion").getValue(Coordenada.class);
+                                LatLng punto = new LatLng( coordenada.getLat(), coordenada.getLng());
+                                MarkerOptions markerOptions = new  MarkerOptions().position(punto)
+                                        .title(nombreAtractivo)
+                                        .snippet(snippit)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_building_blue));
+                                listaMarkadores.add(markerOptions);
+                                googleMap.addMarker(markerOptions);
+                            }
+                        }
+                    }
+                }
+                //Crea marcadores de los servicios
+                for (DataSnapshot child: dataSnapshot.child("servicio").getChildren()){
+                    if (child.child("categoria").exists()){
+                        String categoria = child.child("categoria").getValue().toString();
+                        for (String itemlist: listServ) {
+                            if (categoria.equals(itemlist)){
+                                String nombreAtractivo = child.child("nombre").getValue().toString();
+                                String actividad = "Actividad: "+child.child("tipoDeActividad").getValue().toString();
+                                Coordenada coordenada =  child.child("posicion").getValue(Coordenada.class);
+                                LatLng punto = new LatLng( coordenada.getLat(), coordenada.getLng());
+                                MarkerOptions markerOptions = new  MarkerOptions().position(punto)
+                                        .title(nombreAtractivo)
+                                        .snippet(actividad)
+                                        .draggable(false)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_building_blue));
+                                listaMarkadores.add(markerOptions);
+                                googleMap.addMarker(markerOptions).setTag("service");
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+
+        });
+        // For zooming automatically to the location of the marker
+        googleMap.setOnMarkerClickListener(onMarkerClickListenerAdapter);
     }
 
     //Muestra el popup del clima actual

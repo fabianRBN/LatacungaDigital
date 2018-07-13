@@ -16,7 +16,6 @@ import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Fragments.DialogAppFragment;
-import com.example.jona.latacungadigital.Activities.Fragments.FiltroCategoriasFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.ListAtractivosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MenuARFragment;
@@ -35,7 +34,7 @@ import com.google.android.gms.common.api.ResultCallback;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener,
         ListAtractivosFragment.OnFragmentInteractionListener, DialogAppFragment.NoticeDialogListener, TrackinFragment.OnFragmentInteractionListener,
-        TrackeadosFragment.OnFragmentInteractionListener, FiltroCategoriasFragment.OnFragmentInteractionListener {
+        TrackeadosFragment.OnFragmentInteractionListener {
 
     private GoogleApiClient googleApiClient; // Variable para manejar los datos de Google.
 
@@ -46,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private static final int DIALOG_SIGN_OFF = 1; // Para saber que tipo de Dialogo es.
 
     private MapaFragment mapaFragment = new MapaFragment();
-    private FiltroCategoriasFragment categoriasFragment = new FiltroCategoriasFragment();
     private ListAtractivosFragment listAtractivosFragment = new ListAtractivosFragment();
 
     // Variables para identificar  en el fragmento que nos encontramos
@@ -69,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     return true;
                 case R.id.navigation_mapa:
                    // mTextMessage.setText(R.string.title_dashboard);
-                    setFragment(categoriasFragment);
+                    setFragment(mapaFragment);
 
                     return true;
                 case R.id.navigation_chat:
