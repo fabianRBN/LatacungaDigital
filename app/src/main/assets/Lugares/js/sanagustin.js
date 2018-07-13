@@ -1,14 +1,24 @@
+// information about server communication. This sample webservice is provided by Wikitude and returns random dummy places near given location
+var ServerInformation = {
+	POIDATA_SERVER: "https://latacungaar-backend.herokuapp.com/",
+	POIDATA_SERVER_ARG_LAT: "lat",
+	POIDATA_SERVER_ARG_LON: "lon",
+	POIDATA_SERVER_ARG_NR_POIS: "nrPois"
+};
 var World = {
+    // you may request new data from server periodically, however: in this sample data is only requested once
+    isRequestingData: false,
 
+    // true once data was fetched
+    initiallyLoadedData: false,
     loaded: false,
     objectInfo: null,
     rotating: false,
     selectedObject: null,
 
-    init: function initFn() {
-
-
-        this.targetCollectionResource = new AR.TargetCollectionResource("assets/prueba11.wtc", {
+    init: function initFn(poiData) {
+    // for (var lugar = 0; lugar< poiData.length; lugar++) {
+        this.targetCollectionResource = new AR.TargetCollectionResource("assets/iglesia_la_merced.wtc", {
             onError: function(errorMessage) {
                 alert(errorMessage);
             }
@@ -173,6 +183,7 @@ var World = {
                 });
 
         }
+        //}//cierra el for de recorrido del webservcice
           /*var label = new AR.Label("Hola prueba 1", 0.1, {
                          offsetY: 0.1,
                          verticalAnchor: AR.CONST.VERTICAL_ANCHOR.TOP,
@@ -356,9 +367,42 @@ var World = {
         document.getElementById("info").setAttribute("class", "info");
     },
 
-};
+    locationChanged: function locationChangedFn(lat, lon, alt, acc) {
 
-World.init();
+    		// request data if not already present
+    		if (!World.initiallyLoadedData) {
+    			World.requestDataFromServer(lat, lon);
+    			World.initiallyLoadedData = true;
+    		}
+    	},
+
+    // request POI data
+    	requestDataFromServer: function requestDataFromServerFn(lat, lon) {
+
+    		// set helper var to avoid requesting places while loading
+    		World.isRequestingData = true;
+    		//World.updateStatusMessage('Requesting places from web-service');
+
+    		// server-url to JSON content provider
+    		var serverUrl = ServerInformation.POIDATA_SERVER + "?" + ServerInformation.POIDATA_SERVER_ARG_LAT + "=" + lat + "&" + ServerInformation.POIDATA_SERVER_ARG_LON + "=" + lon + "&" + ServerInformation.POIDATA_SERVER_ARG_NR_POIS + "=20";
+
+    		var jqxhr = $.getJSON(serverUrl, function(data) {
+    				//World.loadPoisFromJsonData(data);
+    				World.init();
+    			})
+    			.error(function(err) {
+    				//World.updateStatusMessage("Invalid web-service response.", true);
+    				World.isRequestingData = false;
+    			})
+    			.complete(function() {
+    				World.isRequestingData = false;
+    			});
+    	}
+
+};
+/* forward locationChanges to custom function */
+AR.context.onLocationChanged = World.locationChanged;
+//World.init();
 /*
 var Historia ={
      loaded: false,
