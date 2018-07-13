@@ -211,20 +211,21 @@ public class WeatherClass {
         // Los numeros estan determinados por °C.
         if (degrees < 7) { // Clima Helado
             recommendation = "Según mi pronóstico el clima " + toBe + " helado, por lo tanto, te " + recommendationTime + " pantalones gruesos que " +
-                    "cubran los tobillos, trata de cubrirte el cuello, las manos y la cabeza con accesorios como gorros de lana, guantes o bufandas. " +
-                    "Además, " + uses + " calcetines abrigados con calzado alto, chompa muy abrigada.";
+                    "cubran los tobillos con una chompa muy abrigada, trata de cubrirte el cuello, las manos y la cabeza con accesorios como gorros, " +
+                    "guantes o bufandas. Además, " + uses + " calcetines abrigados con calzado alto.";
         } else if (degrees >= 7 && degrees < 13) { // Clima Frio
-            recommendation = "Según mi pronóstico el clima " + toBe + " frío, por lo tanto, te " + recommendationTime + " pantalón largo de jean o de tela " +
-                    "media gruesa, suéter con cuello o chompa con una camiseta por dentro, calcetines gruesos con calzado abrigado.";
+            recommendation = "Según mi pronóstico el clima " + toBe + " frío, por lo tanto, te " + recommendationTime + " pantalones largos abrigados " +
+                    "medias gruesas, suéter o chompa abrigados, calcetines gruesos con calzado cómodo.";
         } else if (degrees >= 13 && degrees < 18) { // Clima Fresco
-            recommendation = "Según mi pronóstico el clima " + toBe + " fresco, por lo tanto, te " + recommendationTime + " pantalón jean o de tela, " +
-                    "suéter con una camiseta liviana, calcetines ligeros y calzado cómodo.";
+            recommendation = "Según mi pronóstico el clima " + toBe + " fresco, por lo tanto, te " + recommendationTime + " pantalones cómodos, " +
+                    "suéter liviano, camiseta liviana, calcetines ligeros y calzado cómodo.";
         } else if (degrees >= 18 && degrees < 24) { // Clima Comodo
             recommendation = "Según mi pronóstico el clima " + toBe + " cómodo, por lo tanto, te " + recommendationTime + " pantalones ligeros, " +
-                    "chaqueta liviana de manga larga, camiseta manga corta, calcetines ligeros y zapatos cómodos.";
+                    "chaqueta liviana, camiseta ligera, calcetines ligeros y calzado cómodos.";
         } else if (degrees >= 24) { // Clima Caliente
             recommendation = "Según mi pronóstico el clima " + toBe + " caliente, por lo tanto, te " + recommendationTime + " pantalones ligeros o " +
-                    "si esposible " + uses + " shorts, camiseta manga corta, gafas o lentes de sol, calzado abierto o semicerrado que deje respirar tus pies.";
+                    "si esposible " + uses + " shorts, camisetas livianas; gorras, gafas o lentes de sol, calzado abierto o semicerrado que deje " +
+                    "respirar tus pies.";
         }
         return recommendation;
     }

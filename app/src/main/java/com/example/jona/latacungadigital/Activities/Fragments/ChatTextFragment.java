@@ -302,8 +302,6 @@ public class ChatTextFragment extends Fragment {
             // Adaptamos la lista de mensajes leidos al adaptador del Recycle View para poner los mensajes.
             dialogflowClass.addMessagesAdapter(dialogflowClass.getListMessagesText());
         }
-
-        GiveWelcomeMessage(); // Para evitar que de la bienvenida al usuario cuando este escrito algo.
     }
 
     // Método para actualizar la lista de mensajes del Shared Preferences.
@@ -340,13 +338,6 @@ public class ChatTextFragment extends Fragment {
                 dialogflowClass.setGenreCharacter(genreCharacter);
             }
         });
-    }
-
-    // Método para dar el mensaje unicamente cuando recien entra al chat bot.
-    private void GiveWelcomeMessage() {
-        if (dialogflowClass.getListMessagesText().size() == 0) {
-            dialogflowClass.SendMessageTextToDialogflow("Hola"); // El chat bot enviara un mensaje de bienvenida al usuario.
-        }
     }
 
     // Método para cambiar el icono del boton segun la longitud del texto del usuario.
@@ -433,11 +424,7 @@ public class ChatTextFragment extends Fragment {
     public void onResume() {
         super.onResume();
         // Se leen los mensajes si el usuario a marcado la opcion "Mensajes en el Chat" en la parte de configuracion de la app.
-        if (isPermitSaveMessages()) {
-            ReadListMessageFromSharedPreferences(); // Se leen los mensajes guardados del chat.
-        } else {
-            GiveWelcomeMessage(); // Caso de que no este activado el chat bot le va dar el mensaje de bienvenida.
-        }
+        if (isPermitSaveMessages()) ReadListMessageFromSharedPreferences(); // Se leen los mensajes guardados del chat.
 
         getGenreCharacter(); // Obtenemos el genero del personaje.
 
