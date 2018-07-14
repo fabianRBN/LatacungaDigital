@@ -9,8 +9,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:background="@color/black"
+        android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -36,8 +35,12 @@
                 android:id="@+id/ciViewPagerImages"
                 android:layout_width="match_parent"
                 android:layout_alignBottom="@+id/viewPager"
-                android:layout_height="48dp"/>
+                android:layout_height="48dp"
+                android:layout_marginBottom="30dp"/>
+
+
             </RelativeLayout>
+
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolAtractivo"
@@ -49,320 +52,34 @@
                 app:navigationIcon="?attr/homeAsUpIndicator"
                 app:theme="@style/CustomActionBar" />
 
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="#00ffffff"
+                app:tabGravity="fill"
+                app:tabMode="fixed"
+                />
+
         </android.support.design.widget.CollapsingToolbarLayout>
+
+
+
 
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:id="@+id/nested"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="10dp"
-            >
-            <android.support.v7.widget.CardView
-                android:id="@+id/card_view"
+
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                >
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                   >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/txtTituloAtractivo"
-                        android:textStyle="bold"
-                        android:textSize="18dp"
-                        android:textColor="@color/black"
-                        android:text="Titulo"
-                        android:layout_marginBottom="5dp"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/txtCategoriaAtractivo"
-                        android:textStyle="bold"
-                        android:text="Categoria"
-                        android:layout_marginBottom="5dp"
-
-                    />
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <RatingBar
-                            android:id="@+id/ratingBar_total"
-                            android:layout_gravity="left"
-                            android:theme="@style/RatingBar"
-                            style="?android:attr/ratingBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:numStars="5"
-                            android:rating="3.5"
-                            android:stepSize="0.5"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginBottom="5dp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/txtRatingToatal"
-                            android:textStyle="bold"
-                            android:text="0.0"
-                            android:layout_marginBottom="5dp"
-                            />
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/txtDescripcionAtractivo"
-                        android:text="Descripcion"
-                        android:layout_marginBottom="5dp"
-
-                        />
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view_360"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="10dp"
-                >
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Vista 360º"
-                        android:layout_margin="5dp"/>
-
-                    <com.google.vr.sdk.widgets.pano.VrPanoramaView
-                        android:id="@+id/vr_pan_view"
-                        android:layout_width="match_parent"
-                        android:layout_margin="5dp"
-                        android:layout_height="match_parent">
-                        <ImageButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="#00ffffff"
-                            android:src="@drawable/ic_file_download_black_24dp"
-                            android:layout_gravity="center"
-                            android:id="@+id/btnDescarga"/>
-                    </com.google.vr.sdk.widgets.pano.VrPanoramaView>
-                </LinearLayout>
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="10dp"
-                    >
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="75dp"
-                        android:orientation="vertical">
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="50dp">
-                            <ImageView
-                                android:id="@+id/imgUusuario"
-                                android:layout_width="match_parent"
-                                android:layout_height="50dp"
-                                android:src="@drawable/ic_picture"/>
-
-
-                            <ImageButton
-                                android:id="@+id/btn_submenu"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentTop="true"
-                                android:layout_weight="1"
-                                android:background="@color/white"
-                                android:src="@drawable/ic_arrow_drop_down_circle_black_24dp" />
-
-
-                        </RelativeLayout>
-
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_gravity="center">
-
-                            <TextView
-                                android:id="@+id/txt_nombre_usuario"
-                                android:layout_width="match_parent"
-                                android:layout_height="18dp"
-                                android:text="Fabian Toapanta"
-                                android:gravity="center"/>
-
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-                   <LinearLayout
-                       android:layout_width="match_parent"
-                       android:layout_height="175dp"
-                       android:orientation="vertical"
-                       android:id="@+id/layout_editar_coemtario"
-                       android:visibility="gone">
-                       <RatingBar
-                           android:id="@+id/ratingBar"
-                           android:layout_gravity="center"
-                           android:theme="@style/RatingBar"
-                           style="?android:attr/ratingBarStyle"
-                           android:layout_width="wrap_content"
-                           android:layout_height="50dp"
-                           android:numStars="5"
-                           android:rating="3.5"
-                           android:stepSize="0.5"
-                           android:layout_marginTop="5dp"/>
-
-                       <EditText
-                           android:layout_width="match_parent"
-                           android:layout_height="60dp"
-                           android:textSize="12dp"
-                           android:ems="10"
-                           android:id="@+id/edit_comentario"
-                           android:inputType="textMultiLine" />
-                       <LinearLayout
-                           android:layout_width="match_parent"
-                           android:layout_height="50dp"
-                           android:orientation="horizontal">
-                           <Button
-                               android:layout_width="0dp"
-                               android:layout_weight="0.5"
-                               android:id="@+id/btn_guardar"
-                               android:layout_height="40dp"
-                               android:text="Guardar"/>
-                           <Button
-                               android:layout_width="0dp"
-                               android:layout_weight="0.5"
-                               android:id="@+id/btn_cancelar"
-                               android:layout_height="40dp"
-                               android:text="Cancelar"/>
-                       </LinearLayout>
-
-
-
-
-
-                   </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:id="@+id/layou_comentario"
-                        android:padding="10dp">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="fecha"
-                            android:id="@+id/txt_fecha"
-                            android:textSize="10dp"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="10dp"/>
-                        <RatingBar
-                            android:id="@+id/ratingBar2"
-                            android:layout_gravity="left"
-                            android:theme="@style/RatingBar"
-                            style="?android:attr/ratingBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:numStars="5"
-                            android:rating="3.5"
-                            android:stepSize="0.5"
-                            android:layout_marginBottom="5dp"/>
-
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/lorem"
-                            android:id="@+id/txt_comentario"
-                            android:textSize="10dp"/>
-
-                    </LinearLayout>
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="25dp"
-
-                >
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:minHeight="100dp"
-                    android:orientation="vertical"
-                    android:padding="10dp"
-                    android:id="@+id/layout_lista_comentarios"
-
-                    >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="Comentarios"
-                    android:layout_marginBottom="10dp"
-                    />
-
-
-
-                    <android.support.v7.widget.RecyclerView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clipToPadding="false"
-                        android:padding="5dp"
-                        android:id="@+id/listViewComentarios"
-                        android:scrollbars="none"
-                        tools:listitem="@layout/comentario_item">
-
-
-                    </android.support.v7.widget.RecyclerView>
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-
-        </LinearLayout>
-
-    </android.support.v4.widget.NestedScrollView>
 
 
     <android.support.design.widget.FloatingActionButton
@@ -372,9 +89,9 @@
         android:layout_margin="20dp"
         android:elevation="6dp"
         app:pressedTranslationZ="12dp"
-        app:layout_anchor="@id/appbar"
-        app:layout_anchorGravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:src="@drawable/ic_directions_black_24dp" />
+
 
 
 </android.support.design.widget.CoordinatorLayout>

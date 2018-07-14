@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v4.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view_360"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_margin="5dp"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Vista 360º"
+                    android:layout_margin="5dp"/>
+
+                <com.google.vr.sdk.widgets.pano.VrPanoramaView
+                    android:id="@+id/vr_pan_view"
+                    android:layout_width="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_height="300dp">
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#00ffffff"
+                        android:src="@drawable/ic_file_download_black_24dp"
+                        android:layout_gravity="center"
+                        android:id="@+id/btnDescarga"/>
+                    <ProgressBar
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:progress="100"
+                        android:visibility="gone"
+
+                        android:id="@+id/progressCircle"
+                        android:layout_gravity="center"
+                        android:progressDrawable="@drawable/circle"
+                        style="?android:progressBarStyleHorizontal"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtPorsentaje"
+                        android:text="0%"
+                        android:textSize="20dp"
+                        android:visibility="gone"
+
+                        android:layout_gravity="center"
+                        android:textColor="@color/colorAccent"/>
+                </com.google.vr.sdk.widgets.pano.VrPanoramaView>
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+
+    </android.support.v4.widget.NestedScrollView>
+</android.support.constraint.ConstraintLayout>

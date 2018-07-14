@@ -80,6 +80,9 @@ dependencies {
     //Para dar opciones al flotante
     implementation'com.github.fafaldo:fab-toolbar:1.2.0'
 
+    // Para expandir texto
+    implementation 'com.borjabravo:readmoretextview:2.1.0'
+
     //Librerias para la realidad aumentada
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])

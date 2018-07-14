@@ -16,6 +16,11 @@
             android:ellipsize="end"
             android:textColor="#000"
             android:textSize="14sp"/>
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxLines="10"
+            android:maxLines="5"
             android:id="@+id/str_descripcion"
             android:textSize="12sp"/>
 

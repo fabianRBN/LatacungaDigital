@@ -104,7 +104,7 @@ public class ListAtractivosFragment extends Fragment implements SwipeRefreshLayo
         // Se envia false para no mostrar el mensaje de "Conexión exitosa" al inicio de la actividad.
         SetupActionBar(false); // Para dar el titulo y el subtitulo que va a tener el Action Bar.
 
-        /*swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 new Handler().postDelayed(new Runnable() {
@@ -117,7 +117,7 @@ public class ListAtractivosFragment extends Fragment implements SwipeRefreshLayo
                 }, 3000);
 
             }
-        });*/
+        });
 
 
 
