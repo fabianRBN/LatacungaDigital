@@ -65,7 +65,7 @@ dependencies {
     // Manejo de imagenes con picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-    // Para mostrar un snack bar debjo del toolbar.
+    // Para mostrar un snack bar debajo del toolbar.
     implementation 'com.androidadvance:topsnackbar:1.1.1'
 
     // Para el asistente de voz IBM Watson.
@@ -86,7 +86,8 @@ dependencies {
     //Librerias para la realidad aumentada
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation(name: 'wikitudesdk', ext: 'aar')
+    implementation (name: 'wikitudesdk', ext:'aar')
+    implementation 'com.google.ar:core:1.1.0'
 
     // Librerias para VR
     implementation 'com.google.vr:sdk-panowidget:1.10.0'
@@ -103,7 +104,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
 repositories {
-    flatDir {
+    flatDir{
         dirs 'libs'
     }
 }
