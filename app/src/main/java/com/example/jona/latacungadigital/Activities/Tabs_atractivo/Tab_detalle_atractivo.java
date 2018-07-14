@@ -105,7 +105,7 @@ public class Tab_detalle_atractivo extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 txtTitulo.setText(dataSnapshot.child("nombre").getValue().toString());
-                txtCategoria.setText(dataSnapshot.child("categoria").getValue().toString() +" - "+ "distancia");
+                txtCategoria.setText(dataSnapshot.child("categoria").getValue().toString() );
                 txtTipo.setText(dataSnapshot.child("tipo").getValue().toString());
                 txtSubtipo.setText(dataSnapshot.child("subtipo").getValue().toString());
                 txtImpactoNegativo.setText(dataSnapshot.child("impactoNegativo").getValue().toString());
