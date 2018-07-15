@@ -1,7 +1,5 @@
 package com.example.jona.latacungadigital.Activities.Clases;
 
-import android.util.Log;
-
 import com.example.jona.latacungadigital.R;
 import com.google.gson.JsonElement;
 
@@ -15,17 +13,19 @@ public class ServiceClass {
     private String alias;
     private String category;
     private String contact;
-    private String address;
-    private String name;
-    private String typeOfActivity;
-    private String web;
     private String email;
+    private String address;
     private String facebookPage;
     private HorarioClass horario;
+    private JsonElement position;
+    private String name;
+    private String SubTypeOfActivity;
+    private String typeOfActivity;
+    private String web;
 
     private double latitude;
     private double longitude;
-    private JsonElement position;
+
     private int icon;
 
     // Constructor
@@ -73,6 +73,14 @@ public class ServiceClass {
         this.contact = contact;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getAddress() {
         return address;
     }
@@ -81,12 +89,44 @@ public class ServiceClass {
         this.address = address;
     }
 
+    public String getFacebookPage() {
+        return facebookPage;
+    }
+
+    public void setFacebookPage(String facebookPage) {
+        this.facebookPage = facebookPage;
+    }
+
+    public HorarioClass getHorario() {
+        return horario;
+    }
+
+    public void setHorario(HorarioClass horario) {
+        this.horario = horario;
+    }
+
+    public JsonElement getPosition() {
+        return position;
+    }
+
+    public void setPosition(JsonElement position) {
+        this.position = position;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSubTypeOfActivity() {
+        return SubTypeOfActivity;
+    }
+
+    public void setSubTypeOfActivity(String subTypeOfActivity) {
+        SubTypeOfActivity = subTypeOfActivity;
     }
 
     public String getTypeOfActivity() {
@@ -103,14 +143,6 @@ public class ServiceClass {
 
     public void setWeb(String web) {
         this.web = web;
-    }
-
-    public JsonElement getPosition() {
-        return position;
-    }
-
-    public void setPosition(JsonElement position) {
-        this.position = position;
     }
 
     public double getLatitude() {
@@ -133,33 +165,8 @@ public class ServiceClass {
         return icon;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getFacebookPage() {
-        return facebookPage;
-    }
-
-    public void setFacebookPage(String facebookPage) {
-        this.facebookPage = facebookPage;
-    }
-
-    public HorarioClass getHorario() {
-        return horario;
-    }
-
-    public void setHorario(HorarioClass horario) {
-        this.horario = horario;
-    }
-
     public void setIcon() {
-        Log.d("Categoria de servicio", ": "+ this.category);
-        switch (this.category){
+        switch (this.getTypeOfActivity()){
             case "Agencia de viajes":
                 if(getHorario().isHorarioDefinido() && isOpen()){
                     this.icon = R.drawable.ic_marker_travel_is_open_purple;
@@ -211,6 +218,7 @@ public class ServiceClass {
             setPosition(values.getAsJsonObject().get("posicion"));
             setLatitude(Double.parseDouble(getPosition().getAsJsonObject().get("lat").toString()));
             setLongitude(Double.parseDouble(getPosition().getAsJsonObject().get("lng").toString()));
+            setSubTypeOfActivity(values.getAsJsonObject().get("subTipoDeActividad").toString().replace("\"", ""));
             setTypeOfActivity(values.getAsJsonObject().get("tipoDeActividad").toString().replace("\"", ""));
             setWeb(values.getAsJsonObject().get("web").toString().replace("\"", ""));
             setIcon();

@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
@@ -41,17 +40,15 @@ import com.example.jona.latacungadigital.Activities.Adapters.CustomInfoWindowsAd
 import com.example.jona.latacungadigital.Activities.Adapters.MyOnInfoWindowsClickListener;
 import com.example.jona.latacungadigital.Activities.Adapters.OnMarkerClickListenerAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.ServiceInfoWindowsAdapter;
+import com.example.jona.latacungadigital.Activities.Clases.AreaPeligrosa;
 import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
-import com.example.jona.latacungadigital.Activities.Clases.DialogflowClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
-import com.example.jona.latacungadigital.Activities.Clases.WeatherClass;
 import com.example.jona.latacungadigital.Activities.Haversine.Haversine;
 import com.example.jona.latacungadigital.Activities.MainActivity;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
 import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
-import com.example.jona.latacungadigital.Activities.Clases.AreaPeligrosa;
 import com.example.jona.latacungadigital.Activities.modelos.TrackinModel;
 import com.example.jona.latacungadigital.R;
 import com.firebase.geofire.GeoFire;
@@ -437,7 +434,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         MarkerOptions markerOptions =  new MarkerOptions();
         markerOptions.position(new LatLng(service.getLatitude(),service.getLongitude()));
         markerOptions.title(service.getName());
-        markerOptions.snippet(service.getTypeOfActivity());
+        markerOptions.snippet(service.getSubTypeOfActivity());
         markerOptions.draggable(false);
         if(service.getIcon() != 0){ // Validar si existe un icono predefinido del servicio
             markerOptions.icon(BitmapDescriptorFactory.fromResource(service.getIcon()));

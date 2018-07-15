@@ -24,7 +24,7 @@ public class ServiceInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter, G
 
     // Constructor
     public ServiceInfoWindowsAdapter(Context mContext, GoogleMap googleMap) {
-        this.mContext = mContext;
+        this.mContext = mContext.getApplicationContext();
         this.googleMap = googleMap;
         this.mWindow = LayoutInflater.from(mContext).inflate(R.layout.info_window_service,null);
     }
@@ -36,17 +36,19 @@ public class ServiceInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter, G
 
     private void renderWindow(Marker marker, View view){
         TextView txtTitulo = (TextView) view.findViewById(R.id.str_titulo);
-        TextView txtCategoria = (TextView) view.findViewById(R.id.str_categoria);
+        TextView txtSubTipoDeActividad = (TextView) view.findViewById(R.id.str_subTipoActividad);
         TextView txtDireccion = (TextView) view.findViewById(R.id.str_direccion);
-        TextView txtContacto = (TextView) view.findViewById(R.id.str_contacto);
+        TextView txtCategoria = (TextView) view.findViewById(R.id.str_categoria);
         TextView txtAbierto = (TextView) view.findViewById(R.id.str_abierto);
 
         if(marker.getTag() != null){
             service = (ServiceClass) marker.getTag();
             txtTitulo.setText(service.getName());
-            txtCategoria.setText(service.getTypeOfActivity());
-            txtDireccion.setText(service.getAddress());
-            txtContacto.setText(service.getContact());
+            txtSubTipoDeActividad.setText(service.getSubTypeOfActivity());
+            String dirr = mContext.getString(R.string.adress) + ": " + service.getAddress();
+            String cat = mContext.getString(R.string.category) + ": " + service.getCategory();
+            txtDireccion.setText(dirr);
+            txtCategoria.setText(cat);
             if (service.getHorario().isHorarioDefinido()) {
                 if(service.isOpen()){
                     txtAbierto.setText("Abierto");
@@ -61,9 +63,9 @@ public class ServiceInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter, G
             }
         } else {
             txtTitulo.setText("No se pudo leer el servicio");
-            txtCategoria.setText("");
+            txtSubTipoDeActividad.setText("");
             txtDireccion.setText("");
-            txtContacto.setText("");
+            txtCategoria.setText("");
         }
     }
 
@@ -90,7 +92,7 @@ public class ServiceInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter, G
     public void onInfoWindowClick(Marker marker) {
         if(mapaFragment.getActivity() instanceof ChatBotActivity){
             ChatBotActivity chatBotActivity = (ChatBotActivity) mapaFragment.getActivity();
-            chatBotActivity.changeFragmentToChatbotAndSendMessage("Buscar " + service.getTypeOfActivity() + " " + service.getAlias());
+            chatBotActivity.changeFragmentToChatbotAndSendMessage("Buscar " + service.getSubTypeOfActivity() + " " + service.getAlias());
         }
     }
 

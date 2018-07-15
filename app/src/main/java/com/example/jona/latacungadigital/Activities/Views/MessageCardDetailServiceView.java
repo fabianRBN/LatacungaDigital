@@ -28,6 +28,7 @@ public class MessageCardDetailServiceView extends LinearLayout {
     // Varaibles de acuerdo a los componentes que comprenden el layout: message_cv_detail_service.xml
     protected TextView txtAbierto;
     protected TextView txtTitulo;
+    protected TextView txtSubTipoDeActividad;
     protected TextView txtCategoria;
     protected TextView txtDireccion;
     protected TextView txtContacto;
@@ -59,6 +60,7 @@ public class MessageCardDetailServiceView extends LinearLayout {
     private void setView(final Context context){
         View view = LayoutInflater.from(context).inflate(R.layout.message_cv_detail_service, this);
         txtTitulo = view.findViewById(R.id.txt_titulo);
+        txtSubTipoDeActividad = view.findViewById(R.id.txt_subTipoActividad);
         txtCategoria = view.findViewById(R.id.txt_categoria);
         txtDireccion = view.findViewById(R.id.txt_direccion);
         txtContacto = view.findViewById(R.id.txt_contacto);
@@ -108,7 +110,8 @@ public class MessageCardDetailServiceView extends LinearLayout {
 
     private void setValues(){
         txtTitulo.setText(service.getName());
-        txtCategoria.setText(Html.fromHtml("<b>Tipo de Actividad: </b>" + service.getTypeOfActivity()));
+        txtSubTipoDeActividad.setText(Html.fromHtml("<b>Sub tipo de actividad: </b>" + service.getSubTypeOfActivity()));
+        txtCategoria.setText(Html.fromHtml("<b>Categoría: </b>" + service.getCategory()));
         txtDireccion.setText(Html.fromHtml("<b>Dirección: </b>" + service.getAddress()));
         txtContacto.setText(Html.fromHtml("<b>Contacto: </b>" + service.getContact()));
         txtCorreo.setText(Html.fromHtml("<b>Correo: </b>" + service.getEmail()));
