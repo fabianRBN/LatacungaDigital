@@ -19,8 +19,10 @@ public class TextMessageModel {
     private String categoryAttactive;
     private String descriptionAttractive;
     private String addressAttractive;
+    private String subTypeAttractive;
     private double latitude;
     private double longitude;
+    private float ratingAttractive;
 
     // Declaracion de variables para la consulta.
     private String action;
@@ -124,4 +126,12 @@ public class TextMessageModel {
     public String getAddressAttractive() { return addressAttractive; }
 
     public void setAddressAttractive(String addressAttractive) { this.addressAttractive = addressAttractive; }
+
+    public float getRatingAttractive() { return ratingAttractive; }
+
+    public void setRatingAttractive(float ratingAttractive) { this.ratingAttractive = ratingAttractive; }
+
+    public String getSubTypeAttractive() { return subTypeAttractive; }
+
+    public void setSubTypeAttractive(String subTypeAttractive) { this.subTypeAttractive = subTypeAttractive; }
 }

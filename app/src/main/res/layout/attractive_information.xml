@@ -3,11 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cvPlacesInformation"
     android:foreground="?android:attr/selectableItemBackground"
     android:layout_marginTop="10dp"
     android:layout_marginStart="10dp"
-    android:layout_width="300dp"
+    android:layout_marginBottom="5dp"
+    android:layout_width="320dp"
     android:layout_height="wrap_content"
     app:cardCornerRadius="5dp"
     app:cardElevation="5dp">
@@ -16,20 +18,56 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/txtTitlePlacesInformation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:padding="5dp"
-            android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+        <RelativeLayout
+            android:id="@+id/relativeLayoutHeader"
+            android:layout_width="wrap_content"
+            android:background="@drawable/border_relative_layout"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtTitlePlacesInformation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:padding="5dp"
+                android:layout_marginStart="5dp"
+                android:textSize="15sp"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/txtSubTypePlacesInformation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_below="@+id/txtTitlePlacesInformation"
+                android:paddingStart="10dp"
+                android:textSize="13sp"
+                android:textStyle="italic"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                tools:ignore="RtlSymmetry" />
+
+            <RatingBar
+                android:id="@+id/ratingBarPlacesInformation"
+                android:layout_gravity="start"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtSubTypePlacesInformation"
+                android:numStars="5"
+                android:stepSize="0.5"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:layout_marginStart="9dp"/>
+
+        </RelativeLayout>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/vpPlacesInformation"
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            android:layout_below="@+id/txtTitlePlacesInformation"
+            android:layout_below="@+id/relativeLayoutHeader"
             android:scaleType="centerCrop"/>
 
         <me.relex.circleindicator.CircleIndicator
@@ -58,9 +96,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
                     android:layout_below="@+id/vpPlacesInformation"
-                    android:padding="10dp" />
+                    android:layout_marginStart="5dp"
+                    android:padding="5dp" />
 
                 <android.support.v7.widget.AppCompatImageView
                     android:adjustViewBounds="true"
@@ -69,7 +107,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="38dp"
                     android:layout_width="wrap_content"
-                    android:tint="@color/black"
+                    android:tint="@color/colorPrimary"
                     app:srcCompat="@drawable/ic_expansion_header_indicator_grey_24dp" />
 
             </com.github.florent37.expansionpanel.ExpansionHeader>
@@ -85,7 +123,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:background="@drawable/divider_line"
-                    android:padding="10dp" />
+                    android:layout_marginStart="5dp"
+                    android:padding="5dp" />
 
             </com.github.florent37.expansionpanel.ExpansionLayout>
 

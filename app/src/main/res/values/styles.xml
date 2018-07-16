@@ -32,6 +32,7 @@
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
+        <item name="cardViewStyle">@style/CardView</item>
     </style>
 
     <style name="MyTheme.NoActionBar" parent="MyTheme">

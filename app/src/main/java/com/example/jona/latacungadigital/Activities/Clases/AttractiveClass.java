@@ -26,6 +26,7 @@ public class AttractiveClass {
     private List<String> imagenURL;
     private String address;
     private String rating;
+    private String subType;
     private double latitude;
     private double longitude;
 
@@ -126,6 +127,10 @@ public class AttractiveClass {
         this.rating = rating;
     }
 
+    public String getSubType() { return subType; }
+
+    public void setSubType(String subType) { this.subType = subType; }
+
     public int getIcon() {
         return icon;
     }
@@ -171,6 +176,7 @@ public class AttractiveClass {
         setCategory(values.getAsJsonObject().get("categoria").toString().replace("\"", ""));
         setAddress(values.getAsJsonObject().get("direccion").toString().replace("\"", ""));
         setRating(values.getAsJsonObject().get("rating").toString().replace("\"", ""));
+        setSubType(values.getAsJsonObject().get("subtipo").toString().replace("\"", ""));
         setGallery(values.getAsJsonObject().get("galeria"));
         setPosition(values.getAsJsonObject().get("posicion"));
         setLatitude(Double.parseDouble(getPosition().getAsJsonObject().get("lat").toString()));
