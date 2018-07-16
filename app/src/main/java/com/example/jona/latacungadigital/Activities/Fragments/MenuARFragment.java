@@ -45,6 +45,14 @@ public class MenuARFragment extends Fragment {
         txtPanoramica = (TextView) view.findViewById(R.id.txt_panoramica);
         circleMenu = (CircleMenu) view.findViewById(R.id.circle_menu);
 
+
+
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         circleMenu.setMainMenu(Color.parseColor("#CDCDCD"), R.mipmap.icon_menu, R.mipmap.icon_cancel);
         circleMenu.addSubMenu(Color.parseColor("#FF4B32"), R.drawable.ic_photo_size_select_actual_black_24dp)
                 .addSubMenu(Color.parseColor("#8A39FF"), R.drawable.ic_free_breakfast_black_24dp)
@@ -54,52 +62,50 @@ public class MenuARFragment extends Fragment {
 
         circleMenu.setOnMenuSelectedListener(new OnMenuSelectedListener() {
 
-           @Override
-           public void onMenuSelected(int index) {
-               switch (index) {
-                   case 0:
-                       actividadAR("panoramica");
-                       break;
-                   case 1:
-                       actividadAR("servicios");
-                       break;
-                   case 2:
-                       actividadAR("atractivos");
-                       break;
+                                                 @Override
+                                                 public void onMenuSelected(int index) {
+                                                     switch (index) {
+                                                         case 0:
+                                                             actividadAR("panoramica");
+                                                             break;
+                                                         case 1:
+                                                             actividadAR("servicios");
+                                                             break;
+                                                         case 2:
+                                                             actividadAR("atractivos");
+                                                             break;
 
-               }
-           }
-       }
+                                                     }
+                                                 }
+                                             }
 
         );
 
         circleMenu.setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
 
-               @Override
-               public void onMenuOpened() {
-                   //Toast.makeText(getContext(), "Menu Opend", Toast.LENGTH_SHORT).show();
-                   txtAtrativo.setVisibility(View.VISIBLE);
-                   txtAtrativo.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
-                   txtPanoramica.setVisibility(View.VISIBLE);
-                   txtPanoramica.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
-                   txtServicios.setVisibility(View.VISIBLE);
-                   txtServicios.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
-               }
+                                                     @Override
+                                                     public void onMenuOpened() {
+                                                         //Toast.makeText(getContext(), "Menu Opend", Toast.LENGTH_SHORT).show();
+                                                         txtAtrativo.setVisibility(View.VISIBLE);
+                                                         txtAtrativo.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+                                                         txtPanoramica.setVisibility(View.VISIBLE);
+                                                         txtPanoramica.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+                                                         txtServicios.setVisibility(View.VISIBLE);
+                                                         txtServicios.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+                                                     }
 
-               @Override
-               public void onMenuClosed() {
-                   //Toast.makeText(getContext(), "Menu Closed", Toast.LENGTH_SHORT).show();
-                   txtAtrativo.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
-                   txtAtrativo.setVisibility(View.GONE);
-                   txtPanoramica.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
-                   txtPanoramica.setVisibility(View.GONE);
-                   txtServicios.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
-                   txtServicios.setVisibility(View.GONE);
-               }
-           }
+                                                     @Override
+                                                     public void onMenuClosed() {
+                                                         //Toast.makeText(getContext(), "Menu Closed", Toast.LENGTH_SHORT).show();
+                                                         txtAtrativo.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
+                                                         txtAtrativo.setVisibility(View.GONE);
+                                                         txtPanoramica.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
+                                                         txtPanoramica.setVisibility(View.GONE);
+                                                         txtServicios.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
+                                                         txtServicios.setVisibility(View.GONE);
+                                                     }
+                                                 }
         );
-
-        return view;
     }
 
     public void onBackPressed() {
