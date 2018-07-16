@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         //mTextMessage = findViewById(R.id.message);
         BottomNavigationView navigation = findViewById(R.id.navigation);
+
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         // Proceso para realizar el LoginIn con Google.
