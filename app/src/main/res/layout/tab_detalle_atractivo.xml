@@ -163,6 +163,119 @@ tools:context="com.example.jona.latacungadigital.Activities.AtractivoActivity">
                 android:id="@+id/txtImpactoNegativo"
                 android:layout_marginBottom="10dp"/>
 
+
+
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:paddingEnd="10dp"
+
+                    android:paddingTop="5dp"
+                    android:textStyle="bold"
+
+                    android:text="@string/scheduleTitle" />
+
+
+
+                <LinearLayout
+                    android:id="@+id/horarioLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_siempre_abierto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp"
+                        android:paddingEnd="10dp"
+                        android:visibility="gone"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp" />
+
+                    <TextView
+                        android:id="@+id/txt_lunes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingStart="5dp"
+                        android:visibility="gone"
+                        android:paddingTop="5dp" />
+
+                    <TextView
+                        android:id="@+id/txt_martes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:visibility="gone"
+                        />
+
+                    <TextView
+                        android:id="@+id/txt_miercoles"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:visibility="gone"
+                        />
+
+                    <TextView
+                        android:id="@+id/txt_jueves"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:visibility="gone"
+                        />
+
+                    <TextView
+                        android:id="@+id/txt_viernes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:visibility="gone"
+                        />
+
+                    <TextView
+                        android:id="@+id/txt_sabado"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:visibility="gone"
+                        />
+
+                    <TextView
+                        android:id="@+id/txt_domingo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:visibility="gone"
+                        />
+
+                </LinearLayout>
+
+
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.constraint.ConstraintLayout>

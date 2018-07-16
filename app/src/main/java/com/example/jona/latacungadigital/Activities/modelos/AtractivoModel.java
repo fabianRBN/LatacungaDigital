@@ -33,6 +33,14 @@ public  class AtractivoModel {
 
     public String key;
 
+    public boolean funcionAR;
+
+    public boolean funcionVR;
+
+    public float rating;
+
+    public String subtipo;
+
     public AtractivoModel() {
 
     }
@@ -43,6 +51,38 @@ public  class AtractivoModel {
         this.descripcion = descripcion;
         this.posicion = posicion;
         this.key = key;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
+    public String getSubtipo() {
+        return subtipo;
+    }
+
+    public void setSubtipo(String subtipo) {
+        this.subtipo = subtipo;
+    }
+
+    public boolean isFuncionVR() {
+        return funcionVR;
+    }
+
+    public void setFuncionVR(boolean funcionVR) {
+        this.funcionVR = funcionVR;
+    }
+
+    public boolean isFuncionAR() {
+        return funcionAR;
+    }
+
+    public void setFuncionAR(boolean funcionAR) {
+        this.funcionAR = funcionAR;
     }
 
     public String getPathImagen() {

@@ -88,7 +88,7 @@ public class Tab_comentarios_atractivo extends Fragment {
 
 
         listView = (RecyclerView) view.findViewById(R.id.listViewComentarios);
-        listView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+        listView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         comentarioTexto = (LinearLayout) view.findViewById(R.id.LayoutComentario);
 

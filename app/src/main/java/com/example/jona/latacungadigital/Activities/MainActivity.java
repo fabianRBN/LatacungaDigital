@@ -297,4 +297,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public void onDialogCancelClick(DialogFragment dialog) { // Para cancelar la acción de cerrar sesión.
         dialogAppFragment.getDialog().cancel();
     }
+
+
 }
