@@ -130,9 +130,6 @@ public class AtractivoActivity extends AppCompatActivity  implements TabLayout.O
     @Override
     protected void onPause() {
         super.onPause();
-        mDatabase = null;
-        viewPagerTab = null;
-        viewPagerAdapter = null;
 
     }
 
@@ -235,7 +232,10 @@ public class AtractivoActivity extends AppCompatActivity  implements TabLayout.O
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
-        viewPagerTab.setCurrentItem(tab.getPosition());
+
+            viewPagerTab.setCurrentItem(tab.getPosition());
+
+
     }
 
     @Override
