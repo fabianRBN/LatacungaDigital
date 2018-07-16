@@ -9,28 +9,36 @@
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-       />
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_clima"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="135dp"
-        android:background="@color/celeste"
-        android:src="@drawable/ic_clima" />
+        android:layout_height="match_parent" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_filtro"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="65dp"
-        android:background="@color/celeste"
-        android:src="@drawable/ic_filtro" />
+        android:layout_height="match_parent"
+        android:gravity="bottom|end"
+        android:orientation="vertical"
+        android:paddingBottom="56dp">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_clima"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/ic_clima"
+            android:tint="@color/secondaryTextColor" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_filtro"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/ic_filtro"
+            android:tint="@color/secondaryTextColor" />
+    </LinearLayout>
 
 </FrameLayout>

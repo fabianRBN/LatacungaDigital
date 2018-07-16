@@ -53,6 +53,10 @@ El trozo de texto estándar de Lorem Ipsum usado desde el año 1500 es reproduci
         <item>600</item>
     </string-array>
 
+    <!--Atractivos y Servicios-->
+    <string name="adress">Dirección</string>
+    <string name="category">Categoría</string>
+
     <!--Detalle de servicio cardview-->
     <string name='scheduleTitle'>Horario de atención</string>
     <string name='facebookPageText'>Facebook page</string>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#4CB4D8</color>
+    <color name="colorPrimary">@color/primaryColor</color>
+    <color name="colorPrimaryDark">@color/primaryDarkColor</color>
+    <color name="colorAccent">@color/secondaryColor</color>
     <color name="button">#2397f3</color>
     <color name="indigo">#9784ec</color>
     <color name="pink">#9784ec</color>
@@ -10,4 +10,32 @@
     <color name="map_DRIVING">#d426108b</color>
     <color name="map_BICYCLING">#e942dc7d</color>
     <color name="map_WALKING">#e516710e</color>
+
+    <color name="primaryColor">#222f5b</color>
+    <color name="primaryLightColor">#4f5888</color>
+    <color name="primaryDarkColor">#000531</color>
+    <color name="secondaryColor">#d3220f</color>
+    <color name="secondaryLightColor">#ff5d3c</color>
+    <color name="secondaryDarkColor">#990000</color>
+    <color name="backgroundColor">#4f5888</color>
+    <color name="foregroundColor">#ffffff</color>
+    <color name="primaryTextColor">#ffffff</color>
+    <color name="secondaryTextColor">#ffffff</color>
+
+
 </resources>
+
+<!--<resources>-->
+<!--<color name="colorPrimary">#3F51B5</color>-->
+<!--<color name="colorPrimaryDark">#303F9F</color>-->
+<!--<color name="colorAccent">#4CB4D8</color>-->
+<!--<color name="button">#2397f3</color>-->
+<!--<color name="indigo">#9784ec</color>-->
+<!--<color name="pink">#9784ec</color>-->
+<!--<color name="celeste">#4CB4D8</color>-->
+<!--<color name="map_DRIVING">#d426108b</color>-->
+<!--<color name="map_BICYCLING">#e942dc7d</color>-->
+<!--<color name="map_WALKING">#e516710e</color>-->
+<!--</resources>-->
+
+

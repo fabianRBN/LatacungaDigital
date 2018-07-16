@@ -17,8 +17,8 @@ var World = {
     selectedObject: null,
 
     init: function initFn(poiData) {
-    // for (var lugar = 0; lugar< poiData.length; lugar++) {
-        this.targetCollectionResource = new AR.TargetCollectionResource("assets/iglesia_la_merced.wtc", {
+     //for (var lugar = 0; lugar< 2; lugar++) {
+        this.targetCollectionResource = new AR.TargetCollectionResource("assets/pruebahoy.wtc", {
             onError: function(errorMessage) {
                 alert(errorMessage);
             }
@@ -110,7 +110,7 @@ var World = {
 
         var objects = [];
         this.objectAnimations = [];
-
+        var contador=0;
         for (var i = 0; i < this.objectInfo.length; i++) {
             var info = this.objectInfo[i];
 
@@ -135,7 +135,7 @@ var World = {
             info.objectModel = objects[i];
             info.selectedAnimation = this.createSelectedAnimation(info);
             info.select = this.selectObject;
-
+            contador=i;
             objects[i].onClick = this.objectClicked(info);
             if (i > 0) {
                 this.objectAnimations.push(this.createOrbitAnimation(objects[i], info));
@@ -152,6 +152,23 @@ var World = {
                     }
                 });
                 this.sirenSound.load();
+         //Labels
+         var label = new AR.Label("Horario: \n Lunes:", 0.1, {
+                                  offsetY: 0.1,
+                                  verticalAnchor: AR.CONST.VERTICAL_ANCHOR.TOP,
+                                  opacity: 0.9,
+                                  zOrder: 1,
+                                  style: {
+                                      textColor: '#FFFFFF',
+                                      backgroundColor: '#00000005'
+                                  },
+                                  translate: {
+                                     x: 1,
+                                     y: -0.8,
+                                     z: 0
+                                  }
+                              });
+         objects[contador]=label;
         //Titulo del nombre del lugar escaneado
           /* this.modeltitle = new AR.Model("assets/tituloSanAgustin.wt3", {
                     onLoaded: this.loadingStep,
@@ -169,7 +186,7 @@ var World = {
        // var backdropImg = new AR.ImageResource("assets/backdrop.png");
       //  var backdrop = [new AR.ImageDrawable(backdropImg, 2)];
 
-        for (var i = 1; i <= 18; i++) {
+        for (var i = 1; i <= 21; i++) {
         var overlay = new AR.ImageTrackable(this.tracker, "SanAgustin"+i, {
                     drawables: {
                         //cam: backdrop.concat(objects,this.modeltitle)
@@ -183,7 +200,7 @@ var World = {
                 });
 
         }
-        //}//cierra el for de recorrido del webservcice
+       // }//cierra el for de recorrido del webservcice
           /*var label = new AR.Label("Hola prueba 1", 0.1, {
                          offsetY: 0.1,
                          verticalAnchor: AR.CONST.VERTICAL_ANCHOR.TOP,
@@ -194,7 +211,7 @@ var World = {
                              backgroundColor: '#00000005'
                          }
                      });*/
-          /* var imgOne = new AR.ImageResource("assets/HistoriaSanAgustin.png");
+           var imgOne = new AR.ImageResource("assets/HistoriaSanAgustin.png");
            		var overlayOne = new AR.ImageDrawable(imgOne, 1, {
            			translate: {
            				x:-0.15
@@ -203,7 +220,7 @@ var World = {
            		});
 
 
-           var overlay1 = new AR.ImageTrackable(this.tracker, "SanAgustin19", {
+           var overlay1 = new AR.ImageTrackable(this.tracker, "SanAgustin", {
                                drawables: {
                                    cam:  overlayOne
                                },
@@ -212,7 +229,7 @@ var World = {
                                onError: function(errorMessage) {
                                    alert(errorMessage);
                                }
-                           });*/
+                           });
 
         AR.context.onScreenClick = this.screenClick;
     },
@@ -401,8 +418,8 @@ var World = {
 
 };
 /* forward locationChanges to custom function */
-AR.context.onLocationChanged = World.locationChanged;
-//World.init();
+//AR.context.onLocationChanged = World.locationChanged;
+World.init();
 /*
 var Historia ={
      loaded: false,

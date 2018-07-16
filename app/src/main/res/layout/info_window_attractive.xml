@@ -66,14 +66,13 @@
 
                 <RatingBar
                     android:id="@+id/rb_rating"
-                    style="?android:attr/ratingBarStyleSmall"
+                    style="@android:style/Widget.Material.RatingBar.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:numStars="5"
                     android:rating="3.5"
-                    android:stepSize="0.5"
-                    android:theme="@style/RatingBar" />
+                    android:stepSize="0.5" />
 
                 <TextView
                     android:id="@+id/txt_rating"

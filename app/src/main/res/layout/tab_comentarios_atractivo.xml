@@ -85,7 +85,6 @@
                     <RatingBar
                         android:id="@+id/ratingBar"
                         android:layout_gravity="center"
-                        android:theme="@style/RatingBar"
                         style="?android:attr/ratingBarStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -152,7 +151,6 @@
                     <RatingBar
                         android:id="@+id/ratingBar2"
                         android:layout_gravity="left"
-                        android:theme="@style/RatingBar"
                         style="?android:attr/ratingBarStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

@@ -22,7 +22,7 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/str_categoria"
+            android:id="@+id/str_subTipoActividad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
@@ -55,7 +55,7 @@
             android:textColor="@android:color/black" />
 
         <TextView
-            android:id="@+id/str_contacto"
+            android:id="@+id/str_categoria"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ositasimon@yahoo.com"
