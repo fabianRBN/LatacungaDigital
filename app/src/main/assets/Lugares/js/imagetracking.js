@@ -169,20 +169,7 @@ var World = {
                                   }
                               });
          objects[contador]=label;
-        //Titulo del nombre del lugar escaneado
-          /* this.modeltitle = new AR.Model("assets/tituloSanAgustin.wt3", {
-                    onLoaded: this.loadingStep,
-                    scale: {
-                        x: 0.003,
-                        y: 0.003,
-                        z: 0.003
-        			},
-        			translate: {
-        				x: -0.5,
-        				y: 0.8,
-        				z: 0
-        			}
-        		});*/
+
        // var backdropImg = new AR.ImageResource("assets/backdrop.png");
       //  var backdrop = [new AR.ImageDrawable(backdropImg, 2)];
 
@@ -201,16 +188,7 @@ var World = {
 
         }
        // }//cierra el for de recorrido del webservcice
-          /*var label = new AR.Label("Hola prueba 1", 0.1, {
-                         offsetY: 0.1,
-                         verticalAnchor: AR.CONST.VERTICAL_ANCHOR.TOP,
-                         opacity: 0.9,
-                         zOrder: 1,
-                         style: {
-                             textColor: '#FFFFFF',
-                             backgroundColor: '#00000005'
-                         }
-                     });*/
+
            var imgOne = new AR.ImageResource("assets/HistoriaSanAgustin.png");
            		var overlayOne = new AR.ImageDrawable(imgOne, 1, {
            			translate: {
