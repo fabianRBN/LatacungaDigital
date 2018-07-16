@@ -261,6 +261,9 @@ public class DialogflowClass {
             textMessageModel.setNameAttractive(attractiveClass.getNameAttractive());
             textMessageModel.setCategoryAttactive(attractiveClass.getCategory());
             textMessageModel.setDescriptionAttractive(attractiveClass.getDescription());
+            textMessageModel.setAddressAttractive(attractiveClass.getAddress());
+            textMessageModel.setSubTypeAttractive(attractiveClass.getSubType());
+            textMessageModel.setRatingAttractive(Float.parseFloat(attractiveClass.getRating()));
             textMessageModel.setListImagesURL(attractiveClass.getListImages());
             textMessageModel.setAction(result.getAction());
             listMessagesText.add(textMessageModel);

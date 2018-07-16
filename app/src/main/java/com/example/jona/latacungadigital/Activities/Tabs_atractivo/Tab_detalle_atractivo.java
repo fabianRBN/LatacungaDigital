@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.borjabravo.readmoretextview.ReadMoreTextView;
 import com.example.jona.latacungadigital.Activities.Adapters.ViewPagerAdapter;
+import com.example.jona.latacungadigital.Activities.Clases.HorarioClass;
 import com.example.jona.latacungadigital.Activities.Haversine.Haversine;
 import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
 import com.example.jona.latacungadigital.R;
@@ -40,12 +41,13 @@ import org.w3c.dom.Text;
 public class Tab_detalle_atractivo extends Fragment {
 
     public TextView txtTitulo, txtCategoria, txtRatingTotal, txtTipo, txtSubtipo,txtDistancia, txtImpactoPositivo, txtImpactoNegativo;
-
+    public TextView txtLunes, txtMartes, txtMiercoles, txtJueves, txtViernes, txtSabado, txtDomingo, txtSiempreAbierto;
     private DatabaseReference mDatabase;
     private FirebaseDatabase mFirebaseInstance;
     LocationManager locationManager;
     Location location;
     public String keyatractivo ;
+    private HorarioClass horarioClass;
 
     ReadMoreTextView readMoreTextView;
 
@@ -65,10 +67,20 @@ public class Tab_detalle_atractivo extends Fragment {
         //Change R.layout.tab1 in you classes
         txtTitulo = (TextView) view.findViewById(R.id.txtTituloAtractivo);
         txtCategoria= (TextView) view.findViewById(R.id.txtCategoriaAtractivo);
-
         txtTipo = (TextView) view.findViewById(R.id.txtTipo);
         txtSubtipo = (TextView) view.findViewById(R.id.txtSubtipo);
         txtDistancia = (TextView) view.findViewById(R.id.txtDistancia);
+
+        txtLunes = (TextView) view.findViewById(R.id.txt_lunes);
+        txtMartes = (TextView) view.findViewById(R.id.txt_martes);
+        txtMiercoles = (TextView) view.findViewById(R.id.txt_miercoles);
+        txtJueves = (TextView) view.findViewById(R.id.txt_jueves);
+        txtViernes = (TextView) view.findViewById(R.id.txt_viernes);
+        txtSabado = (TextView) view.findViewById(R.id.txt_sabado);
+        txtDomingo = (TextView) view.findViewById(R.id.txt_domingo);
+        txtSiempreAbierto = (TextView) view.findViewById(R.id.txt_siempre_abierto);
+
+        horarioClass = new HorarioClass(); // Creamos un objeto tipo horario para recuperar el horario del atractivo
 
         txtImpactoPositivo = (TextView) view.findViewById(R.id.txtImpactoPositivo);
         txtImpactoNegativo = (TextView) view.findViewById(R.id.txtImpactoNegativo);
@@ -103,6 +115,80 @@ public class Tab_detalle_atractivo extends Fragment {
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                horarioClass = dataSnapshot.child("horario").getValue(HorarioClass.class);
+
+
+                if(horarioClass.isSiempreAbierto()){
+                    txtSiempreAbierto.setText("Simpre Abierto");
+                    txtSiempreAbierto.setVisibility(View.VISIBLE);
+
+                }else{
+                    if((boolean) dataSnapshot.child("horario").child("Lunes").child("abierto").getValue()) {
+                        txtLunes.setText(
+                                "Lunes: " +
+                                        dataSnapshot.child("horario").child("Lunes").child("horaInicio").getValue().toString() + "-" +
+                                        dataSnapshot.child("horario").child("Lunes").child("horaSalida").getValue().toString()
+                        );
+                        txtLunes.setVisibility(View.VISIBLE);
+
+                    }
+                    if((boolean) dataSnapshot.child("horario").child("Martes").child("abierto").getValue()) {
+                        txtMartes.setText(
+                                "Martes: " +
+                                        dataSnapshot.child("horario").child("Martes").child("horaInicio").getValue().toString() + "-" +
+                                        dataSnapshot.child("horario").child("Martes").child("horaSalida").getValue().toString()
+                        );
+                        txtMartes.setVisibility(View.VISIBLE);
+                    }
+                    if((boolean) dataSnapshot.child("horario").child("Miercoles").child("abierto").getValue()) {
+                        txtMiercoles.setText(
+                                "Miercoles: " +
+                                        dataSnapshot.child("horario").child("Miercoles").child("horaInicio").getValue().toString() + "-" +
+                                        dataSnapshot.child("horario").child("Miercoles").child("horaSalida").getValue().toString()
+                        );
+                        txtMiercoles.setVisibility(View.VISIBLE);
+
+                    }
+                    if((boolean) dataSnapshot.child("horario").child("Jueves").child("abierto").getValue()) {
+                        txtJueves.setText(
+                                "Jueves: " +
+                                        dataSnapshot.child("horario").child("Jueves").child("horaInicio").getValue().toString() + "-" +
+                                        dataSnapshot.child("horario").child("Jueves").child("horaSalida").getValue().toString()
+                        );
+                        txtJueves.setVisibility(View.VISIBLE);
+
+                    }
+                    if((boolean) dataSnapshot.child("horario").child("Viernes").child("abierto").getValue()) {
+                        txtViernes.setText(
+                                "Viernes: " +
+                                        dataSnapshot.child("horario").child("Viernes").child("horaInicio").getValue().toString() + "-" +
+                                        dataSnapshot.child("horario").child("Viernes").child("horaSalida").getValue().toString()
+                        );
+                        txtViernes.setVisibility(View.VISIBLE);
+
+                    }
+                    if((boolean) dataSnapshot.child("horario").child("Sabado").child("abierto").getValue()) {
+                        txtSabado.setText(
+                                "Sabado: " +
+                                        dataSnapshot.child("horario").child("Sabado").child("horaInicio").getValue().toString() + "-" +
+                                        dataSnapshot.child("horario").child("Sabado").child("horaSalida").getValue().toString()
+                        );
+                        txtSabado.setVisibility(View.VISIBLE);
+
+                    }
+                    if((boolean) dataSnapshot.child("horario").child("Domingo").child("abierto").getValue()){
+                        txtDomingo.setText(
+                                "Domingo: "+
+                                dataSnapshot.child("horario").child("Domingo").child("horaInicio").getValue().toString()+"-"+
+                                dataSnapshot.child("horario").child("Domingo").child("horaSalida").getValue().toString()
+                        );
+                        txtDomingo.setVisibility(View.VISIBLE);
+
+                    }
+
+                }
+
 
                 txtTitulo.setText(dataSnapshot.child("nombre").getValue().toString());
                 txtCategoria.setText(dataSnapshot.child("categoria").getValue().toString() );

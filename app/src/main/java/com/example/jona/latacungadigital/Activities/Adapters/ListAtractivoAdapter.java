@@ -17,7 +17,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -39,10 +41,15 @@ public class ListAtractivoAdapter extends BaseAdapter {
     Context context;
     ArrayList<AtractivoModel> listAtractivo = new ArrayList<>();
     private static LayoutInflater inflater = null;
-    TextView txtTituloAtractivo, txtdistancia;
+    TextView txtTituloAtractivo, txtdistancia, txtSubtipo;
+
+    RatingBar ratingBar;
+
     ImageView imageView;
     LocationManager locationManager;
     Location location;
+
+    ImageButton img360, imgAR;
 
     Haversine haversine;
     Coordenada start;
@@ -92,6 +99,11 @@ public class ListAtractivoAdapter extends BaseAdapter {
         if(view == null)
             view = inflater.inflate(R.layout.atractivo_item,null);
 
+        img360 = (ImageButton) view.findViewById(R.id.btn_360);
+        imgAR = (ImageButton) view.findViewById(R.id.btn_ar);
+
+        txtSubtipo = (TextView) view.findViewById(R.id.subtipo_item_atractivo);
+        ratingBar = (RatingBar) view.findViewById(R.id.item_ratingBar);
         Coordenada end = listAtractivo.get(position).getPosicion();
 
         // Calculo de la distancia entre usuario y atractivo
@@ -106,7 +118,21 @@ public class ListAtractivoAdapter extends BaseAdapter {
             distanciaStr =String.format("%.2f",( distancia*1000))+"m";
         }
 
+        if(listAtractivo.get(position).funcionVR){
+            img360.setVisibility(View.VISIBLE);
+        }else{
+            img360.setVisibility(View.GONE);
+        }
+        if(listAtractivo.get(position).funcionAR){
+            imgAR.setVisibility(View.VISIBLE);
+        }else{
+            imgAR.setVisibility(View.GONE);
+        }
         txtdistancia.setText(distanciaStr);
+
+        txtSubtipo.setText(listAtractivo.get(position).getSubtipo());
+
+        ratingBar.setRating((float) listAtractivo.get(position).getRating());
 
         txtTituloAtractivo = view.findViewById(R.id.titulo_item_atractivo);
         txtTituloAtractivo.setText(listAtractivo.get(position).getNombre());

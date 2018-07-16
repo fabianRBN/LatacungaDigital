@@ -1,6 +1,8 @@
 package com.example.jona.latacungadigital.Activities.Fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +13,7 @@ import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -81,6 +84,7 @@ public class ListAtractivosFragment extends Fragment implements SwipeRefreshLayo
 
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -118,7 +122,6 @@ public class ListAtractivosFragment extends Fragment implements SwipeRefreshLayo
 
             }
         });
-
 
 
         return view;
@@ -193,6 +196,18 @@ public class ListAtractivosFragment extends Fragment implements SwipeRefreshLayo
                 for (DataSnapshot child: dataSnapshot.getChildren()){
                     AtractivoModel atractivoModel = new AtractivoModel();
                     atractivoModel.setNombre(child.child("nombre").getValue().toString());
+                    if(child.child("funcionAR").getValue() != null){
+                        atractivoModel.funcionAR = true;
+                    }else{
+                        atractivoModel.funcionAR = false;
+                    }
+                    if(child.child("imagen360").getValue() != null){
+                        atractivoModel.funcionVR = true;
+                    }else{
+                        atractivoModel.funcionVR = false;
+                    }
+                    atractivoModel.setSubtipo(child.child("subtipo").getValue().toString());
+                    atractivoModel.setRating(Float.parseFloat(child.child("rating").getValue().toString()));
                     atractivoModel.setKey(child.getKey().toString());
                     for(DataSnapshot child_galeria: child.child("galeria").getChildren()){
                         atractivoModel.setPathImagen(child_galeria.child("imagenURL").getValue().toString());
@@ -200,10 +215,12 @@ public class ListAtractivosFragment extends Fragment implements SwipeRefreshLayo
                     atractivoModel.setPosicion(child.child("posicion").getValue(Coordenada.class));
 
                     listaAtractivo.add(atractivoModel);
+
                 }
 
                 if(getContext()!= null) {
                     listView.setAdapter(new ListAtractivoAdapter(getContext(), listaAtractivo));
+
                 }
 
             }
