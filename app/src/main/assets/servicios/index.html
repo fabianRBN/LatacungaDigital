@@ -44,14 +44,15 @@
 </head>
 
 <body>
+
 <div data-role="page" id="page1" style="background: none;" >
 
     <!-- MAIN PAGE CONTENT -->
 
     <!-- header of UI holding feature buttons -->
-    <div id ="header-status" data-role="header" data-position="fixed" data-theme="c">
-        <a href="javascript: World.showRange();" data-icon="gear" data-inline="true" data-mini="true">Range</a>
-        <a href="javascript: World.reloadPlaces()" data-icon="refresh" >Reload</a>
+    <div id ="header-status" data-role="header" data-position="fixed" data-theme="f">
+        <a href="javascript: World.showRange();" data-icon="gear" data-inline="true" data-theme="b" data-mini="true">Range</a>
+        <a href="javascript: World.reloadPlaces()" data-icon="refresh" data-theme="b">Reload</a>
         <h1></h1>
     </div>
 
@@ -72,19 +73,20 @@
     </div>
 
 
+
     <!-- PANELS, ONLY VISIBLE ON DEMAND -->
 
     <!-- panel containing POI detail information -->
-    <div data-role="panel" id="panel-poidetail" data-position="right" data-display="overlay" style="background-color:#F0F0F0;" data-theme="c">
+    <div data-role="panel" id="panel-poidetail" data-position="right" data-display="overlay" style="background-color:#B524305C;" data-theme="a">
 
         <!-- header with "close" button -->
-        <div data-role="header" data-theme="c" >
+        <div data-role="header" data-theme="a" >
             <h1>Detalles</h1>
-            <a href="#header" data-rel="close">Close</a>
+            <a href="#header" data-theme="b" data-rel="close">Close</a>
         </div>
 
         <!-- content of POI detail page, you may also add thumbnails etc. here if you like -->
-        <div data-role="content" >
+        <div data-role="content"  >
 
             <!-- title -->
             <h3 id="poi-detail-title"></h3>
@@ -99,8 +101,8 @@
             <!-- more button-->
             <a href="javascript: World.onPoiDetailMoreButtonClicked();" data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true">More</a>
 
-            <input onclick='escucharDes();' type='button' value='🔊 Play' />
-            <input onclick='responsiveVoice.pause();' type='button' value='🔊 Play' />
+            <a href="javascript: escucharDes();" data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true">🔊 Play</a>
+            <a href="javascript: responsiveVoice.pause();" data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true">🔊 Pause</a>
 
         </div>
     </div>
@@ -108,12 +110,12 @@
 
 
     <!-- range panel -->
-    <div data-role="panel" id="panel-distance" data-position="left" data-display="overlay" style="background-color:#F0F0F0;" data-theme="c">
+    <div data-role="panel" id="panel-distance" data-position="left" data-display="overlay" style="background-color:#F0F0F0;" data-theme="a">
 
         <!-- header with close button -->
-        <div data-role="header" data-theme="c">
+        <div data-role="header" data-theme="a">
             <h1>Range</h1>
-            <a href="#header" data-rel="close">Close</a>
+            <a href="#header" data-rel="close"  data-theme="b">Close</a>
         </div>
 
         <!-- distance information, calculated/updated in code  -->
@@ -136,15 +138,7 @@
 
 </div>
 
-<!--tabla que se activa con la animacion-->
-<div id = "info" class = "info">
-    <a href="javascript: Menu.onclosedivButtonClicked();" data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true">Close</a>
-    <table>
-        <tr><td colspan=2 class="tableheader" id = "name" >Dato</td></tr>
-        <tr><th>Latitud</th><td id="dato1">0°</td></tr>
-        <tr><th>Longitud</th><td id="dato2">0°</td></tr>
-    </table>
-</div>
+
 
 </body>
 

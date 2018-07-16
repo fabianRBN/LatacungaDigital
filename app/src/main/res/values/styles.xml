@@ -40,5 +40,6 @@
         <item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayout</item>
     </style>
 
+
     <!--Rating Bar Style-->
 </resources>
