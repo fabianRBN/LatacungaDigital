@@ -16,25 +16,44 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp">
+        android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/cvHeader"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/border_relative_layout"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/txt_titulo"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingBottom="5dp"
-                android:paddingEnd="10dp"
-                android:paddingStart="5dp"
-                android:paddingTop="5dp"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_titulo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_subTipoActividad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:paddingStart="5dp"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="13sp"
+                    android:textStyle="italic" />
+            </LinearLayout>
 
             <ImageButton
                 android:id="@+id/btn_facebook"
@@ -47,32 +66,18 @@
                 android:paddingEnd="5dp"
                 android:paddingStart="5dp"
                 android:src="@drawable/ic_icons_facebook_24"
-                android:tint="#3B5998" />
+                android:tint="@color/primaryTextColor" />
 
 
         </LinearLayout>
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
 
         <TextView
             android:id="@+id/txt_abierto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="2dp"
-            android:paddingBottom="5dp"
-            android:paddingEnd="10dp"
-            android:paddingStart="5dp"
-            android:paddingTop="5dp" />
-
-        <TextView
-            android:id="@+id/txt_subTipoActividad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:paddingBottom="5dp"
             android:paddingEnd="10dp"
             android:paddingStart="5dp"
@@ -82,6 +87,7 @@
             android:id="@+id/txt_categoria"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:paddingBottom="5dp"
             android:paddingEnd="10dp"
             android:paddingStart="5dp"
@@ -91,6 +97,7 @@
             android:id="@+id/txt_direccion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:paddingBottom="5dp"
             android:paddingEnd="10dp"
             android:paddingStart="5dp"
@@ -100,6 +107,7 @@
             android:id="@+id/txt_contacto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:paddingBottom="5dp"
             android:paddingEnd="10dp"
             android:paddingStart="5dp"
@@ -109,6 +117,7 @@
             android:id="@+id/txt_correo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:paddingBottom="5dp"
             android:paddingEnd="10dp"
             android:paddingStart="5dp"
@@ -118,6 +127,7 @@
             android:id="@+id/txt_web"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:paddingBottom="5dp"
             android:paddingEnd="10dp"
             android:paddingStart="5dp"
@@ -131,8 +141,8 @@
 
         <com.github.florent37.expansionpanel.ExpansionHeader
             android:id="@+id/expansionHeaderLayout"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:expansion_headerIndicator="@id/headerIndicator"
             app:expansion_layout="@id/scheduleExpansionLayout"
             app:expansion_toggleOnClick="true">
@@ -147,12 +157,12 @@
                 android:text="@string/scheduleTitle" />
 
             <android.support.v7.widget.AppCompatImageView
-                android:adjustViewBounds="true"
                 android:id="@+id/headerIndicator"
-                android:layout_gravity="top|end"
-                android:layout_height="match_parent"
-                android:layout_marginStart="38dp"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="top|end"
+                android:layout_marginStart="38dp"
+                android:adjustViewBounds="true"
                 android:tint="@color/black"
                 app:srcCompat="@drawable/ic_expansion_header_indicator_grey_24dp" />
 
@@ -160,8 +170,8 @@
 
         <com.github.florent37.expansionpanel.ExpansionLayout
             android:id="@+id/scheduleExpansionLayout"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:id="@+id/horarioLayout"

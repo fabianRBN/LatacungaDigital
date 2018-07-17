@@ -21,45 +21,45 @@
         <RelativeLayout
             android:id="@+id/relativeLayoutHeader"
             android:layout_width="wrap_content"
-            android:background="@drawable/border_relative_layout"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_relative_layout">
 
             <TextView
                 android:id="@+id/txtTitlePlacesInformation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:padding="5dp"
                 android:layout_marginStart="5dp"
+                android:padding="5dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/primaryTextColor"
                 android:textSize="15sp"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtSubTypePlacesInformation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
                 android:layout_below="@+id/txtTitlePlacesInformation"
                 android:paddingStart="10dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/primaryTextColor"
                 android:textSize="13sp"
                 android:textStyle="italic"
-                android:textAppearance="?android:attr/textAppearanceLarge"
                 tools:ignore="RtlSymmetry" />
 
             <RatingBar
                 android:id="@+id/ratingBarPlacesInformation"
-                android:layout_gravity="start"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txtSubTypePlacesInformation"
+                android:layout_gravity="start"
+                android:layout_marginStart="9dp"
                 android:numStars="5"
-                android:stepSize="0.5"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
-                android:layout_marginStart="9dp"/>
+                android:stepSize="0.5" />
 
         </RelativeLayout>
 
