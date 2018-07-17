@@ -110,7 +110,7 @@ public class MessageCardDetailServiceView extends LinearLayout {
 
     private void setValues(){
         txtTitulo.setText(service.getName());
-        txtSubTipoDeActividad.setText(Html.fromHtml("<b>Sub tipo de actividad: </b>" + service.getSubTypeOfActivity()));
+        txtSubTipoDeActividad.setText(service.getSubTypeOfActivity());
         txtCategoria.setText(Html.fromHtml("<b>Categoría: </b>" + service.getCategory()));
         txtDireccion.setText(Html.fromHtml("<b>Dirección: </b>" + service.getAddress()));
         txtContacto.setText(Html.fromHtml("<b>Contacto: </b>" + service.getContact()));
