@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
+import com.example.jona.latacungadigital.Activities.Fragments.BottomSheetFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.DialogAppFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.ListAtractivosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
@@ -30,6 +31,10 @@ import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.common.api.ResultCallback;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener,
@@ -78,8 +83,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
                 case R.id.navigation_ar:
                     // mTextMessage.setText(R.string.title_notifications);
-                    setFragment(new MenuARFragment());
 
+                    BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+                    bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                     //actividadAR();
 
                     return true;
@@ -103,6 +109,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         //mTextMessage = findViewById(R.id.message);
         BottomNavigationView navigation = findViewById(R.id.navigation);
+
+        ButterKnife.bind(this);
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 

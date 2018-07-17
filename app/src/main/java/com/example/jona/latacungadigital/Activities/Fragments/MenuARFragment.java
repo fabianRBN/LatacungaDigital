@@ -45,14 +45,6 @@ public class MenuARFragment extends Fragment {
         txtPanoramica = (TextView) view.findViewById(R.id.txt_panoramica);
         circleMenu = (CircleMenu) view.findViewById(R.id.circle_menu);
 
-
-
-        return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
         circleMenu.setMainMenu(Color.parseColor("#CDCDCD"), R.mipmap.icon_menu, R.mipmap.icon_cancel);
         circleMenu.addSubMenu(Color.parseColor("#FF4B32"), R.drawable.ic_photo_size_select_actual_black_24dp)
                 .addSubMenu(Color.parseColor("#8A39FF"), R.drawable.ic_free_breakfast_black_24dp)
@@ -106,6 +98,14 @@ public class MenuARFragment extends Fragment {
                                                      }
                                                  }
         );
+
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
     }
 
     public void onBackPressed() {
