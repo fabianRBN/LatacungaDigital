@@ -65,7 +65,6 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -165,18 +164,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-        try { //Analiza argumento de notificacion
-            dataArg = getArguments().getString("dato");
-        } catch (Exception ex){
-            System.out.println("Error: "+ex);
-        }
-        try { //Analiza argumento de trackeo
-            dataArgTrac = getArguments().getString("trackeo");
-        } catch (Exception ex){
-            System.out.println("Error: "+ex);
-        }
-
-        //Flotante que muestra popup del clima
+        // Flotante que muestra popup del clima
         FloatingActionButton fabClima = (FloatingActionButton) rootView.findViewById(R.id.fab_clima);
         fabClima.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,7 +173,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-        //Flotante que redirige al mapa
+        // Flotante que redirige al mapa
         FloatingActionButton fabFiltro = (FloatingActionButton) rootView.findViewById(R.id.fab_filtro);
         fabFiltro.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,16 +182,33 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
+        // Establecer visibilidad
         if ((dataArgTrac!=null) || (dataArg !=null)){
-            fabFiltro.setVisibility(rootView.INVISIBLE);
+            fabFiltro.setVisibility(View.INVISIBLE);
         }
 
-
-        try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (isSerchFromChatBot){
+            fabClima.setVisibility(View.GONE);
+            fabFiltro.setVisibility(View.GONE);
         }
+
+        // Obtener argumentos de las notificaciones
+        try { // Analiza argumento de notificacion de atractivos
+            dataArg = getArguments().getString("dato");
+        } catch (Exception ex){
+            System.out.println("Error: "+ex);
+        }
+        try { // Analiza argumento de trackeo
+            dataArgTrac = getArguments().getString("trackeo");
+        } catch (Exception ex){
+            System.out.println("Error: "+ex);
+        }
+
+//        try {
+//            MapsInitializer.initialize(getActivity().getApplicationContext());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         mMapView.getMapAsync(this);
 
@@ -233,11 +238,9 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void setUpLocation() {
-        if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED){
+        if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED){
             //Request runtime Location
             ActivityCompat.requestPermissions(getActivity(), new String[]{
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
                     android.Manifest.permission.ACCESS_FINE_LOCATION
             }, MY_PERMISSION_REQUEST_CODE);
         }
@@ -252,7 +255,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     private void displayLocation() {
         //Validar si la aplicacion tiene el permiso de Localizacion
         if(getActivity() != null){
-            if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
                 return;
             }
@@ -596,7 +599,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         googleMap = mMap;
         googleMap.clear();
         // Validar si la aplicacion tiene el permiso de Localizacion
-        if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+        if ( ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
             return;
         }
@@ -1074,8 +1077,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void startLocationUpdates() {
-        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
@@ -1176,10 +1178,4 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         super.onLowMemory();
         mMapView.onLowMemory();
     }
-
-
-
-
-
-
 }
