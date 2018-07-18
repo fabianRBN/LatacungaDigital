@@ -184,7 +184,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
         gMap.clear();
 
         // Validar si la aplicacion tiene el permiso de Localizacion
-        if ( ContextCompat.checkSelfPermission(this.messagesAdapter.getChatTextFragment().getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+        if ( ContextCompat.checkSelfPermission(this.messagesAdapter.getChatTextFragment().getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
             ActivityCompat.requestPermissions(this.messagesAdapter.getChatTextFragment().getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
             return;
         }

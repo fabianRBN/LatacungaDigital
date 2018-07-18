@@ -14,7 +14,7 @@ var World = {
     loaded: false,
     drawables: [],
     init: function initFn(poiData) {
-        this.targetCollectionResource = new AR.TargetCollectionResource("assets/rio.wto", {
+        this.targetCollectionResource = new AR.TargetCollectionResource("assets/Lugares.wto", {
                 });
 
                 this.tracker = new AR.ObjectTracker(this.targetCollectionResource, {
@@ -23,31 +23,35 @@ var World = {
                         alert(errorMessage);
                     }
                 });
-                var label = new AR.Label("Hola prueba 1", 1, {
-                                         offsetY: 0.1,
-                                         verticalAnchor: AR.CONST.VERTICAL_ANCHOR.TOP,
-                                         opacity: 0.9,
-                                         zOrder: 1,
-                                         style: {
-                                             textColor: '#FFFFFF',
-                                             backgroundColor: '#00000005'
-                                         },
-                                         translate: {
-                                           x: 0,
-                                           y: 0,
-                                           z: 0
-                                         }
-                                     });
-                this.objectTrackable = new AR.ObjectTrackable(this.tracker, "iglesia", {
-                    drawables: {
-                        cam: label
-                    },
-                    onObjectRecognized: this.objectRecognized,
-                    onObjectLost: this.objectLost,
-                    onError: function(errorMessage) {
-                        alert(errorMessage);
-                    }
-                });
+                var areglo=["parque_vicente_leon","edificio_de_la_universidad_de_las_fuerzas_armadas","iglesia_de_santo_domingo","iglesia_de_nuestra_senora_del_salto","catedral_de_latacunga","iglesia_de_san_francisco","iglesia_de_san_agustin","iglesia_la_merced"];
+                for (var i=0;i<=poiData.length;i++){
+                var label = new AR.Label(poiData[i].targetName, 1, {
+                                                         offsetY: 0.1,
+                                                         verticalAnchor: AR.CONST.VERTICAL_ANCHOR.TOP,
+                                                         opacity: 0.9,
+                                                         zOrder: 1,
+                                                         style: {
+                                                             textColor: '#FFFFFF',
+                                                             backgroundColor: '#00000005'
+                                                         },
+                                                         translate: {
+                                                           x: 0,
+                                                           y: 0,
+                                                           z: 0
+                                                         }
+                                                     });
+                                this.objectTrackable = new AR.ObjectTrackable(this.tracker, poiData[i].targetName, {
+                                    drawables: {
+                                        cam: label
+                                    },
+                                    onObjectRecognized: this.objectRecognized,
+                                    onObjectLost: this.objectLost,
+                                    onError: function(errorMessage) {
+                                        alert(errorMessage);
+                                    }
+                                });
+                }
+
     },
 
     objectRecognized: function objectRecognizedFn() {

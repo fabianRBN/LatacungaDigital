@@ -91,7 +91,8 @@
             android:paddingBottom="5dp"
             android:paddingEnd="10dp"
             android:paddingStart="5dp"
-            android:paddingTop="5dp" />
+            android:paddingTop="5dp"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/txt_direccion"
@@ -101,7 +102,8 @@
             android:paddingBottom="5dp"
             android:paddingEnd="10dp"
             android:paddingStart="5dp"
-            android:paddingTop="5dp" />
+            android:paddingTop="5dp"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/txt_contacto"
@@ -111,7 +113,8 @@
             android:paddingBottom="5dp"
             android:paddingEnd="10dp"
             android:paddingStart="5dp"
-            android:paddingTop="5dp" />
+            android:paddingTop="5dp"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/txt_correo"
@@ -121,7 +124,8 @@
             android:paddingBottom="5dp"
             android:paddingEnd="10dp"
             android:paddingStart="5dp"
-            android:paddingTop="5dp" />
+            android:paddingTop="5dp"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/txt_web"
@@ -131,7 +135,8 @@
             android:paddingBottom="5dp"
             android:paddingEnd="10dp"
             android:paddingStart="5dp"
-            android:paddingTop="5dp" />
+            android:paddingTop="5dp"
+            android:textColor="@color/black" />
 
         <View
             android:id="@+id/divider2"
@@ -154,7 +159,8 @@
                 android:paddingEnd="10dp"
                 android:paddingStart="5dp"
                 android:paddingTop="5dp"
-                android:text="@string/scheduleTitle" />
+                android:text="@string/scheduleTitle"
+                android:textColor="@color/black" />
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/headerIndicator"
@@ -186,7 +192,8 @@
                     android:paddingBottom="5dp"
                     android:paddingEnd="10dp"
                     android:paddingStart="5dp"
-                    android:paddingTop="5dp" />
+                    android:paddingTop="5dp"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/txt_lunes"
@@ -195,7 +202,8 @@
                     android:paddingBottom="5dp"
                     android:paddingEnd="10dp"
                     android:paddingStart="5dp"
-                    android:paddingTop="5dp" />
+                    android:paddingTop="5dp"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/txt_martes"
@@ -204,7 +212,8 @@
                     android:paddingBottom="5dp"
                     android:paddingEnd="10dp"
                     android:paddingStart="5dp"
-                    android:paddingTop="5dp" />
+                    android:paddingTop="5dp"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/txt_miercoles"
@@ -213,7 +222,8 @@
                     android:paddingBottom="5dp"
                     android:paddingEnd="10dp"
                     android:paddingStart="5dp"
-                    android:paddingTop="5dp" />
+                    android:paddingTop="5dp"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/txt_jueves"
@@ -222,7 +232,8 @@
                     android:paddingBottom="5dp"
                     android:paddingEnd="10dp"
                     android:paddingStart="5dp"
-                    android:paddingTop="5dp" />
+                    android:paddingTop="5dp"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/txt_viernes"
@@ -231,7 +242,8 @@
                     android:paddingBottom="5dp"
                     android:paddingEnd="10dp"
                     android:paddingStart="5dp"
-                    android:paddingTop="5dp" />
+                    android:paddingTop="5dp"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/txt_sabado"
@@ -240,7 +252,8 @@
                     android:paddingBottom="5dp"
                     android:paddingEnd="10dp"
                     android:paddingStart="5dp"
-                    android:paddingTop="5dp" />
+                    android:paddingTop="5dp"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/txt_domingo"
@@ -249,7 +262,8 @@
                     android:paddingBottom="5dp"
                     android:paddingEnd="10dp"
                     android:paddingStart="5dp"
-                    android:paddingTop="5dp" />
+                    android:paddingTop="5dp"
+                    android:textColor="@color/black" />
 
             </LinearLayout>
         </com.github.florent37.expansionpanel.ExpansionLayout>
