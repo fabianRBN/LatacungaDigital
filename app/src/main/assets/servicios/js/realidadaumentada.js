@@ -62,7 +62,14 @@ var World = {
 				"longitude": parseFloat(poiData[currentPlaceNr].longitude),
 				"altitude": parseFloat(poiData[currentPlaceNr].altitude),
 				"title": poiData[currentPlaceNr].name,
-				"description": poiData[currentPlaceNr].description,
+				"direccion": poiData[currentPlaceNr].direccion,
+				"tipoDeActividad": poiData[currentPlaceNr].tipoDeActividad,
+				"facebookPage": poiData[currentPlaceNr].facebookPage,
+				"web": poiData[currentPlaceNr].web,
+				"abierto": poiData[currentPlaceNr].abierto,
+				"horario": poiData[currentPlaceNr].horario,
+				"categoria": poiData[currentPlaceNr].categoria,
+				"siempreAbierto": poiData[currentPlaceNr].siempreAbierto,
 			};
 
 			World.markerList.push(new Marker(singlePoi));
@@ -113,10 +120,8 @@ var World = {
 	onPoiDetailMoreButtonClicked: function onPoiDetailMoreButtonClickedFn() {
 		var currentMarker = World.currentMarker;
 		var markerSelectedJSON = {
-            action: "present_poi_details",
-            id: currentMarker.poiData.id,
-            title: currentMarker.poiData.title,
-            description: currentMarker.poiData.description
+            action: "markerselected",
+            id: currentMarker.poiData.id
         };
 
 		/*
@@ -124,6 +129,19 @@ var World = {
 		*/
 		AR.platform.sendJSONObject(markerSelectedJSON);
 	},
+
+	onPoiFacebookButtonClicked: function onPoiFacebookButtonClickedFn() {
+    		var currentMarker = World.currentMarker;
+    		var markerSelectedJSON = {
+                action: "facebook",
+                url: currentMarker.poiData.facebookPage
+            };
+
+    		/*
+    			The sendJSONObject method can be used to send data from javascript to the native code.
+    		*/
+    		AR.platform.sendJSONObject(markerSelectedJSON);
+    	},
 
 	// location updates, fired every time you call architectView.setLocation() in native environment
 	locationChanged: function locationChangedFn(lat, lon, alt, acc) {
@@ -156,7 +174,50 @@ var World = {
 		World.currentMarker = marker;
            // update panel values
            		$("#poi-detail-title").html(marker.poiData.title);
-           		$("#poi-detail-description").html(marker.poiData.description);
+           		$("#poi-detail-description").html("Direccion: "+marker.poiData.direccion);
+
+           		$("#poi-detail-tipo-actividad").html("Tipo de servicio: "+marker.poiData.tipoDeActividad);
+
+
+           		var dias = ["Lunes","Martes","Miercoles","Jueves","Viernes","Sabado","Domingo"];
+           		var date = new Date();
+
+           		if(marker.poiData.siempreAbierto){
+           		   $("#poi-detail-horario").html("Siempre abierto");
+           		}else{
+           		   $("#poi-detail-horario").html(dias[date.getDay()]+": "+marker.poiData.horario);
+           		}
+
+                if(marker.poiData.facebookPage == "Ninguna" || marker.poiData.facebookPage == ""){
+                    $("#facebook").hide();
+                }
+           		$("#poi-detail-web").html(marker.poiData.web);
+           		  // total number of stars
+                                var starTotal = "0%";
+                                switch(marker.poiData.categoria){
+                                    case "1 Estrellas":
+                                        starTotal = "10%"
+                                        break;
+                                    case "2 Estrellas":
+                                        starTotal = "10%"
+                                         break;
+                                    case "3 Estrellas":
+                                        starTotal = "10%"
+                                         break;
+                                    case "4 Estrellas":
+                                        starTotal = "10%"
+                                        break;
+                                    case "5 Estrellas":
+                                        starTotal = "10%"
+                                         break;
+                                    default:
+                                        $("#rating").hide();
+                                        $("#poi-detail-categoria").html("Categoria: "+marker.poiData.categoria);
+                                        break;
+                                }
+
+
+                           		document.querySelector(".stars-inner").style.width = starTotal;
 
            		/* It's ok for AR.Location subclass objects to return a distance of `undefined`. In case such a distance was calculated when all distances were queried in `updateDistanceToUserValues`, we recalcualte this specific distance before we update the UI. */
            		if( undefined == marker.distanceToUser ) {
@@ -171,6 +232,8 @@ var World = {
            		$("#panel-poidetail").panel("open", 123);
 
            		$(".ui-panel-dismiss").unbind("mousedown");
+
+
 
            		$("#panel-poidetail").on("panelbeforeclose", function(event, ui) {
            		    responsiveVoice.cancel();

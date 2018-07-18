@@ -17,8 +17,37 @@ function Marker(poiData) {
     // create the AR.GeoLocation from the poi data
     var markerLocation = new AR.GeoLocation(poiData.latitude, poiData.longitude, poiData.altitude);
 
+    var iconAR;
+    var iconAR_selected;
+
+
+    switch (poiData.tipoDeActividad) {
+      case "Agencia de viajes":
+                iconAR = new AR.ImageResource("assets/servicios/viaje.png");
+                iconAR_selected = new AR.ImageResource("assets/servicios/viaje_select.png");
+            break;
+      case "Alojamiento":
+                iconAR = new AR.ImageResource("assets/servicios/hotel.png");
+                iconAR_selected = new AR.ImageResource("assets/servicios/hotel_select.png");
+            break;
+      case "Comidas y bebidas":
+                iconAR = new AR.ImageResource("assets/servicios/food.png");
+                iconAR_selected = new AR.ImageResource("assets/servicios/food_select.png");
+                break;
+      case "Recreación, diversión, esparcimiento":
+                iconAR = new AR.ImageResource("assets/servicios/recreacion.png");
+                iconAR_selected = new AR.ImageResource("assets/servicios/recreacion_select.png");
+        break;
+      case "Transporte turístico":
+                 iconAR = new AR.ImageResource("assets/servicios/transporte.png");
+                 iconAR_selected = new AR.ImageResource("assets/servicios/transporte_select.png");
+        break;
+      default:
+        iconAR = new AR.ImageResource("assets/marker_selected2.png");
+        iconAR_selected = new AR.ImageResource("assets/marker_selected2.png");
+    }
     // create an AR.ImageDrawable for the marker in idle state
-    this.markerDrawable_idle = new AR.ImageDrawable(World.markerDrawable_idle, 2.5, {
+    this.markerDrawable_idle = new AR.ImageDrawable(iconAR, 2.5, {
         zOrder: 0,
         opacity: 1.0,
         /*
@@ -28,7 +57,7 @@ function Marker(poiData) {
     });
 
     // create an AR.ImageDrawable for the marker in selected state
-    this.markerDrawable_selected = new AR.ImageDrawable(World.markerDrawable_selected, 2.5, {
+    this.markerDrawable_selected = new AR.ImageDrawable(iconAR_selected, 2.5, {
         zOrder: 0,
         opacity: 0.0,
         onClick: null
@@ -47,7 +76,7 @@ function Marker(poiData) {
     });
 
     // create an AR.Label for the marker's description
-    this.descriptionLabel = new AR.Label(poiData.description.trunc(15), 0.4, {
+    this.descriptionLabel = new AR.Label("", 0.4, {
         zOrder: 1,
         scale: 0.4,
         translate: {

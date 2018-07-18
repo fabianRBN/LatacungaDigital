@@ -19,6 +19,9 @@
     <!--css de tablas-->
     <link rel="stylesheet" href="css/default.css">
 
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <!-- jquery mobile CSS -->
     <link rel="stylesheet" href="jquery/jquery.mobile-1.3.2.min.css" />
     <!-- required to set background transparent & enable "click through" -->
@@ -90,19 +93,35 @@
 
             <!-- title -->
             <h3 id="poi-detail-title"></h3>
+            <!-- Rating -->
 
+            <div id="rating" class="stars-outer">
+                <div class="stars-inner"></div>
+            </div>
+            <h5 id="poi-detail-categoria"></h5>
             <!-- description -->
-            <h4 id="poi-detail-description"></h4>
+            <h5 id="poi-detail-description"></h5>
+            <!-- Tipo de activodad -->
+            <h5 id="poi-detail-tipo-actividad"></h5>
+
+            <h5 id="poi-detail-horario"></h5>
+
+            <h5 id="poi-detail-web"></h5>
+
+
 
             <!-- distance -->
             <h4>Distance: <a id="poi-detail-distance"></a></h4>
+
+            <a id="facebook" href="javascript: World.onPoiFacebookButtonClicked();" data-role="button" data-theme="b" data-inline="true">Facebook</a>
 
 
             <!-- more button-->
             <a href="javascript: World.onPoiDetailMoreButtonClicked();" data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true">More</a>
 
-            <a href="javascript: escucharDes();" data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true">🔊 Play</a>
+          <!--  <a href="javascript: escucharDes();" data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true">🔊 Play</a>
             <a href="javascript: responsiveVoice.pause();" data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true">🔊 Pause</a>
+            -->
 
         </div>
     </div>

@@ -1,11 +1,13 @@
 package com.example.jona.latacungadigital.Activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -15,11 +17,15 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.example.jona.latacungadigital.R;
+import com.wikitude.architect.ArchitectJavaScriptInterfaceListener;
 import com.wikitude.architect.ArchitectStartupConfiguration;
 import com.wikitude.architect.ArchitectView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class ARActivity extends AppCompatActivity implements LocationListener {
+
+public class ARActivity extends AppCompatActivity implements LocationListener ,ArchitectJavaScriptInterfaceListener {
 
     FloatingActionButton btn_salir ;
 
@@ -57,6 +63,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener {
         this.architectView = (ArchitectView) this.findViewById(R.id.architectView);
         final ArchitectStartupConfiguration config = new ArchitectStartupConfiguration();
         config.setLicenseKey( "oWjZeBxLExDsXbbef5ylW6vZePQkJDE62FKnOp31hsz+EfEx6k4y8XJo3ir+3B9Vu3X8DAa60VH5gW/y5SjFsLZ4TWoHLcyLL/VFfmGtZNAPpN7jOk/xJ8rmTnVjE3W0iCbBJiD2WDqidCjSz5xRhWirT23wICtyPTCC05qyViRTYWx0ZWRfXwUhvhR3yQlpKY5VdWG6M+BLgaOMYQKgyMEMgJY51vVHJLaRW+KH9v7EhIONDB6xZXmIY87GCFPNhbPB5x8uHrm+beLEjBQvOHcwTg82m7mAg0TCWpw4Unh6VK8cLIruFHE1POkwGzUYevkYli1qYdjOi/wnpe/0S2RnAw36G5OQsVbgi/J7cxLoA8jGPr57IoKkBiP7nC+/BECQxtW8DryPFByZ6T/dyFK9Q0VBi2NGe2Ib4cOUC01Yt/kfqiDli5837Qn3Ii1pssMIbwK1zxHj0AO0ylfxiZ4l8pvb1RqieqilzSg2M7szwPSboI4WRLTqORGS9mPsW15A8MKpboAIuCI/g+oXAqtmuG0bw/iDvF6i5IevNDLRLsx22ipZtIqxZqQxxUOjmNo9YIjCpLp+UnhUHD2Zz9tzMFf9xwSuztwcLq89SCT3YZ55TvaycMztr9iouellYj6N/GB1C4231qvpMiPPZvf/sAaxpDueJP1QTjUkZEmbaAIRMOnoUMMciaRgxkOsJ+pVHFGwPnUvE9X7h0j7xQn8+BkDSsRVForVWPPd6MJahngefEyYR0wqpMUIVe5N" );
+        this.architectView.addArchitectJavaScriptInterfaceListener(this);
         this.architectView.onCreate(config);
 
 
@@ -187,5 +194,27 @@ public class ARActivity extends AppCompatActivity implements LocationListener {
     public void onProviderDisabled(String provider) {
         //String msg = String.format(getResources().getString(R.string.provider_disabled), provider);
         Toast.makeText(this, "Ubicación deshabilitada", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onJSONObjectReceived(JSONObject jsonObject) {
+        try {
+            switch (jsonObject.getString("action")) {
+                case "markerselected":
+                    String id = jsonObject.getString("id");
+                    System.out.println("Si funciona:" + id);
+                    break;
+                case "facebook":
+                    String urlPage = jsonObject.getString("url");
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(urlPage)));
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            System.out.println("No funciona:");
+        }
+
+
+
     }
 }
