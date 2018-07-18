@@ -70,6 +70,7 @@ var World = {
 				"horario": poiData[currentPlaceNr].horario,
 				"categoria": poiData[currentPlaceNr].categoria,
 				"siempreAbierto": poiData[currentPlaceNr].siempreAbierto,
+				"contacto": poiData[currentPlaceNr].contacto,
 			};
 
 			World.markerList.push(new Marker(singlePoi));
@@ -120,8 +121,8 @@ var World = {
 	onPoiDetailMoreButtonClicked: function onPoiDetailMoreButtonClickedFn() {
 		var currentMarker = World.currentMarker;
 		var markerSelectedJSON = {
-            action: "markerselected",
-            id: currentMarker.poiData.id
+            action: "contacto",
+            contacto: currentMarker.poiData.contacto
         };
 
 		/*
@@ -142,6 +143,18 @@ var World = {
     		*/
     		AR.platform.sendJSONObject(markerSelectedJSON);
     	},
+    onPoiWhatsappButtonClicked: function onPoiWhatsppButtonClickedFn() {
+        		var currentMarker = World.currentMarker;
+        		var markerSelectedJSON = {
+                    action: "whatsapp",
+                    contacto: currentMarker.poiData.contacto
+                };
+
+        		/*
+        			The sendJSONObject method can be used to send data from javascript to the native code.
+        		*/
+        		AR.platform.sendJSONObject(markerSelectedJSON);
+        	},
 
 	// location updates, fired every time you call architectView.setLocation() in native environment
 	locationChanged: function locationChangedFn(lat, lon, alt, acc) {
@@ -190,6 +203,10 @@ var World = {
 
                 if(marker.poiData.facebookPage == "Ninguna" || marker.poiData.facebookPage == ""){
                     $("#facebook").hide();
+                }
+
+                if(marker.poiData.contacto =="Ninguno" || marker.poiData.contacto == ""){
+                    $("#whatsapp").hide();
                 }
            		$("#poi-detail-web").html(marker.poiData.web);
            		  // total number of stars

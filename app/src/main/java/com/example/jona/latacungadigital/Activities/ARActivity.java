@@ -200,13 +200,22 @@ public class ARActivity extends AppCompatActivity implements LocationListener ,A
     public void onJSONObjectReceived(JSONObject jsonObject) {
         try {
             switch (jsonObject.getString("action")) {
-                case "markerselected":
-                    String id = jsonObject.getString("id");
-                    System.out.println("Si funciona:" + id);
+                case "contacto":
+                    String contacto = jsonObject.getString("contacto");
+
+                    String dial = "tel:" + contacto;
+                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse(dial)));
                     break;
                 case "facebook":
                     String urlPage = jsonObject.getString("url");
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(urlPage)));
+                    break;
+                case "whatsapp":
+                    String numero = jsonObject.getString("contacto");
+                    Uri uri = Uri.parse("smsto:" + numero);
+                    Intent i = new Intent(Intent.ACTION_SENDTO, uri);
+                    i.setPackage("com.whatsapp");
+                    startActivity(Intent.createChooser(i, "Servicio Latacunga"));
                     break;
             }
         } catch (JSONException e) {
