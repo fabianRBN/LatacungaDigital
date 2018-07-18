@@ -122,9 +122,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:background="@drawable/divider_line"
                     android:layout_marginStart="5dp"
-                    android:padding="5dp" />
+                    android:background="@drawable/divider_line"
+                    android:padding="5dp"
+                    android:textColor="@color/black" />
 
             </com.github.florent37.expansionpanel.ExpansionLayout>
 

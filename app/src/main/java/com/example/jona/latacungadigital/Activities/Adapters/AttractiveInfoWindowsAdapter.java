@@ -40,7 +40,7 @@ public class AttractiveInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter
     private void renderWindow(final Marker marker, View view){
         ImageView imgAtractivo = (ImageView) view.findViewById(R.id.img_atractivo);
         TextView txtTitulo = (TextView) view.findViewById(R.id.str_titulo);
-        TextView txtCategoria = (TextView) view.findViewById(R.id.str_categoria);
+        TextView txtSubTipo = (TextView) view.findViewById(R.id.str_subtipo);
         TextView txtDireccion = (TextView) view.findViewById(R.id.str_direccion);
         RatingBar rbRating = (RatingBar) view.findViewById(R.id.rb_rating);
         TextView txtRating = (TextView) view.findViewById(R.id.txt_rating);
@@ -48,7 +48,7 @@ public class AttractiveInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter
         if(marker.getTag() != null){
             attractive = (AttractiveClass) marker.getTag();
             txtTitulo.setText(attractive.getNameAttractive());
-            txtCategoria.setText(attractive.getCategory());
+            txtSubTipo.setText(attractive.getSubType());
             txtDireccion.setText(attractive.getAddress());
             rbRating.setRating(Float.parseFloat(attractive.getRating()));
             txtRating.setText(attractive.getRating());
@@ -73,7 +73,7 @@ public class AttractiveInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter
                     .into(imgAtractivo);
         } else {
             txtTitulo.setText("No se pudo leer el attractivo");
-            txtCategoria.setText("");
+            txtSubTipo.setText("");
             txtDireccion.setText("");
             rbRating.setRating(0);
             txtRating.setText("");
@@ -102,7 +102,7 @@ public class AttractiveInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter
     public void onInfoWindowClick(Marker marker) {
         if(mapaFragment.getActivity() instanceof ChatBotActivity){
             ChatBotActivity chatBotActivity = (ChatBotActivity) mapaFragment.getActivity();
-            chatBotActivity.changeFragmentToChatbotAndSendMessage("Buscar el atractivo " + attractive.getAlias());
+            chatBotActivity.changeFragmentToChatbotAndSendMessage("Buscar el atractivo" + attractive.getAlias());
         }
     }
 

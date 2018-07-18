@@ -36,7 +36,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/str_categoria"
+                android:id="@+id/str_subtipo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
