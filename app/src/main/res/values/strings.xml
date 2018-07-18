@@ -74,4 +74,10 @@ El trozo de texto estándar de Lorem Ipsum usado desde el año 1500 es reproduci
     <string name="friday">Viernes</string>
     <string name="saturday">Sábado</string>
     <string name="sunday">Domingo</string>
+
+    <!--Permisos-->
+    <string name="permission_location_rationale">Se necesita el permiso de ubicación para mostrar rutas y distancias.</string>
+    <string name="permission_camera_rationale">Se necesita permiso de la cámara para usar realidad aumentada.</string>
+    <string name="permission_microphone_rationale">Se necesita el permiso del micrófono para hablar con el asistente.</string>
+    <string name="permission_storage_rationale">Se necesita el permiso de almacenamiento para reducir el consumo de Internet.</string>
 </resources>
