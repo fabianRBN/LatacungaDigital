@@ -102,7 +102,7 @@ public class AttractiveInfoWindowsAdapter implements GoogleMap.InfoWindowAdapter
     public void onInfoWindowClick(Marker marker) {
         if(mapaFragment.getActivity() instanceof ChatBotActivity){
             ChatBotActivity chatBotActivity = (ChatBotActivity) mapaFragment.getActivity();
-            chatBotActivity.changeFragmentToChatbotAndSendMessage("Buscar el atractivo" + attractive.getAlias());
+            chatBotActivity.changeFragmentToChatbotAndSendMessage("Buscar el atractivo " + attractive.getAlias());
         }
     }
 
