@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="62dp"
+    tools:context=".Activities.Fragments.AcercaDeFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/lyDescricionAcercaDe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgDescripcionAcercaDe"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/ic_phone_android_description" />
+
+            <RelativeLayout
+                android:id="@+id/rlDescriptionAcercaDe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="15dp">
+
+                <TextView
+                    android:id="@+id/txtDescripcionAcercaDe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/titleDescriptiosAbout"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtContenidoDescripcionAcercaDe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtDescripcionAcercaDe"
+                    android:layout_marginEnd="10dp"
+                    android:text="@string/contentDescriptiosAbout"
+                    android:textColor="@color/black" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/lyDescricionAcercaDe"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/divider_line" />
+
+        <LinearLayout
+            android:id="@+id/lyBeneficiosAcercaDe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider1"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgBeneficiosAcercaDe"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/ic_beneficios" />
+
+            <RelativeLayout
+                android:id="@+id/rlBeneficiosAcercaDe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/txtBeneficiosAcercaDe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/titleBenefitAbout"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtContenidoBeneficiosAcercaDe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtBeneficiosAcercaDe"
+                    android:layout_marginEnd="10dp"
+                    android:textColor="@color/black" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/lyBeneficiosAcercaDe"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/divider_line" />
+
+        <LinearLayout
+            android:id="@+id/lyDependenciasAcercaDe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider2"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgDependenciasAcercaDe"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/ic_settings_cell" />
+
+            <RelativeLayout
+                android:id="@+id/rlDependenciasAcercaDe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/txtDependeciasAcercaDe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/titleDependencesAbout"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtContenidoDependeciasAcercaDe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtDependeciasAcercaDe"
+                    android:layout_marginEnd="10dp"
+                    android:textColor="@color/black" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/lyDependenciasAcercaDe"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/divider_line" />
+
+        <LinearLayout
+            android:id="@+id/lyColaboradoresAcercaDe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider3"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgColaboradoresAcercaDe"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/ic_colaboradores" />
+
+            <RelativeLayout
+                android:id="@+id/rlColaboradoresAcercaDe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/txtColaboradoresAcercaDe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/titleCollaboratorsAbout"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtContenidoColaboradoresAcercaDe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtColaboradoresAcercaDe"
+                    android:layout_marginEnd="10dp"
+                    android:textColor="@color/black" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@+id/txtContenidoColaboradoresAcercaDe"
+                    android:layout_marginEnd="10dp"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/btnFacebookColaborador"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/facebookPageText"
+                        android:src="@drawable/ic_icons_facebook_24"
+                        android:tint="#3b5998" />
+
+                    <ImageButton
+                        android:id="@+id/btnTwitterColaborador"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/TwitterPageText"
+                        android:src="@drawable/ic_twitter_icon" />
+
+                    <ImageButton
+                        android:id="@+id/btnYotubeColaborador"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/YoutubePageText"
+                        android:src="@drawable/ic_youtube_icon" />
+
+                    <ImageButton
+                        android:id="@+id/btnPaginaWebColaborador"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/WebPageText"
+                        android:src="@drawable/ic_pagina_web"
+                        android:tint="@color/primaryColor"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</ScrollView>

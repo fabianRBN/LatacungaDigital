@@ -37,14 +37,14 @@ var World = {
                 				"usoActual": poiData[i].usoActual,
                 				"impactoPositivo": poiData[i].impactoPositivo,
                 				"impactoNegativo": poiData[i].impactoNegativo,
+                				"horario":poiData[i].horario,
                 				"direccion":poiData[i].direccion
                 			};
                 var Titulo = new AR.Label(singlePoi.name, 0.5, {
                                                          opacity: 0.9,
                                                          zOrder: 1,
                                                          style: {
-                                                             textColor: '#FFFFFF',
-                                                             backgroundColor: '#00000005'
+                                                             textColor: '#FFFFFF'
                                                          },
                                                          translate: {
                                                            x: 0,
@@ -56,7 +56,7 @@ var World = {
                 var titulodireccion = new AR.Label("Dirección:", 0.1, {
                                                                 zOrder: 1,
                                                                 style: {
-                                                                textColor: '#48C9B0',
+                                                                textColor: '#48C9B0'
                                                                 },
                                                                 translate: {
                                                                 x: -0.8,
@@ -67,7 +67,7 @@ var World = {
                 var Direccion = new AR.Label(singlePoi.direccion, 0.1, {
                                                 zOrder: 1,
                                                 style: {
-                                                textColor: '#48C9B0',
+                                                textColor: '#48C9B0'
                                                 },
                                                 translate: {
                                                 x: -0.8,
@@ -84,12 +84,13 @@ var World = {
          			}
 
          });
+
          //permisos
 
                 var titulopermiso = new AR.Label("Permisos:", 0.1, {
                                                                 zOrder: 1,
                                                                 style: {
-                                                                textColor: '#8E44AD',
+                                                                textColor: '#8E44AD'
                                                                 },
                                                                 translate: {
                                                                 x: -0.8,
@@ -100,7 +101,7 @@ var World = {
                 var Permiso = new AR.Label(singlePoi.permisos, 0.1, {
                                                 zOrder: 1,
                                                 style: {
-                                                textColor: '#8E44AD',
+                                                textColor: '#8E44AD'
                                                 },
                                                 translate: {
                                                 x: -0.8,
@@ -122,7 +123,7 @@ var World = {
                          var titulouso = new AR.Label("Uso Actual:", 0.1, {
                                                                          zOrder: 1,
                                                                          style: {
-                                                                         textColor: '#229954',
+                                                                         textColor: '#229954'
                                                                          },
                                                                          translate: {
                                                                          x: -0.8,
@@ -133,7 +134,7 @@ var World = {
                          var Uso = new AR.Label(singlePoi.usoActual, 0.1, {
                                                          zOrder: 1,
                                                          style: {
-                                                         textColor: '#229954',
+                                                         textColor: '#229954'
                                                          },
                                                          translate: {
                                                          x: -0.8,
@@ -154,7 +155,7 @@ var World = {
           var titulopositivo = new AR.Label("Impacto Positivo:", 0.1, {
                               zOrder: 1,
                               style: {
-                              textColor: '#5DADE2',
+                              textColor: '#5DADE2'
                              },
                              translate: {
                               x: 1,
@@ -165,7 +166,7 @@ var World = {
                              var Positivo = new AR.Label(singlePoi.impactoPositivo, 0.1, {
                                                              zOrder: 1,
                                                              style: {
-                                                             textColor: '#5DADE2',
+                                                             textColor: '#5DADE2'
                                                              },
                                                              translate: {
                                                              x: 1,
@@ -186,7 +187,7 @@ var World = {
                       var titulonegativo = new AR.Label("Impacto Negativo:", 0.1, {
                                                     zOrder: 1,
                                                     style: {
-                                                    textColor: '#EC7063',
+                                                    textColor: '#EC7063'
                                                    },
                                                    translate: {
                                                     x: 1,
@@ -197,7 +198,7 @@ var World = {
                     var Negativo = new AR.Label(singlePoi.impactoNegativo, 0.1, {
                                                    zOrder: 1,
                                                      style: {
-                                                       textColor: '#EC7063',
+                                                       textColor: '#EC7063'
                                                     },
                                                translate: {
                                                x: 1,
@@ -214,11 +215,91 @@ var World = {
                                             			}
 
                                             });
-                                     drawables=[Titulo,titulodireccion,Direccion,overlaydireccion,
+ //Horario
+                      var titulohorario = new AR.Label("Horario:", 0.1, {
+                                                     zOrder: 1,
+                                                     style: {
+                                                     textColor: '#17202A'
+                                                    },
+                                                    translate: {
+                                                     x: 1,
+                                                     y: -0.2,
+                                                    z: 0.5
+                                                     }
+                                                    });
+
+                            var Domingo = new AR.Label("Domingo: "+singlePoi.horario.Domingo.horaInicio+"-"+singlePoi.horario.Domingo.horaSalida
+                            , 0.08, { zOrder: 1, style: { textColor: '#17202A'},translate: {x: 1, y: -0.3, z: 0.5}});
+                            var Lunes = new AR.Label("Lunes: "+singlePoi.horario.Lunes.horaInicio+"-"+singlePoi.horario.Lunes.horaSalida
+                            , 0.08, {zOrder: 1,style: {textColor: '#17202A'}, translate: {x: 1.7,y: -0.3,z: 0.5} });
+                            var Martes = new AR.Label("Martes: "+singlePoi.horario.Martes.horaInicio+"-"+singlePoi.horario.Martes.horaSalida
+                             , 0.08, {zOrder: 1,style: {textColor: '#17202A'}, translate: {x: 1,y: -0.4,z: 0.5} });
+                             var Miercoles = new AR.Label("Miercoles: "+singlePoi.horario.Miercoles.horaInicio+"-"+singlePoi.horario.Miercoles.horaSalida
+                             , 0.08, {zOrder: 1,style: {textColor: '#17202A'}, translate: {x: 1.7,y: -0.4,z: 0.5} });
+                             var Jueves = new AR.Label("Jueves: "+singlePoi.horario.Jueves.horaInicio+"-"+singlePoi.horario.Jueves.horaSalida
+                             , 0.08, {zOrder: 1,style: {textColor: '#17202A'}, translate: {x: 1,y: -0.5,z: 0.5} });
+                             var Viernes = new AR.Label("Viernes: "+singlePoi.horario.Lunes.horaInicio+"-"+singlePoi.horario.Viernes.horaSalida
+                             , 0.08, {zOrder: 1,style: {textColor: '#17202A'}, translate: {x: 1.7,y: -0.5,z: 0.5} });
+                             var Sabado = new AR.Label("Sabado: "+singlePoi.horario.Sabado.horaInicio+"-"+singlePoi.horario.Sabado.horaSalida
+                             , 0.08, {zOrder: 1,style: {textColor: '#17202A'}, translate: {x: 1,y: -0.6,z: 0.5} });
+
+                            var imgDos= new AR.ImageResource("https://www.google.com.ec/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiugdeIkqrcAhURpFkKHU0yA-IQjRx6BAgBEAU&url=https%3A%2F%2Fbusiness.facebook.com%2Fmunicipiodelatacunga%2F&psig=AOvVaw2sRHXyFLX0mJ26_Z-qmshI&ust=1532054540143190");
+                                         var overlaytiempo = new AR.ImageDrawable(imgDos, 0.5, {
+                                         			translate: {
+                                         				x:0.5,
+                                         				y:-0.4,
+                                         				z:0.5
+                                         			}
+
+                                         });
+                             /*var descripcion = new AR.Model("assets/love.wt3", {
+                                                onLoaded: this.loadingStep,
+                                                scale: {
+                                                    x: 0.002,
+                                                    y: 0.002,
+                                                    z: 0.002
+                                                },
+                                                translate: {
+                                                    x: 0,
+                                                    y: 1.7,
+                                                    z: 0.0
+                                                },
+                                                 rotate: {
+                                                 x: -90
+                                                 },
+                                                 onClick : function () {
+                                                   document.getElementById("info").setAttribute("class", "info");
+                                                   document.getElementById("name").innerHTML = singlePoi.name;
+                                                   document.getElementById("descripcion").innerHTML = singlePoi.description;
+                                                   document.getElementById("info").setAttribute("class", "infoVisible");
+                                                  }
+                                            });*/
+
+                              var imgDescripcion= new AR.ImageResource("assets/descripcion.png");
+                                                                       var overlaydescripcion = new AR.ImageDrawable(imgDescripcion, 0.5, {
+                                                                       			translate: {
+                                                                       				x:0,
+                                                                       				y:1.5,
+                                                                       				z:0.5
+                                                                       			},
+                                                                                    onClick : function () {
+                                                                                       document.getElementById("info").setAttribute("class", "info");
+                                                                                       document.getElementById("name").innerHTML = singlePoi.name;
+                                                                                       document.getElementById("descripcion").innerHTML = singlePoi.description;
+                                                                                       document.getElementById("info").setAttribute("class", "infoVisible");
+                                                                                       }
+
+                                                                       });
+
+                       //areglo de objetos visualizados
+
+
+                                     drawables=[overlaydescripcion, Titulo,titulodireccion,Direccion,overlaydireccion,
                                                        titulopermiso, Permiso,overlaypermiso,
                                                        titulouso,Uso,overlayuso,
                                                        titulopositivo, Positivo, overlaypositivo,
-                                                       titulonegativo, Negativo, overlaynegativo]
+                                                       titulonegativo, Negativo, overlaynegativo, titulohorario,
+                                                       Domingo,Lunes, Martes,Miercoles,Jueves,Viernes,Sabado, overlaytiempo]
                                 this.objectTrackable = new AR.ObjectTrackable(this.tracker, singlePoi.targetName, {
                                     drawables: {
                                         cam: drawables
@@ -229,67 +310,20 @@ var World = {
                                         alert(errorMessage);
                                     }
                                 });
+                                AR.context.onScreenClick = this.screenClick;
                 }
 
     },
-    selectObject: function selectObjectFn(select) {
-            if (select) {
-                if (World.selectedObject !== null) {
-                    World.selectedObject.select(false);
-                }
-                World.selectedObject = this;
-                this.selectedAnimation.start(-1);
-            } else {
-                this.selectedAnimation.stop();
-                this.objectModel.scale = {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                };
-            }
-        },
-
-        objectClicked: function objectClickedFn(object) {
-            return function() {
-                object.select(true);
-                if(object.name == "Musica"){
-               World.sirenSound.play();
-                }else if(object.name =="Titulo"){
-                //World.AnimationGroup.destroy();
-                //AnimationGroup=null;
-                //Historia.init();
-                }
-                else{
-                document.getElementById("info").setAttribute("class", "info");
-                document.getElementById("name").innerHTML = object.name;
-                document.getElementById("descripcion").innerHTML = object.description;
-                document.getElementById("info").setAttribute("class", "infoVisible");
-                }
-
-
-                return true;
-            };
-        },
-
-        screenClick: function onScreenClickFn() {
-            if (World.selectedObject !== null) {
-                World.selectedObject.select(false);
-                World.selectedObject = null;
-            }
-
+  screenClick: function onScreenClickFn() {
             document.getElementById("info").setAttribute("class", "info");
-            World.sirenSound.stop();
-        },
-
+   },
     objectRecognized: function objectRecognizedFn() {
         World.removeLoadingBar();
         World.setAugmentationsEnabled(true);
     },
-
     objectLost: function objectLostFn() {
         World.setAugmentationsEnabled(false);
     },
-
     setAugmentationsEnabled: function setAugmentationsEnabledFn(enabled) {
         for (var i = 0; i < World.drawables.length; i++) {
             World.drawables[i].enabled = enabled;

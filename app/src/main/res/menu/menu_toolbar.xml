@@ -25,7 +25,7 @@
     <item
         android:id="@+id/navigation_configuraciones"
         android:icon="@drawable/ic_settings_black_24dp"
-        android:title="Configuraciones"
+        android:title="Configuración"
         app:showAsAction="never"
         android:iconTint="@color/white"/>
 
@@ -37,13 +37,16 @@
         android:iconTint="@color/white"/>
 
     <item
+        android:id="@+id/navigation_acerca_de"
+        android:title="Acerca de"
+        app:showAsAction="never"
+        android:iconTint="@color/white"/>
+
+    <item
         android:id="@+id/navigation_salir"
         android:icon="@drawable/ic_account_circle_black_24dp"
         android:title="Salir"
         app:showAsAction="never"
         android:iconTint="@color/white"/>
-
-
-
 
 </menu>
