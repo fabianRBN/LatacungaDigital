@@ -78,7 +78,7 @@ dependencies {
     implementation 'com.github.florent37:expansionpanel:1.1.1'
 
     //Para dar opciones al flotante
-    implementation'com.github.fafaldo:fab-toolbar:1.2.0'
+    implementation 'com.github.fafaldo:fab-toolbar:1.2.0'
 
     // Para expandir texto
     implementation 'com.borjabravo:readmoretextview:2.1.0'
@@ -86,7 +86,7 @@ dependencies {
     //Librerias para la realidad aumentada
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation (name: 'wikitudesdk', ext:'aar')
+    implementation(name: 'wikitudesdk', ext: 'aar')
     implementation 'com.google.ar:core:1.1.0'
 
     // Librerias para VR
@@ -108,7 +108,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
 repositories {
-    flatDir{
+    flatDir {
         dirs 'libs'
     }
 }

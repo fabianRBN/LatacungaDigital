@@ -20,6 +20,7 @@ import com.example.jona.latacungadigital.Activities.Fragments.BottomSheetFragmen
 import com.example.jona.latacungadigital.Activities.Fragments.DialogAppFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.ListAtractivosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
+import com.example.jona.latacungadigital.Activities.Fragments.PerfilUsuarioFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.TrackeadosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.TrackinFragment;
 import com.example.jona.latacungadigital.R;
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         TrackeadosFragment.OnFragmentInteractionListener, AcercaDeFragment.OnFragmentInteractionListener {
 
     private GoogleApiClient googleApiClient; // Variable para manejar los datos de Google.
+
+    private boolean INICIO_APP_PRIMERA_VEZ = true;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
@@ -162,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
 
-        MenuItem menuRastreo = menu.findItem(R.id.navigation_rastrear);
+        //MenuItem menuRastreo = menu.findItem(R.id.navigation_rastrear);
 
         return true;
     }
@@ -190,6 +193,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         else if (id == R.id.navigation_acerca_de) {
             setFragment(new AcercaDeFragment());
+        } else if(id== R.id.navigation_perfil){
+            setFragment(new PerfilUsuarioFragment());
         }
 
         return super.onOptionsItemSelected(item);
@@ -272,6 +277,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private void setFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if(!INICIO_APP_PRIMERA_VEZ){
+            fragmentTransaction.setCustomAnimations(R.anim.animation_slide_in_left, R.anim.animation_slide_out_right, R.anim.animation_slide_in_right, R.anim.animation_slide_out_left);
+        }else{
+            INICIO_APP_PRIMERA_VEZ = false;
+        }
         fragmentTransaction.replace(R.id.main_fragment, fragment);
         fragmentTransaction.commit();
     }
