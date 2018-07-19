@@ -80,4 +80,17 @@ El trozo de texto estándar de Lorem Ipsum usado desde el año 1500 es reproduci
     <string name="permission_camera_rationale">Se necesita permiso de la cámara para usar realidad aumentada.</string>
     <string name="permission_microphone_rationale">Se necesita el permiso del micrófono para hablar con el asistente.</string>
     <string name="permission_storage_rationale">Se necesita el permiso de almacenamiento para reducir el consumo de Internet.</string>
+
+    <!--Pagina Acerca De-->
+    <string name="titleDescriptiosAbout">Descripción</string>
+    <string name="contentDescriptiosAbout">Latacunga Digital, es una aplicación móvil enfocada al turismo del centro histórico de la ciudad, realizada por estudiantes de la carrera de Ingeniería en Software de la Universidad de las Fuerzas Armadas ESPE Extensión Latacunga.</string>
+    <string name="titleBenefitAbout">Beneficios</string>
+    <string name="titleDependencesAbout">Dependencias</string>
+    <string name="titleCollaboratorsAbout">Colaboradores</string>
+
+    <!--Botones de Redes sociales-->
+    <string name='TwitterPageText'>Twitter page</string>
+    <string name='YoutubePageText'>Youtube page</string>
+    <string name='WebPageText'>Web page</string>
+
 </resources>

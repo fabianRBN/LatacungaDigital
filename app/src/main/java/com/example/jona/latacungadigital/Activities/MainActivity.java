@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
+import com.example.jona.latacungadigital.Activities.Fragments.AcercaDeFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.BottomSheetFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.DialogAppFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.ListAtractivosFragment;
@@ -36,7 +37,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener,
         ListAtractivosFragment.OnFragmentInteractionListener, DialogAppFragment.NoticeDialogListener, TrackinFragment.OnFragmentInteractionListener,
-        TrackeadosFragment.OnFragmentInteractionListener {
+        TrackeadosFragment.OnFragmentInteractionListener, AcercaDeFragment.OnFragmentInteractionListener {
 
     private GoogleApiClient googleApiClient; // Variable para manejar los datos de Google.
 
@@ -173,24 +174,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         if (id == R.id.navigation_salir) {
             openSignOffDialog();
             return true;
-        }else
-        if(id == R.id.navigation_configuraciones){
+
+        } else if (id == R.id.navigation_configuraciones) {
             startActivity(new Intent(MainActivity.this, PreferenciasActivity.class));
 
-        }else
-        if(id == R.id.navigation_prefrencia){
+        } else if (id == R.id.navigation_prefrencia) {
            /* Gestor de preferiencias
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 
-            System.out.println("Prefencias servicio:"+pref.getBoolean("notificacionAtractivo",false));
-*/
+            System.out.println("Prefencias servicio:"+pref.getBoolean("notificacionAtractivo",false));*/
 
-        }else
-        if (id == R.id.navigation_rastrear){
+        } else if (id == R.id.navigation_rastrear) {
             setFragment(new TrackinFragment());
         }
 
-
+        else if (id == R.id.navigation_acerca_de) {
+            setFragment(new AcercaDeFragment());
+        }
 
         return super.onOptionsItemSelected(item);
     }

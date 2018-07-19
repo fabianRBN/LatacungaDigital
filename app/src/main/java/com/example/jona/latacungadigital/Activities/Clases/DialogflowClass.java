@@ -256,16 +256,8 @@ public class DialogflowClass {
             // Para decir al usuario que se encontro la información dicha por el.
             MessageSendToDialogflow(result.getFulfillment().getSpeech().split("\\. ")[0]);
 
-            // Asignamos los valores leidos del JSON que envia Dialogflow y los asignamos a las varibales del Modelo TextMessageModel.
             textMessageModel.setViewTypeMessage(ChatBotReferences.VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT);
-            textMessageModel.setNameAttractive(attractiveClass.getNameAttractive());
-            textMessageModel.setCategoryAttactive(attractiveClass.getCategory());
-            textMessageModel.setDescriptionAttractive(attractiveClass.getDescription());
-            textMessageModel.setAddressAttractive(attractiveClass.getAddress());
-            textMessageModel.setSubTypeAttractive(attractiveClass.getSubType());
-            textMessageModel.setRatingAttractive(Float.parseFloat(attractiveClass.getRating()));
-            textMessageModel.setListImagesURL(attractiveClass.getListImages());
-            textMessageModel.setAction(result.getAction());
+            textMessageModel.setAttractive(attractiveClass);
             listMessagesText.add(textMessageModel);
             addMessagesAdapter(listMessagesText);
 

@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -31,7 +33,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.Adapters.MessagesAdapter;
@@ -40,6 +41,7 @@ import com.example.jona.latacungadigital.Activities.Clases.DialogflowClass;
 import com.example.jona.latacungadigital.Activities.Clases.NetworkReceiverClass;
 import com.example.jona.latacungadigital.Activities.Clases.SaveListMessageClass;
 import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
+import com.example.jona.latacungadigital.Activities.References.PermissionsReferences;
 import com.example.jona.latacungadigital.Activities.Views.MessageCardMapListItemView;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
@@ -49,18 +51,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class ChatTextFragment extends Fragment {
+public class ChatTextFragment extends Fragment{
 
     private OnFragmentInteractionListener mListener;
 
     // Declaración de variables para poder controlar los mensajes del usuario y del ChatBot.
-    private RecyclerView rvListMessages;
-    private List<TextMessageModel> listMessagesText;
-    private List<MessageCardMapListItemView> listMessageCardMapView;
-    private FloatingActionButton btnSendMessage;
-    private EditText txtMessageUserSend;
-    private MessagesAdapter messagesAdapter;
-    private TextView txtMessageWelcome;
     private DialogAppFragment dialogAppFragment; // Variable para controlar el Dialogo de eliminar mensajes.
     private boolean shouldRecreate = true; // Variable para controlar el onActivityResult() con onResume().
     private boolean isMessageToSend = false;
@@ -73,12 +68,33 @@ public class ChatTextFragment extends Fragment {
     private NetworkReceiverClass networkReceiverClass;
     private ActionBar actionBar;
 
-    public DialogflowClass dialogflowClass;
+    // Variables obtenidas de la vista fragment_chat_text.xml
     private View view;
+    private View mainLayout;
+    private Toolbar toolBarChatBot;
+    private RecyclerView rvListMessages;
+    private EditText txtMessageUserSend;
+    private FloatingActionButton btnSendMessage;
 
-    // Constructor.
+    // Variables para manejar el RecyclerView de mensajes
+    private LinearLayoutManager linearLayoutManager;
+    private MessagesAdapter messagesAdapter;
+
+    // Variables para comunicarse con Dialogflow
+    public DialogflowClass dialogflowClass;
+
+    // Variables para el manejo de mensajes
+    private List<TextMessageModel> listMessagesText;
+    private List<MessageCardMapListItemView> listMessageCardMapView;
+
+    // --------------------------------------------- //
+    // Constructor                                   //
+    // --------------------------------------------- //
     public ChatTextFragment() { }
 
+    // --------------------------------------------- //
+    // Métodos get and set del fragmento             //
+    // --------------------------------------------- //
     public DialogflowClass getDialogflowClass() { return dialogflowClass; }
 
     public boolean getIsMessageToSend() { return isMessageToSend; }
@@ -93,37 +109,39 @@ public class ChatTextFragment extends Fragment {
 
     public DialogAppFragment getDialogAppFragment() { return dialogAppFragment; }
 
+    // --------------------------------------------- //
+    // Métodos de la  clase Fragment                 //
+    // --------------------------------------------- //
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        listMessagesText = new ArrayList<>(); // Incializar la lista de los mensajes de texto.
+        listMessageCardMapView = new ArrayList<>(); // Incializar la lista de los mensajes con mapas.
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        listMessagesText = new ArrayList<>(); // Incializar la lista de los mensajes de texto.
-        listMessageCardMapView = new ArrayList<>(); // Incializar la lista de los mensajes con mapas.
+
+        // Instanciar las variables de la vista fragment_chat_text.xml
         view = inflater.inflate(R.layout.fragment_chat_text, container, false);
-
-        Toolbar toolBarChatBot = view.findViewById(R.id.toolBarChatBot); // Instanciar la variable con el Id del Toolbar.
+        mainLayout = view.findViewById(R.id.fragment_chat_linear_layout);
+        toolBarChatBot = view.findViewById(R.id.toolBarChatBot);
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolBarChatBot);
+        rvListMessages = view.findViewById(R.id.listOfMessages);
+        txtMessageUserSend = view.findViewById(R.id.txtUserMessageSend);
+        btnSendMessage = view.findViewById(R.id.btnSendMessage);
 
-        rvListMessages = view.findViewById(R.id.listOfMessages); // Instanciar la variable con el Id del RecicleView.
-
-        btnSendMessage = view.findViewById(R.id.btnSendMessage); // Instanciar la varibale con el id del Button.
-
-        txtMessageUserSend = view.findViewById(R.id.txtUserMessageSend); // Instanciar la varibale con el id del Edit Text.
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        // Instanciar la lista de mensajes
+        linearLayoutManager = new LinearLayoutManager(view.getContext());
         linearLayoutManager.setStackFromEnd(true);
         rvListMessages.setLayoutManager(linearLayoutManager);
-
-        ValidateAudioRecord(view); // Permitimos la entrada de audio al chat.
 
         messagesAdapter = new MessagesAdapter(listMessagesText, view.getContext());
         messagesAdapter.setChatTextFragment(this);
         messagesAdapter.setListMessageCardMapView(listMessageCardMapView);
         rvListMessages.setAdapter(messagesAdapter); // Adaptamos el Recicle View a al adaptador que contendran los mensajes.
+
 
         dialogflowClass = new DialogflowClass(view.getContext(), listMessagesText, rvListMessages, messagesAdapter, txtMessageUserSend);
         dialogflowClass.ConfigurationDialogflow(); // Para configurar el API de Dialogflow.
@@ -144,7 +162,11 @@ public class ChatTextFragment extends Fragment {
                 if (!txtMessageUserSend.getText().toString().equals("")) { // Si el mensaje es diferente de nulo significa que es un mensaje de texto.
                     dialogflowClass.CreateMessage(txtMessageUserSend.getText().toString()); // Para enviar un mensaje del usuario o de Dialogflow.
                 } else { // Caso contrario es un mensaje de voz.
-                    startSpeech();
+                    if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                        requestMicrophonePermission();
+                    }else{
+                        startSpeech();
+                    }
                 }
 
             }
@@ -360,11 +382,38 @@ public class ChatTextFragment extends Fragment {
         });
     }
 
-    // Método para permitir la entrada de audio.
-    private void ValidateAudioRecord(View view) {
-        if (ContextCompat.checkSelfPermission(view.getContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 1);
+    // Método para solicitar el permiso de uso del micrófono
+    private void requestMicrophonePermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                Manifest.permission.RECORD_AUDIO)) {
+            Snackbar.make(mainLayout,R.string.permission_microphone_rationale,
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Ok", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ActivityCompat.requestPermissions(ChatTextFragment.this.getActivity(),
+                                    new String[]{Manifest.permission.RECORD_AUDIO},
+                                    PermissionsReferences.REQUEST_CODE_RECORD_AUDIO);
+                        }
+                    })
+                    .show();
+        } else {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.RECORD_AUDIO},
+                    PermissionsReferences.REQUEST_CODE_RECORD_AUDIO);
         }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PermissionsReferences.REQUEST_CODE_RECORD_AUDIO: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startSpeech();
+                }
+                break;
+            }
+        }
+
     }
 
     // Métodos para enviar mensajes por voz.

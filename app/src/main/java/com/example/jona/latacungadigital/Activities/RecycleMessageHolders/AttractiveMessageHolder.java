@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
 import com.github.florent37.expansionpanel.ExpansionLayout;
@@ -22,6 +23,9 @@ public class AttractiveMessageHolder extends RecyclerView.ViewHolder {
     private RatingBar ratingBar;
     private CircleIndicator circleIndicator;
     private ExpansionLayout expansionLayout;
+
+    // Variable atractivo
+    private AttractiveClass attractive;
 
     public AttractiveMessageHolder(View itemView) {
         super(itemView);
@@ -44,17 +48,18 @@ public class AttractiveMessageHolder extends RecyclerView.ViewHolder {
 
     @SuppressLint("SetTextI18n")
     public void bind(TextMessageModel message) { // Se asigna la informacion consultada a los TextViews.
+        attractive = message.getAttractive();
         // Se envia el nombre del atractivo a su respetivo TextView.
-        txtNameAttractive.setText(message.getNameAttractive());
+        txtNameAttractive.setText(attractive.getNameAttractive());
         // Se envia la categoria que pertenece el atractivo a su respetivo TextView.
-        txtSubTypeAttractive.setText(message.getSubTypeAttractive());
+        txtSubTypeAttractive.setText(attractive.getSubType());
         // Se envia el rating del atractivo.
-        ratingBar.setRating(message.getRatingAttractive());
+        ratingBar.setRating(Float.parseFloat(attractive.getRating()));
 
         // Se envia la categoría, dirección y la descripción del atractivo a su respetivo TextView.
-        txtInformationAttractive.setText(Html.fromHtml("<b>Categoría: </b>" + message.getCategoryAttactive() + "<br><br>" +
-                "<b>Dirección: </b>" + message.getAddressAttractive() + "<br><br>" +
-                "<b>Descripción: </b>" + message.getDescriptionAttractive().replaceAll("\\\\n", "<br><br>").
+        txtInformationAttractive.setText(Html.fromHtml("<b>Categoría: </b>" + attractive.getCategory() + "<br><br>" +
+                "<b>Dirección: </b>" + attractive.getAddress()+ "<br><br>" +
+                "<b>Descripción: </b>" + attractive.getDescription().replaceAll("\\\\n", "<br><br>").
                 replaceAll("\\\\", "\"")));
 
         txtMoreInformation.setText("Ver Información");
