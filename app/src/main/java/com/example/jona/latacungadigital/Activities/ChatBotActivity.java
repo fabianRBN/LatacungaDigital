@@ -2,6 +2,8 @@ package com.example.jona.latacungadigital.Activities;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -18,7 +20,7 @@ import com.example.jona.latacungadigital.R;
 import java.util.ArrayList;
 
 public class ChatBotActivity extends AppCompatActivity implements ChatTextFragment.OnFragmentInteractionListener, MapaFragment.OnFragmentInteractionListener,
-        DialogAppFragment.NoticeDialogListener {
+        DialogAppFragment.NoticeDialogListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     ChatTextFragment chatFragment;
 
@@ -106,5 +108,11 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
     @Override
     public void onDialogCancelClick(DialogFragment dialog) {
         dialog.getDialog().cancel();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        chatFragment.onRequestPermissionsResult(requestCode,permissions,grantResults);
     }
 }
