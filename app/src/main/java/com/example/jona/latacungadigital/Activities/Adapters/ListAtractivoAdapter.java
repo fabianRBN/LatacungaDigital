@@ -1,18 +1,13 @@
 package com.example.jona.latacungadigital.Activities.Adapters;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +18,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestListener;
 import com.example.jona.latacungadigital.Activities.AtractivoActivity;
 import com.example.jona.latacungadigital.Activities.Haversine.Haversine;
 import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
@@ -64,7 +58,9 @@ public class ListAtractivoAdapter extends BaseAdapter {
 
         haversine = new Haversine();
 
-        location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        if ( ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
+            location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        }
 
         if(location!= null){
             start = new Coordenada(location.getLatitude(),location.getLongitude());
@@ -72,7 +68,6 @@ public class ListAtractivoAdapter extends BaseAdapter {
         {
             start = new Coordenada(0,0);
         }
-
     }
 
 
