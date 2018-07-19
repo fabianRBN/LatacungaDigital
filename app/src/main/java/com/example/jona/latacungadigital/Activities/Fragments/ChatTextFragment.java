@@ -109,6 +109,10 @@ public class ChatTextFragment extends Fragment{
 
     public DialogAppFragment getDialogAppFragment() { return dialogAppFragment; }
 
+    public View getMainLayout() {
+        return mainLayout;
+    }
+
     // --------------------------------------------- //
     // Métodos de la  clase Fragment                 //
     // --------------------------------------------- //
@@ -411,6 +415,10 @@ public class ChatTextFragment extends Fragment{
                     startSpeech();
                 }
                 break;
+            }
+            case PermissionsReferences.REQUEST_CODE_ACCESS_FINE_LOCATION: {
+                this.listMessageCardMapView.get(this.listMessageCardMapView.size() - 1)
+                        .onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
         }
 

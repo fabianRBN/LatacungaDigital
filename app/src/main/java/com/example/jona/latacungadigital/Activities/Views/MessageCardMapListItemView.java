@@ -1,10 +1,12 @@
 package com.example.jona.latacungadigital.Activities.Views;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -19,8 +21,10 @@ import com.example.jona.latacungadigital.Activities.Adapters.MyOnInfoWindowsClic
 import com.example.jona.latacungadigital.Activities.ChatBotActivity;
 import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
+import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
+import com.example.jona.latacungadigital.Activities.References.PermissionsReferences;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,6 +43,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
     private MessagesAdapter messagesAdapter;
     private TextMessageModel message;
     Context context;
+    private boolean isLocationEnabled;
 
     // Variables para editar el mapa
     ArrayList<ServiceClass> listService;
@@ -48,10 +53,12 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
     GoogleMap gMap;
     LatLng currentUserLatLng;
     LatLng destinationLatLng;
+    MarkerOptions markerUser;
 
     // Varaibles de acuerdo a los componentes que comprenden el layout: message_cv_map.xml
-    protected TextView txtTitle;
-    protected MapView mapView;
+    private TextView txtTitle;
+    private MapView mapView;
+    private TextView txtLocationRequired;
 
     // Constructores de la clase
     public MessageCardMapListItemView(@NonNull Context context) {
@@ -69,6 +76,8 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
         View view = LayoutInflater.from(context).inflate(R.layout.message_cv_map, this);
         txtTitle = view.findViewById(R.id.txtTitle);
         mapView = view.findViewById(R.id.mapView);
+        txtLocationRequired = view.findViewById(R.id.txt_location_required);
+        txtLocationRequired.setVisibility(View.GONE);
         this.context = context;
     }
 
@@ -177,23 +186,8 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
         gMap.addMarker(markerOptions);
     }
 
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        gMap = googleMap;
-        gMap.clear();
-
-        // Validar si la aplicacion tiene el permiso de Localizacion
-        if ( ContextCompat.checkSelfPermission(this.messagesAdapter.getChatTextFragment().getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions(this.messagesAdapter.getChatTextFragment().getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
-            return;
-        }
-
-        // Definir la posicion de la camara en el map
-        LatLngBounds centroHistorico = new LatLngBounds(
-                new LatLng(-0.9364, -78.6163), new LatLng(-0.9301, -78.6129));
-        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centroHistorico.getCenter(), 15));
-
+    // Encontrar la ubicacion del usuario
+    private void getUserPosition(){
         // Encontrar la posicion del usuario
         EstadoGPS estadoGPS = new EstadoGPS(context, gMap); // Variable para obtener la locacion donde se encuentra el usuario.
         estadoGPS.getCurrentLocation(); // Leer las coordenadas actuales de donde se encunetra el usuario y almacenarlo en un metodo Setter.
@@ -204,10 +198,97 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
         }
 
         // Crear un marcador para la posicion del usuario
-        MarkerOptions markerUser = new MarkerOptions()
+        markerUser = new MarkerOptions()
                 .position(currentUserLatLng) // Coordenadas actuales de donde se encunetra el usuario.
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_user_dark_blue));
         gMap.addMarker(markerUser);
+    }
+
+    // Dibujar la ruta hacia el destino selecionado
+    private void drawRoute(LatLng currentUserLatLng, LatLng destinationLatLng){
+        if (attractive != null) {
+            // Crear marcador para la posicion del atractivo de destino
+            createMarkerForAttractive(attractive);
+        } else {
+            // Crear marcador para la posicion del servicio de destino
+            createMarkerForService(service);
+        }
+
+        // Dibujar la ruta de como llegar al destino.
+        MyOnInfoWindowsClickListener myOnInfoWindowsClickListener = new MyOnInfoWindowsClickListener(context, gMap);
+        myOnInfoWindowsClickListener.distanciaGoogle(currentUserLatLng, destinationLatLng);
+
+        // Posicionar la camara segun la ruta de donde se encuentre el usuario con el punto de destino.
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(currentUserLatLng);
+        builder.include(destinationLatLng);
+        gMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
+    }
+
+    // Solicitar el permiso de localización
+    private void requestLocationPermission() {
+        final ChatTextFragment chatTextFragment = this.messagesAdapter.getChatTextFragment();
+        View mainLayout = chatTextFragment.getMainLayout();
+        if (ActivityCompat.shouldShowRequestPermissionRationale(chatTextFragment.getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+            Snackbar.make(mainLayout,R.string.permission_location_rationale,
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Ok", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ActivityCompat.requestPermissions(chatTextFragment.getActivity(),
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    PermissionsReferences.REQUEST_CODE_ACCESS_FINE_LOCATION);
+                        }
+                    })
+                    .show();
+        } else {
+            ActivityCompat.requestPermissions(chatTextFragment.getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PermissionsReferences.REQUEST_CODE_ACCESS_FINE_LOCATION);
+        }
+    }
+
+    // Método a llamar despues de solicitar permiso
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PermissionsReferences.REQUEST_CODE_ACCESS_FINE_LOCATION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    isLocationEnabled = true;
+                    txtLocationRequired.setVisibility(View.GONE);
+                    mapView.setVisibility(View.VISIBLE);
+                    if(markerUser == null){
+                        getUserPosition();
+                    }
+                    drawRoute(currentUserLatLng,destinationLatLng);
+                } else {
+                    isLocationEnabled = false;
+                    txtLocationRequired.setVisibility(View.VISIBLE);
+                    mapView.setVisibility(View.INVISIBLE);
+                }
+                break;
+            }
+        }
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        gMap = googleMap;
+        gMap.clear();
+
+        // Validar si la aplicacion tiene el permiso de Localización
+        if ( ContextCompat.checkSelfPermission(this.messagesAdapter.getChatTextFragment().getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            isLocationEnabled = false;
+        } else{
+            isLocationEnabled = true;
+            getUserPosition(); // Si el permiso de localización está habilitado, se busca la posición del usuario
+        }
+
+        // Definir la posicion de la camara en el map
+        LatLngBounds centroHistorico = new LatLngBounds(
+                new LatLng(-0.9364, -78.6163), new LatLng(-0.9301, -78.6129));
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centroHistorico.getCenter(), 15));
 
         switch (message.getAction()){
             case "consultarAtractivoEnElArea":
@@ -228,22 +309,15 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                 break;
             case "attraction_information_intent.attraction_information_intent-yes":
             case "service_information_intent.service_information_intent-yes":
-                if (attractive != null) {
-                    // Crear marcador para la posicion del atractivo de destino
-                    createMarkerForAttractive(attractive);
-                } else {
-                    // Crear marcador para la posicion del servicio de destino
-                    createMarkerForService(service);
+                if(!isLocationEnabled){
+                    txtLocationRequired.setVisibility(View.VISIBLE);
+                    requestLocationPermission();
+                }else{
+                    if(markerUser == null){
+                        getUserPosition();
+                    }
+                    drawRoute(currentUserLatLng,destinationLatLng);
                 }
-                // Dibujar la ruta de como llegar al destino.
-                MyOnInfoWindowsClickListener myOnInfoWindowsClickListener = new MyOnInfoWindowsClickListener(context, gMap);
-                myOnInfoWindowsClickListener.distanciaGoogle(currentUserLatLng, destinationLatLng);
-
-                // Posicionar la camara segun la ruta de donde se encuentre el usuario con el punto de destino.
-                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                builder.include(currentUserLatLng);
-                builder.include(destinationLatLng);
-                gMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
                 break;
         }
         // Definir la funcion de click en el mapa
