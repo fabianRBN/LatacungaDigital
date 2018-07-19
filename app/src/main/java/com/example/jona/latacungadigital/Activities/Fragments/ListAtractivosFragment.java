@@ -278,36 +278,39 @@ public class ListAtractivosFragment extends Fragment implements SwipeRefreshLayo
 
                 listaAtractivo.clear();
                 for (DataSnapshot child: dataSnapshot.getChildren()){
-                    AtractivoModel atractivoModel = new AtractivoModel();
-                    atractivoModel.setNombre(child.child("nombre").getValue().toString());
-                    if(child.child("funcionAR").getValue() != null){
-                        atractivoModel.funcionAR = true;
-                    }else{
-                        atractivoModel.funcionAR = false;
-                    }
-                    if(child.child("imagen360").getValue() != null){
-                        atractivoModel.funcionVR = true;
-                    }else{
-                        atractivoModel.funcionVR = false;
-                    }
-                    atractivoModel.setSubtipo(child.child("subtipo").getValue().toString());
-                    atractivoModel.setRating(Float.parseFloat(child.child("rating").getValue().toString()));
-                    atractivoModel.setKey(child.getKey().toString());
-                    for(DataSnapshot child_galeria: child.child("galeria").getChildren()){
-                        atractivoModel.setPathImagen(child_galeria.child("imagenURL").getValue().toString());
-                    }
-                    atractivoModel.setPosicion(child.child("posicion").getValue(Coordenada.class));
+                    if(child.child("subtipo").getValue()!= null){
+                        AtractivoModel atractivoModel = new AtractivoModel();
+                        atractivoModel.setNombre(child.child("nombre").getValue().toString());
+                        if(child.child("funcionAR").getValue() != null){
+                            atractivoModel.funcionAR = true;
+                        }else{
+                            atractivoModel.funcionAR = false;
+                        }
+                        if(child.child("imagen360").getValue() != null){
+                            atractivoModel.funcionVR = true;
+                        }else{
+                            atractivoModel.funcionVR = false;
+                        }
+                        atractivoModel.setSubtipo(child.child("subtipo").getValue().toString());
+                        atractivoModel.setRating(Float.parseFloat(child.child("rating").getValue().toString()));
+                        atractivoModel.setKey(child.getKey().toString());
+                        for(DataSnapshot child_galeria: child.child("galeria").getChildren()){
+                            atractivoModel.setPathImagen(child_galeria.child("imagenURL").getValue().toString());
+                        }
+                        atractivoModel.setPosicion(child.child("posicion").getValue(Coordenada.class));
 
 
-                    System.out.println("Atractivo: "+ iglesias +" "+ atractivoModel.getSubtipo() );
-                    if(iglesias && (atractivoModel.getSubtipo().equals("Arquitectura Religiosa") || atractivoModel.getSubtipo().equals("Manifestaciones Religiosas, Tradiciones y Creencias Populares" )) ){
-                        listaAtractivo.add(atractivoModel);
-                    } else if(civil && (atractivoModel.getSubtipo().equals("Arquitectura Civil") || atractivoModel.getSubtipo().equals("Obras Técnicas") ) ){
-                        listaAtractivo.add(atractivoModel);
-                    }else  if(museo_h && atractivoModel.getSubtipo().equals( "Sectores Históricos"  )){
-                        listaAtractivo.add(atractivoModel);
-                    }else if(museo && (atractivoModel.getSubtipo().equals("Museo") || atractivoModel.getSubtipo().equals("Museos históricos"))){
-                        listaAtractivo.add(atractivoModel);
+                        System.out.println("Atractivo: "+ iglesias +" "+ atractivoModel.getSubtipo() );
+                        if(iglesias && (atractivoModel.getSubtipo().equals("Arquitectura Religiosa") || atractivoModel.getSubtipo().equals("Manifestaciones Religiosas, Tradiciones y Creencias Populares" )) ){
+                            listaAtractivo.add(atractivoModel);
+                        } else if(civil && (atractivoModel.getSubtipo().equals("Arquitectura Civil") || atractivoModel.getSubtipo().equals("Obras Técnicas") ) ){
+                            listaAtractivo.add(atractivoModel);
+                        }else  if(museo_h && atractivoModel.getSubtipo().equals( "Sectores Históricos"  )){
+                            listaAtractivo.add(atractivoModel);
+                        }else if(museo && (atractivoModel.getSubtipo().equals("Museo") || atractivoModel.getSubtipo().equals("Museos históricos"))){
+                            listaAtractivo.add(atractivoModel);
+                        }
+
                     }
 
 
