@@ -19,7 +19,6 @@ import com.example.jona.latacungadigital.Activities.Fragments.BottomSheetFragmen
 import com.example.jona.latacungadigital.Activities.Fragments.DialogAppFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.ListAtractivosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
-import com.example.jona.latacungadigital.Activities.Fragments.MenuARFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.TrackeadosFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.TrackinFragment;
 import com.example.jona.latacungadigital.R;
@@ -33,8 +32,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.common.api.ResultCallback;
 
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener,

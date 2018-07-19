@@ -24,8 +24,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -71,6 +73,17 @@ public class ListAtractivosFragment extends Fragment implements SwipeRefreshLayo
     final AlertDialog alert = null;
     LocationManager manager;
 
+    private boolean iglesias = true;
+
+    private boolean museo = true;
+
+    private boolean museo_h = true;
+
+    private boolean civil = true;
+
+    private ImageButton img_iglesia, img_museo, img_museo_h, img_civil;
+
+    private LinearLayout linearLayoutMenu;
 
     public ListAtractivosFragment() {
         // Required empty public constructor
@@ -91,7 +104,7 @@ public class ListAtractivosFragment extends Fragment implements SwipeRefreshLayo
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list_atractivos, container, false);
 
-
+        linearLayoutMenu = (LinearLayout) view.findViewById(R.id.layout_menu);
         listView = (ListView) view.findViewById(R.id.listViewAtractivos);
 
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar_atractivos);
@@ -124,9 +137,80 @@ public class ListAtractivosFragment extends Fragment implements SwipeRefreshLayo
         });
 
 
+        img_civil = (ImageButton) view.findViewById(R.id.img_civl);
+        img_iglesia = (ImageButton) view.findViewById(R.id.img_iglesia);
+        img_museo = (ImageButton) view.findViewById(R.id.img_museo);
+        img_museo_h = (ImageButton) view.findViewById(R.id.img_museo_h);
+
+        iconosIniciales();
+
+        img_civil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(civil){
+                    img_civil.setBackgroundResource(R.drawable.ic_civil_select);
+                    civil = false;
+                }else{
+                    img_civil.setBackgroundResource(R.drawable.ic_civil);
+                    civil = true;
+                }
+                verificarGPS();
+
+            }
+        });
+
+        img_iglesia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(iglesias){
+                    img_iglesia.setBackgroundResource(R.drawable.ic_church_select);
+                    iglesias = false;
+                }else{
+                    img_iglesia.setBackgroundResource(R.drawable.ic_church);
+                    iglesias = true;
+                }
+                verificarGPS();
+            }
+        });
+
+        img_museo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(museo){
+                    img_museo.setBackgroundResource(R.drawable.ic_museum_select);
+                    museo = false;
+                }else{
+                    img_museo.setBackgroundResource(R.drawable.ic_museum);
+                    museo = true;
+                }
+                verificarGPS();
+            }
+        });
+
+        img_museo_h.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(museo_h){
+                    img_museo_h.setBackgroundResource(R.drawable.ic_museo_select);
+                    museo_h = false;
+                }else{
+                    img_museo_h.setBackgroundResource(R.drawable.ic_museo);
+                    museo_h = true;
+                }
+                verificarGPS();
+            }
+        });
+
+
         return view;
     }
 
+    public void iconosIniciales(){
+        img_iglesia.setBackgroundResource(R.drawable.ic_church);
+        img_museo.setBackgroundResource(R.drawable.ic_museum);
+        img_museo_h.setBackgroundResource(R.drawable.ic_museo);
+        img_civil.setBackgroundResource(R.drawable.ic_civil);
+    }
     @Override
     public void onStart() {
         super.onStart();
@@ -214,7 +298,18 @@ public class ListAtractivosFragment extends Fragment implements SwipeRefreshLayo
                     }
                     atractivoModel.setPosicion(child.child("posicion").getValue(Coordenada.class));
 
-                    listaAtractivo.add(atractivoModel);
+
+                    System.out.println("Atractivo: "+ iglesias +" "+ atractivoModel.getSubtipo() );
+                    if(iglesias && (atractivoModel.getSubtipo().equals("Arquitectura Religiosa") || atractivoModel.getSubtipo().equals("Manifestaciones Religiosas, Tradiciones y Creencias Populares" )) ){
+                        listaAtractivo.add(atractivoModel);
+                    } else if(civil && (atractivoModel.getSubtipo().equals("Arquitectura Civil") || atractivoModel.getSubtipo().equals("Obras Técnicas") ) ){
+                        listaAtractivo.add(atractivoModel);
+                    }else  if(museo_h && atractivoModel.getSubtipo().equals( "Sectores Históricos"  )){
+                        listaAtractivo.add(atractivoModel);
+                    }else if(museo && (atractivoModel.getSubtipo().equals("Museo") || atractivoModel.getSubtipo().equals("Museos históricos"))){
+                        listaAtractivo.add(atractivoModel);
+                    }
+
 
                 }
 
@@ -304,10 +399,13 @@ public class ListAtractivosFragment extends Fragment implements SwipeRefreshLayo
 
                 @Override
                 public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+
                     int filaSuperior = (
                             listaAtractivo == null//Si la lista esta vacía ó
                                     || listView.getChildCount() == 0) ? 0 : listView.getChildAt(0).getTop();//Estamos en el elemento superior
                     swipeContainer.setEnabled(filaSuperior >= 0); //Activamos o desactivamos el swipe layout segun corresponda
+
                 }
             });
     }

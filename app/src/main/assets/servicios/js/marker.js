@@ -36,7 +36,7 @@ function Marker(poiData) {
                 break;
       case "Recreación, diversión, esparcimiento":
                 iconAR = new AR.ImageResource("assets/servicios/recreacion.png");
-                iconAR_selected = new AR.ImageResource("assets/servicios/recreacion_select.png");
+                iconAR_selected = new AR.ImageResource("assets/servicios/recreacio_select.png");
         break;
       case "Transporte turístico":
                  iconAR = new AR.ImageResource("assets/servicios/transporte.png");
