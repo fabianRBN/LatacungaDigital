@@ -18,7 +18,7 @@ var World = {
 
     init: function initFn(poiData) {
      //for (var lugar = 0; lugar< 2; lugar++) {
-        this.targetCollectionResource = new AR.TargetCollectionResource("assets/pruebahoy.wtc", {
+        this.targetCollectionResource = new AR.TargetCollectionResource("assets/prueba.wtc", {
             onError: function(errorMessage) {
                 alert(errorMessage);
             }
