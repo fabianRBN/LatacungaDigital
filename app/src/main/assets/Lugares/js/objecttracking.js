@@ -298,7 +298,8 @@ var World = {
                                                        titulopermiso, Permiso,overlaypermiso,
                                                        titulouso,Uso,overlayuso,
                                                        titulopositivo, Positivo, overlaypositivo,
-                                                       titulonegativo, Negativo, overlaynegativo, titulohorario, Domingo,Lunes, Martes,Miercoles,Jueves,Viernes,Sabado, overlaytiempo]
+                                                       titulonegativo, Negativo, overlaynegativo, titulohorario,
+                                                       Domingo,Lunes, Martes,Miercoles,Jueves,Viernes,Sabado, overlaytiempo]
                                 this.objectTrackable = new AR.ObjectTrackable(this.tracker, singlePoi.targetName, {
                                     drawables: {
                                         cam: drawables
