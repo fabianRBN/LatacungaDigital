@@ -4,25 +4,18 @@ import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TextMessageModel {
 
     // Declaración de variables de los mensajes de texto.
     private String message;
     private int viewTypeMessage ; // Para saber si el usuario o el chatbot envio el mensaje.
-    private List<String> listImagesURL; // Para almacenar todas las imagenes en un array.
     private String titulo;
+    private String parameter;
 
     // Declaracion de variables de la información de los atractivos turisticos.
-    private String nameAttractive;
-    private String categoryAttactive;
-    private String descriptionAttractive;
-    private String addressAttractive;
-    private String subTypeAttractive;
     private double latitude;
     private double longitude;
-    private float ratingAttractive;
 
     // Declaracion de variables para la consulta.
     private String action;
@@ -50,22 +43,6 @@ public class TextMessageModel {
     public int getViewTypeMessage() { return viewTypeMessage; }
 
     public void setViewTypeMessage(int viewTypeMessage) { this.viewTypeMessage = viewTypeMessage; }
-
-    public List<String> getListImagesURL() { return listImagesURL; }
-
-    public void setListImagesURL(List<String> listImagesURL) { this.listImagesURL = listImagesURL; }
-
-    public String getNameAttractive() { return nameAttractive; }
-
-    public void setNameAttractive(String nameAttractive) { this.nameAttractive = nameAttractive; }
-
-    public String getCategoryAttactive() { return categoryAttactive; }
-
-    public void setCategoryAttactive(String categoryAttactive) { this.categoryAttactive = categoryAttactive; }
-
-    public String getDescriptionAttractive() { return descriptionAttractive; }
-
-    public void setDescriptionAttractive(String descriptionAttractive) { this.descriptionAttractive = descriptionAttractive; }
 
     public String getAction() {
         return action;
@@ -123,15 +100,7 @@ public class TextMessageModel {
 
     public void setLongitude(double longitude) { this.longitude = longitude; }
 
-    public String getAddressAttractive() { return addressAttractive; }
+    public String getParameter() { return parameter; }
 
-    public void setAddressAttractive(String addressAttractive) { this.addressAttractive = addressAttractive; }
-
-    public float getRatingAttractive() { return ratingAttractive; }
-
-    public void setRatingAttractive(float ratingAttractive) { this.ratingAttractive = ratingAttractive; }
-
-    public String getSubTypeAttractive() { return subTypeAttractive; }
-
-    public void setSubTypeAttractive(String subTypeAttractive) { this.subTypeAttractive = subTypeAttractive; }
+    public void setParameter(String parameter) { this.parameter = parameter; }
 }

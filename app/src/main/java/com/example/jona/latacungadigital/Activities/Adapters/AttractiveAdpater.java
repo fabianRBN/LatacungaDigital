@@ -13,13 +13,14 @@ import com.bumptech.glide.Glide;
 import com.example.jona.latacungadigital.R;
 
 import java.util.List;
+import java.util.Objects;
 
 public class AttractiveAdpater extends PagerAdapter {
 
     private Context context;
     private List<String> listImagenURL;
 
-    public AttractiveAdpater(Context context, List<String> listImagenURL) {
+    AttractiveAdpater(Context context, List<String> listImagenURL) {
         this.context = context;
         this.listImagenURL = listImagenURL;
     }
@@ -42,14 +43,13 @@ public class AttractiveAdpater extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.image_attractive_content, container, false);
+        View view = Objects.requireNonNull(layoutInflater).inflate(R.layout.image_attractive_content, container, false);
         ImageView imageView = view.findViewById(R.id.imagePlacesInformation);
 
         Glide.with(view.getContext()).load(listImagenURL.get(position)).centerCrop().into(imageView);
 
         ViewPager viewPager = (ViewPager) container;
         viewPager.addView(view, 0);
-
 
         return view;
     }

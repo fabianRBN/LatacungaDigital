@@ -3,6 +3,7 @@ package com.example.jona.latacungadigital.Activities.Adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,10 @@ import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
 import com.github.florent37.expansionpanel.viewgroup.ExpansionLayoutCollection;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MessagesAdapter extends RecyclerView.Adapter {
 
@@ -98,7 +102,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 ((ChatBotTypingHolder) holder).bind();
                 break;
             case ChatBotReferences.VIEW_TYPE_MESSAGE_ATTRACTIVE_CHATBOT:
-                AttractiveAdpater attractiveAdpater = new AttractiveAdpater(context, listChatModel.get(position).getAttractive().getListImages());
+                AttractiveAdpater attractiveAdpater = new AttractiveAdpater(context, deleteDuplicateImageData(position));
                 ((AttractiveMessageHolder) holder).getViewPager().setAdapter(attractiveAdpater);
                 ((AttractiveMessageHolder) holder).getCircleIndicator().setViewPager(((AttractiveMessageHolder) holder).getViewPager());
                 attractiveAdpater.registerDataSetObserver(((AttractiveMessageHolder) holder).getCircleIndicator().getDataSetObserver());
@@ -129,5 +133,14 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
         return listChatModel.get(position).getViewTypeMessage();
+    }
+
+    // Método para eliminar los datos duplicados de la lista de imagenes.
+    private List<String> deleteDuplicateImageData(int position) {
+        List<String> listImagesAttractive = listChatModel.get(position).getAttractive().getListImages();
+        HashSet<String> hashSet = new HashSet<>(listImagesAttractive);
+        listImagesAttractive.clear();
+        listImagesAttractive.addAll(hashSet);
+        return listImagesAttractive;
     }
 }
