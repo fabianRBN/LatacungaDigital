@@ -38,7 +38,7 @@ function Marker(poiData) {
     this.titleLabel = new AR.Label(poiData.title, 0.6, {
         zOrder: 1,
         translate: {
-            y: 0.55
+            y: -1
         },
         style: {
             textColor: '#FFFFFF',
@@ -47,7 +47,7 @@ function Marker(poiData) {
     });
 
     // create an AR.Label for the marker's description
-    this.descriptionLabel = new AR.Label(poiData.description.trunc(15), 0.4, {
+    /*this.descriptionLabel = new AR.Label(poiData.description.trunc(15), 0.4, {
         zOrder: 1,
         translate: {
             y: 0
@@ -55,7 +55,7 @@ function Marker(poiData) {
         style: {
             textColor: '#FFFFFF'
         }
-    });
+    });*/
 
     /*
         Create an AR.ImageDrawable using the AR.ImageResource for the direction indicator which was created in the World. Set options regarding the offset and anchor of the image so that it will be displayed correctly on the edge of the screen.
@@ -99,7 +99,7 @@ function Marker(poiData) {
     */
     this.markerObject = new AR.GeoObject(markerLocation, {
         drawables: {
-            cam: [this.markerDrawable_idle, this.markerDrawable_selected, this.titleLabel, this.descriptionLabel],
+            cam: [this.markerDrawable_idle, this.markerDrawable_selected, this.titleLabel],
             indicator: this.directionIndicatorDrawable,
             radar: this.radardrawables
         }

@@ -74,6 +74,9 @@ var World = {
 		// set distance slider to 100%
 		$("#panel-distance-range").val(100);
 		$("#panel-distance-range").slider("refresh");
+		// set distance slider to 100%
+                		$("#panel-distance-range-exact").val(1);
+                		$("#panel-distance-range-exact").slider("refresh");
 	},
 
 	// sets/updates distances of all makers so they are available way faster than calling (time-consuming) distanceToUser() method all the time
@@ -179,30 +182,34 @@ var World = {
 	},
 
 	// udpates values show in "range panel"
-	updateRangeValues: function updateRangeValuesFn() {
+    	updateRangeValues: function updateRangeValuesFn() {
 
-		// get current slider value (0..100);
-		var slider_value = $("#panel-distance-range").val();
+    		// get current slider value (0..100);
+    		var slider_value = $("#panel-distance-range").val();
 
-		// max range relative to the maximum distance of all visible places
-		var maxRangeMeters = Math.round(World.getMaxDistance() * (slider_value / 100));
+    		var slider_value_exact = $("#panel-distance-range-exact").val();
 
-		// range in meters including metric m/km
-		var maxRangeValue = (maxRangeMeters > 999) ? ((maxRangeMeters / 1000).toFixed(2) + " km") : (Math.round(maxRangeMeters) + " m");
+    		slider_value = slider_value / slider_value_exact ;
 
-		// number of places within max-range
-		var placesInRange = World.getNumberOfVisiblePlacesInRange(maxRangeMeters);
+    		// max range relative to the maximum distance of all visible places
+    		var maxRangeMeters = Math.round(World.getMaxDistance() * (slider_value / 100));
 
-		// update UI labels accordingly
-		$("#panel-distance-value").html(maxRangeValue);
-		$("#panel-distance-places").html((placesInRange != 1) ? (placesInRange + " Places") : (placesInRange + " Place"));
+    		// range in meters including metric m/km
+    		var maxRangeValue = (maxRangeMeters > 999) ? ((maxRangeMeters / 1000).toFixed(2) + " km") : (Math.round(maxRangeMeters) + " m");
 
-		// update culling distance, so only places within given range are rendered
-		AR.context.scene.cullingDistance = Math.max(maxRangeMeters, 1);
+    		// number of places within max-range
+    		var placesInRange = World.getNumberOfVisiblePlacesInRange(maxRangeMeters);
 
-		// update radar's maxDistance so radius of radar is updated too
-		PoiRadar.setMaxDistance(Math.max(maxRangeMeters, 1));
-	},
+    		// update UI labels accordingly
+    		$("#panel-distance-value").html(maxRangeValue);
+    		$("#panel-distance-places").html((placesInRange != 1) ? (placesInRange + " Places") : (placesInRange + " Place"));
+
+    		// update culling distance, so only places within given range are rendered
+    		AR.context.scene.cullingDistance = Math.max(maxRangeMeters, 1);
+
+    		// update radar's maxDistance so radius of radar is updated too
+    		PoiRadar.setMaxDistance(Math.max(maxRangeMeters, 1));
+    	},
 
 	// returns number of places with same or lower distance than given range
 	getNumberOfVisiblePlacesInRange: function getNumberOfVisiblePlacesInRangeFn(maxRangeMeters) {
@@ -237,27 +244,29 @@ var World = {
 	},
 
 	// display range slider
-	showRange: function showRangeFn() {
-		if (World.markerList.length > 0) {
+    	showRange: function showRangeFn() {
+    		if (World.markerList.length > 0) {
 
-			// update labels on every range movement
-			$('#panel-distance-range').change(function() {
-				World.updateRangeValues();
-			});
+    			// update labels on every range movement
+    			$('#panel-distance-range').change(function() {
+    				World.updateRangeValues();
+    			});
 
-			World.updateRangeValues();
-			World.handlePanelMovements();
+                $('#panel-distance-range-exact').change(function() {
+    				World.updateRangeValues();
+    			});
+    			World.updateRangeValues();
+    			World.handlePanelMovements();
 
-			// open panel
-			$("#panel-distance").trigger("updatelayout");
-			$("#panel-distance").panel("open", 1234);
-		} else {
+    			// open panel
+    			$("#panel-distance").trigger("updatelayout");
+    			$("#panel-distance").panel("open", 1234);
+    		} else {
 
-			// no places are visible, because the are not loaded yet
-			World.updateStatusMessage('No places available yet', true);
-		}
-	},
-
+    			// no places are visible, because the are not loaded yet
+    			World.updateStatusMessage('No places available yet', true);
+    		}
+    	},
 	// reload places from content source
 	reloadPlaces: function reloadPlacesFn() {
 		if (!World.isRequestingData) {

@@ -14,7 +14,7 @@ var World = {
     loaded: false,
     drawables: [],
     init: function initFn(poiData) {
-        this.targetCollectionResource = new AR.TargetCollectionResource("assets/Lugares.wto", {
+        this.targetCollectionResource = new AR.TargetCollectionResource("assets/Latacunga.wto", {
                 });
 
                 this.tracker = new AR.ObjectTracker(this.targetCollectionResource, {
@@ -40,7 +40,7 @@ var World = {
                 				"horario":poiData[i].horario,
                 				"direccion":poiData[i].direccion
                 			};
-                var Titulo = new AR.Label(singlePoi.name, 0.5, {
+                var Titulo = new AR.Label(singlePoi.name, 0.2, {
                                                          opacity: 0.9,
                                                          zOrder: 1,
                                                          style: {
@@ -48,7 +48,7 @@ var World = {
                                                          },
                                                          translate: {
                                                            x: 0,
-                                                           y: 2.5,
+                                                           y: 1,
                                                            z: 0
                                                          }
                                                      });
@@ -59,28 +59,28 @@ var World = {
                                                                 textColor: '#48C9B0'
                                                                 },
                                                                 translate: {
-                                                                x: -0.8,
-                                                                y: 1.1,
-                                                                z: 0.5
+                                                                x: -0.4,
+                                                                y: 0.7,
+                                                                z: 0
                                                                 }
                                                                 });
-                var Direccion = new AR.Label(singlePoi.direccion, 0.1, {
+                var Direccion = new AR.Label(singlePoi.direccion, 0.08, {
                                                 zOrder: 1,
                                                 style: {
                                                 textColor: '#48C9B0'
                                                 },
                                                 translate: {
-                                                x: -0.8,
-                                                y: 1,
-                                                z: 0.5
+                                                x: -0.6,
+                                                y: 0.5,
+                                                z: 0
                                                 }
                                                 });
          var imgOne = new AR.ImageResource("assets/direccion.png");
-         var overlaydireccion = new AR.ImageDrawable(imgOne, 0.6, {
+         var overlaydireccion = new AR.ImageDrawable(imgOne, 0.3, {
          			translate: {
-         				x:-1,
-         				y:1,
-         				z:0.5
+         				x:-0.5,
+         				y:0.7,
+         				z:0
          			}
 
          });
@@ -93,28 +93,28 @@ var World = {
                                                                 textColor: '#8E44AD'
                                                                 },
                                                                 translate: {
-                                                                x: -0.8,
-                                                                y: 0.4,
-                                                                z: 0.5
+                                                                x: -0.4,
+                                                                y: 0.3,
+                                                                z: 0
                                                                 }
                                                                 });
-                var Permiso = new AR.Label(singlePoi.permisos, 0.1, {
+                var Permiso = new AR.Label(singlePoi.permisos, 0.08, {
                                                 zOrder: 1,
                                                 style: {
                                                 textColor: '#8E44AD'
                                                 },
                                                 translate: {
-                                                x: -0.8,
-                                                y: 0.3,
-                                                z: 0.5
+                                                x: -0.6,
+                                                y: 0.1,
+                                                z: 0
                                                 }
                                                 });
          var imgOne = new AR.ImageResource("assets/permiso.png");
-         var overlaypermiso = new AR.ImageDrawable(imgOne, 0.6, {
+         var overlaypermiso = new AR.ImageDrawable(imgOne, 0.3, {
          			translate: {
-         				x:-1,
+         				x:-0.5,
          				y:0.3,
-         				z:0.5
+         				z:0
          			}
 
          });
@@ -126,92 +126,92 @@ var World = {
                                                                          textColor: '#229954'
                                                                          },
                                                                          translate: {
-                                                                         x: -0.8,
-                                                                         y: -0.2,
-                                                                         z: 0.5
+                                                                         x: -0.4,
+                                                                         y: -0.1,
+                                                                         z: 0
                                                                          }
                                                                          });
-                         var Uso = new AR.Label(singlePoi.usoActual, 0.1, {
+                         var Uso = new AR.Label(singlePoi.usoActual, 0.08, {
                                                          zOrder: 1,
                                                          style: {
                                                          textColor: '#229954'
                                                          },
                                                          translate: {
-                                                         x: -0.8,
+                                                         x: -0.5,
                                                          y: -0.3,
-                                                         z: 0.5
+                                                         z: 0
                                                          }
                                                          });
                   var imgOne = new AR.ImageResource("assets/uso.png");
-                  var overlayuso = new AR.ImageDrawable(imgOne, 0.6, {
+                  var overlayuso = new AR.ImageDrawable(imgOne, 0.3, {
                   			translate: {
-                  				x:-1,
-                  				y:-0.3,
-                  				z:0.5
+                  				x:-0.5,
+                  				y:-0.1,
+                  				z:0
                   			}
 
                   });
                   //impacto positivo
-          var titulopositivo = new AR.Label("Impacto Positivo:", 0.1, {
+          var titulopositivo = new AR.Label("Impacto Positivo:", 0.08, {
                               zOrder: 1,
                               style: {
                               textColor: '#5DADE2'
                              },
                              translate: {
-                              x: 1,
-                              y: 1.1,
-                             z: 0.5
+                              x: 0.7,
+                              y: 0.7,
+                             z: 0
                               }
                              });
-                             var Positivo = new AR.Label(singlePoi.impactoPositivo, 0.1, {
+                             var Positivo = new AR.Label(singlePoi.impactoPositivo, 0.08, {
                                                              zOrder: 1,
                                                              style: {
                                                              textColor: '#5DADE2'
                                                              },
                                                              translate: {
-                                                             x: 1,
-                                                             y: 1,
-                                                             z: 0.5
+                                                             x: 0.7,
+                                                             y: 0.5,
+                                                             z: 0
                                                              }
                                                              });
                       var imgOne = new AR.ImageResource("assets/positivo.png");
-                      var overlaypositivo = new AR.ImageDrawable(imgOne, 0.6, {
+                      var overlaypositivo = new AR.ImageDrawable(imgOne, 0.3, {
                       			translate: {
-                      				x:1,
-                      				y:1,
-                      				z:0.5
+                      				x:0.5,
+                      				y:0.7,
+                      				z:0
                       			}
 
                       });
                       //impacto negativo
-                      var titulonegativo = new AR.Label("Impacto Negativo:", 0.1, {
+                      var titulonegativo = new AR.Label("Impacto Negativo:", 0.08, {
                                                     zOrder: 1,
                                                     style: {
                                                     textColor: '#EC7063'
                                                    },
                                                    translate: {
-                                                    x: 1,
-                                                    y: 0.4,
-                                                   z: 0.5
+                                                    x: 0.7,
+                                                    y: 0.3,
+                                                   z: 0
                                                     }
                                                    });
-                    var Negativo = new AR.Label(singlePoi.impactoNegativo, 0.1, {
+                    var Negativo = new AR.Label(singlePoi.impactoNegativo, 0.08, {
                                                    zOrder: 1,
                                                      style: {
                                                        textColor: '#EC7063'
                                                     },
                                                translate: {
-                                               x: 1,
-                                                y: 0.3,
-                                              z: 0.5
+                                               x: 0.7,
+                                                y: 0.1,
+                                              z: 0
                                              }
                                           });
                                             var imgOne = new AR.ImageResource("assets/negativo.png");
-                                            var overlaynegativo = new AR.ImageDrawable(imgOne, 0.6, {
+                                            var overlaynegativo = new AR.ImageDrawable(imgOne, 0.3, {
                                             			translate: {
-                                            				x:1,
+                                            				x:0.5,
                                             				y:0.3,
-                                            				z:0.5
+                                            				z:0
                                             			}
 
                                             });
@@ -219,31 +219,32 @@ var World = {
                       var titulohorario = new AR.Label("Horario:", 0.1, {
                                                      zOrder: 1,
                                                      style: {
-                                                     textColor: '#17202A'
+                                                     textColor: '#17202A',
+                                                     backgroundColor: '#FFFFFF'
                                                     },
                                                     translate: {
-                                                     x: 1,
-                                                     y: -0.2,
-                                                    z: 0.5
+                                                     x: 0.7,
+                                                     y: 0,
+                                                    z: 0
                                                      }
                                                     });
 
                             var Domingo = new AR.Label("Domingo: "+singlePoi.horario.Domingo.horaInicio+"-"+singlePoi.horario.Domingo.horaSalida
-                            , 0.08, { zOrder: 1, style: { textColor: '#17202A'},translate: {x: 1, y: -0.3, z: 0.5}});
+                            , 0.05, { zOrder: 1, style: { textColor: '#17202A',backgroundColor: '#FFFFFF'},translate: {x: 0.5, y: -0.1, z: 0}});
                             var Lunes = new AR.Label("Lunes: "+singlePoi.horario.Lunes.horaInicio+"-"+singlePoi.horario.Lunes.horaSalida
-                            , 0.08, {zOrder: 1,style: {textColor: '#17202A'}, translate: {x: 1.7,y: -0.3,z: 0.5} });
+                            , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 1,y: -0.1,z: 0} });
                             var Martes = new AR.Label("Martes: "+singlePoi.horario.Martes.horaInicio+"-"+singlePoi.horario.Martes.horaSalida
-                             , 0.08, {zOrder: 1,style: {textColor: '#17202A'}, translate: {x: 1,y: -0.4,z: 0.5} });
+                             , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 0.5,y: -0.2,z: 0} });
                              var Miercoles = new AR.Label("Miercoles: "+singlePoi.horario.Miercoles.horaInicio+"-"+singlePoi.horario.Miercoles.horaSalida
-                             , 0.08, {zOrder: 1,style: {textColor: '#17202A'}, translate: {x: 1.7,y: -0.4,z: 0.5} });
+                             , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 1,y: -0.2,z: 0} });
                              var Jueves = new AR.Label("Jueves: "+singlePoi.horario.Jueves.horaInicio+"-"+singlePoi.horario.Jueves.horaSalida
-                             , 0.08, {zOrder: 1,style: {textColor: '#17202A'}, translate: {x: 1,y: -0.5,z: 0.5} });
+                             , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 0.5,y: -0.3,z: 0} });
                              var Viernes = new AR.Label("Viernes: "+singlePoi.horario.Lunes.horaInicio+"-"+singlePoi.horario.Viernes.horaSalida
-                             , 0.08, {zOrder: 1,style: {textColor: '#17202A'}, translate: {x: 1.7,y: -0.5,z: 0.5} });
+                             , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 1,y: -0.3,z: 0} });
                              var Sabado = new AR.Label("Sabado: "+singlePoi.horario.Sabado.horaInicio+"-"+singlePoi.horario.Sabado.horaSalida
-                             , 0.08, {zOrder: 1,style: {textColor: '#17202A'}, translate: {x: 1,y: -0.6,z: 0.5} });
+                             , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 0.5,y: -0.4,z: 0} });
 
-                            var imgDos= new AR.ImageResource("https://www.google.com.ec/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiugdeIkqrcAhURpFkKHU0yA-IQjRx6BAgBEAU&url=https%3A%2F%2Fbusiness.facebook.com%2Fmunicipiodelatacunga%2F&psig=AOvVaw2sRHXyFLX0mJ26_Z-qmshI&ust=1532054540143190");
+                           /* var imgDos= new AR.ImageResource("https://www.google.com.ec/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiugdeIkqrcAhURpFkKHU0yA-IQjRx6BAgBEAU&url=https%3A%2F%2Fbusiness.facebook.com%2Fmunicipiodelatacunga%2F&psig=AOvVaw2sRHXyFLX0mJ26_Z-qmshI&ust=1532054540143190");
                                          var overlaytiempo = new AR.ImageDrawable(imgDos, 0.5, {
                                          			translate: {
                                          				x:0.5,
@@ -251,7 +252,7 @@ var World = {
                                          				z:0.5
                                          			}
 
-                                         });
+                                         });*/
                              /*var descripcion = new AR.Model("assets/love.wt3", {
                                                 onLoaded: this.loadingStep,
                                                 scale: {
@@ -276,11 +277,11 @@ var World = {
                                             });*/
 
                               var imgDescripcion= new AR.ImageResource("assets/descripcion.png");
-                                                                       var overlaydescripcion = new AR.ImageDrawable(imgDescripcion, 0.5, {
+                                                                       var overlaydescripcion = new AR.ImageDrawable(imgDescripcion, 0.1, {
                                                                        			translate: {
                                                                        				x:0,
-                                                                       				y:1.5,
-                                                                       				z:0.5
+                                                                       				y:0.8,
+                                                                       				z:0
                                                                        			},
                                                                                     onClick : function () {
                                                                                        document.getElementById("info").setAttribute("class", "info");
@@ -299,7 +300,7 @@ var World = {
                                                        titulouso,Uso,overlayuso,
                                                        titulopositivo, Positivo, overlaypositivo,
                                                        titulonegativo, Negativo, overlaynegativo, titulohorario,
-                                                       Domingo,Lunes, Martes,Miercoles,Jueves,Viernes,Sabado, overlaytiempo]
+                                                       Domingo,Lunes, Martes,Miercoles,Jueves,Viernes,Sabado]
                                 this.objectTrackable = new AR.ObjectTrackable(this.tracker, singlePoi.targetName, {
                                     drawables: {
                                         cam: drawables
