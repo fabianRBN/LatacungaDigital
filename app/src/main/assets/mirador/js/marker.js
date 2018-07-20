@@ -34,11 +34,11 @@ function Marker(poiData) {
         onClick: null
     });
 
-    // create an AR.Label for the marker's title 
+    // create an AR.Label for the marker's title
     this.titleLabel = new AR.Label(poiData.title, 0.6, {
         zOrder: 1,
         translate: {
-            y: -1
+            y: 0.55
         },
         style: {
             textColor: '#FFFFFF',
@@ -47,7 +47,7 @@ function Marker(poiData) {
     });
 
     // create an AR.Label for the marker's description
-    /*this.descriptionLabel = new AR.Label(poiData.description.trunc(15), 0.4, {
+    this.descriptionLabel = new AR.Label(poiData.description.trunc(15), 0.4, {
         zOrder: 1,
         translate: {
             y: 0
@@ -55,7 +55,7 @@ function Marker(poiData) {
         style: {
             textColor: '#FFFFFF'
         }
-    });*/
+    });
 
     /*
         Create an AR.ImageDrawable using the AR.ImageResource for the direction indicator which was created in the World. Set options regarding the offset and anchor of the image so that it will be displayed correctly on the edge of the screen.
@@ -66,7 +66,7 @@ function Marker(poiData) {
     });
 
     /*
-        The representation of an AR.GeoObject in the radar is defined in its drawables set (second argument of AR.GeoObject constructor). 
+        The representation of an AR.GeoObject in the radar is defined in its drawables set (second argument of AR.GeoObject constructor).
         Once drawables.radar is set the object is also shown on the radar e.g. as an AR.Circle
     */
     this.radarCircle = new AR.Circle(0.03, {
@@ -94,12 +94,12 @@ function Marker(poiData) {
     this.radardrawablesSelected = [];
     this.radardrawablesSelected.push(this.radarCircleSelected);
 
-    /*  
+    /*
         Note that indicator and radar-drawables were added
     */
     this.markerObject = new AR.GeoObject(markerLocation, {
         drawables: {
-            cam: [this.markerDrawable_idle, this.markerDrawable_selected, this.titleLabel],
+            cam: [this.markerDrawable_idle, this.markerDrawable_selected, this.titleLabel, this.descriptionLabel],
             indicator: this.directionIndicatorDrawable,
             radar: this.radardrawables
         }
@@ -111,7 +111,7 @@ function Marker(poiData) {
 Marker.prototype.getOnClickTrigger = function(marker) {
 
     /*
-        The setSelected and setDeselected functions are prototype Marker functions. 
+        The setSelected and setDeselected functions are prototype Marker functions.
         Both functions perform the same steps but inverted.
     */
 

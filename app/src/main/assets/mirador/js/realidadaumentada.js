@@ -61,6 +61,12 @@ var World = {
 				"altitude": parseFloat(poiData[currentPlaceNr].altitude),
 				"title": poiData[currentPlaceNr].name,
 				"description": poiData[currentPlaceNr].description,
+				"permisos": poiData[currentPlaceNr].permisos,
+                "usoActual": poiData[currentPlaceNr].usoActual,
+                 "impactoPositivo": poiData[currentPlaceNr].impactoPositivo,
+                "impactoNegativo": poiData[currentPlaceNr].impactoNegativo,
+                 "horario":poiData[currentPlaceNr].horario,
+                 "direccion":poiData[currentPlaceNr].direccion
 			};
 
 			World.markerList.push(new Marker(singlePoi));
@@ -102,8 +108,8 @@ var World = {
 	},
 
 	/*
-		It may make sense to display POI details in your native style. 
-		In this sample a very simple native screen opens when user presses the 'More' button in HTML. 
+		It may make sense to display POI details in your native style.
+		In this sample a very simple native screen opens when user presses the 'More' button in HTML.
 		This demoes the interaction between JavaScript and native code.
 	*/
 	// user clicked "More" button in POI-detail panel -> fire event to open native screen
@@ -154,12 +160,18 @@ var World = {
                               name: marker.poiData.title,
                               latitude: marker.poiData.latitude,
                               longitude: marker.poiData.longitude,
-                              description: marker.poiData.description
+                              permisos: marker.poiData.permisos,
+                              usoActual: marker.poiData.usoActual,
+                              impactoPositivo: marker.poiData.impactoPositivo,
+                              impactoNegativo: marker.poiData.impactoNegativo,
+                              horario:marker.poiData.horario,
+                              direccion:marker.poiData.direccion
+                             // description: marker.poiData.description
                           };
-                          console.log("Dato "+objeto.name);
+                         /* console.log("Dato "+objeto.name);
                           console.log("Dato "+objeto.latitude);
                           console.log("Dato "+objeto.longitude);
-                          console.log("Dato "+objeto.description);
+                          console.log("Dato "+objeto.description);*/
                   Menu.init(objeto);
 	},
 
@@ -295,7 +307,7 @@ var World = {
 			})
 			.error(function(err) {
 				/*
-					In certain circumstances your web service may not be available or other connection issues can occur. 
+					In certain circumstances your web service may not be available or other connection issues can occur.
 					To notify the user about connection problems a status message is updated.
 					In your own implementation you may e.g. use an info popup or similar.
 				*/
