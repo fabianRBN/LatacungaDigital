@@ -23,6 +23,7 @@ import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
+import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
 import com.example.jona.latacungadigital.Activities.References.PermissionsReferences;
@@ -135,7 +136,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                 break;
             case ChatBotReferences.SERVICE_INTENT:
                 txtSubTittle.setVisibility(View.GONE);
-                imageCvMap.setImageResource(R.drawable.ic_service);
+                setImageServiceByTypeOfActivity(message.getListService().get(0).getTypeOfActivity());
                 break;
             case ChatBotReferences.ATTRACTIVE_INTENT_YES:
                 txtSubTittle.setText(message.getAttractive().getSubType());
@@ -143,7 +144,7 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                 break;
             case ChatBotReferences.SERVICE_INTENT_YES:
                 txtSubTittle.setText(message.getService().getSubTypeOfActivity());
-                imageCvMap.setImageResource(R.drawable.ic_service);
+                setImageServiceByTypeOfActivity(message.getService().getTypeOfActivity());
                 break;
         }
     }
@@ -164,6 +165,26 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                 break;
             default:
                 imageCvMap.setImageResource(R.drawable.ic_museum_select);
+                break;
+        }
+    }
+
+    private void setImageServiceByTypeOfActivity(String parameter) {
+        switch (parameter) {
+            case ChatBotReferences.AGENCIA_DE_VIAJE:
+                imageCvMap.setImageResource(R.drawable.ic_agencias_de_viaje);
+                break;
+            case ChatBotReferences.ALOJAMIENTO:
+                imageCvMap.setImageResource(R.drawable.ic_alojamiento);
+                break;
+            case ChatBotReferences.COMIDAS_Y_BEBIDAS:
+                imageCvMap.setImageResource(R.drawable.ic_comidas_y_bebidas);
+                break;
+            case ChatBotReferences.RECREACION:
+                imageCvMap.setImageResource(R.drawable.ic_recreacion);
+                break;
+            default:
+                imageCvMap.setImageResource(R.drawable.ic_alojamiento);
                 break;
         }
     }
@@ -265,24 +286,26 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
     }
 
     // Dibujar la ruta hacia el destino selecionado
-    private void drawRoute(LatLng currentUserLatLng, LatLng destinationLatLng){
-        if (attractive != null) {
-            // Crear marcador para la posicion del atractivo de destino
-            createMarkerForAttractive(attractive);
-        } else {
-            // Crear marcador para la posicion del servicio de destino
-            createMarkerForService(service);
+    private void drawRoute(LatLng currentUserLatLng, LatLng destinationLatLng) {
+        if (AccesoInternet.getInstance(getContext()).isOnline()) {
+            if (attractive != null) {
+                // Crear marcador para la posicion del atractivo de destino
+                createMarkerForAttractive(attractive);
+            } else {
+                // Crear marcador para la posicion del servicio de destino
+                createMarkerForService(service);
+            }
+
+            // Dibujar la ruta de como llegar al destino.
+            MyOnInfoWindowsClickListener myOnInfoWindowsClickListener = new MyOnInfoWindowsClickListener(context, gMap);
+            myOnInfoWindowsClickListener.distanciaGoogle(currentUserLatLng, destinationLatLng);
+
+            // Posicionar la camara segun la ruta de donde se encuentre el usuario con el punto de destino.
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(currentUserLatLng);
+            builder.include(destinationLatLng);
+            gMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
         }
-
-        // Dibujar la ruta de como llegar al destino.
-        MyOnInfoWindowsClickListener myOnInfoWindowsClickListener = new MyOnInfoWindowsClickListener(context, gMap);
-        myOnInfoWindowsClickListener.distanciaGoogle(currentUserLatLng, destinationLatLng);
-
-        // Posicionar la camara segun la ruta de donde se encuentre el usuario con el punto de destino.
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(currentUserLatLng);
-        builder.include(destinationLatLng);
-        gMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
     }
 
     // Solicitar el permiso de localización
@@ -369,14 +392,14 @@ public class MessageCardMapListItemView extends LinearLayout implements OnMapRea
                 break;
             case "attraction_information_intent.attraction_information_intent-yes":
             case "service_information_intent.service_information_intent-yes":
-                if(!isLocationEnabled){
+                if (!isLocationEnabled) {
                     txtLocationRequired.setVisibility(View.VISIBLE);
                     requestLocationPermission();
-                }else{
-                    if(markerUser == null){
+                } else {
+                    if (markerUser == null) {
                         getUserPosition();
                     }
-                    drawRoute(currentUserLatLng,destinationLatLng);
+                    drawRoute(currentUserLatLng, destinationLatLng);
                 }
                 break;
         }

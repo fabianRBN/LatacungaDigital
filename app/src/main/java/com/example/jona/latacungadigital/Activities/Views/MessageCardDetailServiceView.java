@@ -15,8 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
+import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
 import com.example.jona.latacungadigital.R;
 import com.github.florent37.expansionpanel.ExpansionLayout;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageCardDetailServiceView extends LinearLayout {
     //Variables de la clase
@@ -44,6 +47,7 @@ public class MessageCardDetailServiceView extends LinearLayout {
     protected TextView txtSabado;
     protected TextView txtDomingo;
 
+    protected CircleImageView imageCvMapDetailService;
     protected ImageButton btnFacebook;
 
     public MessageCardDetailServiceView(Context context) {
@@ -80,35 +84,25 @@ public class MessageCardDetailServiceView extends LinearLayout {
         txtSabado = view.findViewById(R.id.txt_sabado);
         txtDomingo = view.findViewById(R.id.txt_domingo);
 
+        imageCvMapDetailService = view.findViewById(R.id.imageCvMapDetailService);
         btnFacebook = view.findViewById(R.id.btn_facebook);
         this.context = context;
 
         btnFacebook.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent facebookIntent = newFacebookIntent(context.getPackageManager(), service.getFacebookPage());
+                Intent facebookIntent = newFacebookIntent(service.getFacebookPage());
                 context.startActivity(facebookIntent);
             }
         });
     }
 
-    private Intent newFacebookIntent(PackageManager pm, String url) {
+    private Intent newFacebookIntent(String url) {
         Uri uri = Uri.parse(url);
-//        try {
-//            ApplicationInfo applicationInfo = pm.getApplicationInfo("com.facebook.katana", 0);
-//            int versionCode = pm.getPackageInfo("com.facebook.katana", 0).versionCode;
-//            if (applicationInfo.enabled) {
-//                Log.d("VERSION CODE", ": "+versionCode);
-//                if(versionCode >= 3002850){
-//                    uri = Uri.parse("fb://facewebmodal/f?href=" + url);
-//                }
-//            }
-//        } catch (PackageManager.NameNotFoundException ignored) {
-//        }
         return new Intent(Intent.ACTION_VIEW, uri);
     }
 
-    private void setValues(){
+    private void setValues() {
         txtTitulo.setText(service.getName());
         txtSubTipoDeActividad.setText(service.getSubTypeOfActivity());
         txtCategoria.setText(Html.fromHtml("<b>Categoría: </b>" + service.getCategory()));
@@ -119,6 +113,7 @@ public class MessageCardDetailServiceView extends LinearLayout {
 
         setValuesForHorario();
         setVisibilities();
+        setImageServiceByTypeOfActivity(service.getTypeOfActivity());
 
         if (service.getHorario().isHorarioDefinido()) {
             if(service.isOpen()){
@@ -137,6 +132,26 @@ public class MessageCardDetailServiceView extends LinearLayout {
     public void setService(ServiceClass service) {
         this.service = service;
         setValues();
+    }
+
+    private void setImageServiceByTypeOfActivity(String parameter) {
+        switch (parameter) {
+            case ChatBotReferences.AGENCIA_DE_VIAJE:
+                imageCvMapDetailService.setImageResource(R.drawable.ic_agencias_de_viaje);
+                break;
+            case ChatBotReferences.ALOJAMIENTO:
+                imageCvMapDetailService.setImageResource(R.drawable.ic_alojamiento);
+                break;
+            case ChatBotReferences.COMIDAS_Y_BEBIDAS:
+                imageCvMapDetailService.setImageResource(R.drawable.ic_comidas_y_bebidas);
+                break;
+            case ChatBotReferences.RECREACION:
+                imageCvMapDetailService.setImageResource(R.drawable.ic_recreacion);
+                break;
+            default:
+                imageCvMapDetailService.setImageResource(R.drawable.ic_alojamiento);
+                break;
+        }
     }
 
     public void setValuesForHorario(){

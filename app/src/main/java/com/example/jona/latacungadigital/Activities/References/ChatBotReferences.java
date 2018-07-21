@@ -39,4 +39,10 @@ public class ChatBotReferences {
     public static final String ARQUITECTURA_RELIGIOSA = "Arquitectura Religiosa";
     public static final String MUSEO = "Museo";
     public static final String MUSEO_HISTORICO= "Museos históricos";
+
+    // Para saber que tipo de actividad es según el servicio.
+    public static final String AGENCIA_DE_VIAJE = "Agencia de viajes";
+    public static final String ALOJAMIENTO = "Alojamiento";
+    public static final String COMIDAS_Y_BEBIDAS = "Comidas y bebidas";
+    public static final String RECREACION = "Recreación, diversión, esparcimiento";
 }

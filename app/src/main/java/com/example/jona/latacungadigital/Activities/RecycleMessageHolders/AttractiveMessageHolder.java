@@ -14,6 +14,9 @@ import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
 import com.github.florent37.expansionpanel.ExpansionLayout;
 
+import java.util.HashSet;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.relex.circleindicator.CircleIndicator;
 
@@ -101,5 +104,14 @@ public class AttractiveMessageHolder extends RecyclerView.ViewHolder {
                 imgPlacesInformation.setImageResource(R.drawable.ic_museum_select);
                 break;
         }
+    }
+
+    // Método para eliminar los datos duplicados de la lista de imagenes.
+    public List<String> deleteDuplicateImageData(int position, List<TextMessageModel> listChatModel) {
+        List<String> listImagesAttractive = listChatModel.get(position).getAttractive().getListImages();
+        HashSet<String> hashSet = new HashSet<>(listImagesAttractive);
+        listImagesAttractive.clear();
+        listImagesAttractive.addAll(hashSet);
+        return listImagesAttractive;
     }
 }

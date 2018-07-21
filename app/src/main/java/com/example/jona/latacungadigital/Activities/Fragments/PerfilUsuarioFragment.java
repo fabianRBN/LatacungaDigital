@@ -1,8 +1,7 @@
 package com.example.jona.latacungadigital.Activities.Fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +10,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.example.jona.latacungadigital.Activities.MainActivity;
 import com.example.jona.latacungadigital.Activities.Parser.CircleTransform;
 import com.example.jona.latacungadigital.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
+
+import java.util.Objects;
 
 
 public class PerfilUsuarioFragment extends Fragment {
@@ -45,7 +44,7 @@ public class PerfilUsuarioFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -65,7 +64,7 @@ public class PerfilUsuarioFragment extends Fragment {
             btn_salir.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    openSignOffDialog();
                 }
             });
         }
@@ -73,11 +72,20 @@ public class PerfilUsuarioFragment extends Fragment {
         return view;
     }
 
+    // Método para abrir el pop up de cerrar sesión.
+    private void openSignOffDialog() {
+        // Se crea una instancia de la clase DialogAppFragement y se la muestra.
+        dialogAppFragment = new DialogAppFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("Type_Dialog", DIALOG_SIGN_OFF);
+        dialogAppFragment.setArguments(bundle);
+
+        dialogAppFragment.show(Objects.requireNonNull(getFragmentManager()), "NoticeDialogFragment");
+    }
 
     @Override
     public void onDetach() {
         super.onDetach();
     }
-
-
 }
