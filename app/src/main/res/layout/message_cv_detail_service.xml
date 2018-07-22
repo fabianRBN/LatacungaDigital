@@ -70,10 +70,9 @@
                 android:layout_weight="0"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/facebookPageText"
-                android:paddingEnd="5dp"
+                android:paddingEnd="10dp"
                 android:paddingStart="5dp"
-                android:src="@drawable/ic_icons_facebook_24"
-                android:tint="@color/primaryTextColor" />
+                android:src="@drawable/ic_icons_facebook_24" />
 
         </LinearLayout>
 
