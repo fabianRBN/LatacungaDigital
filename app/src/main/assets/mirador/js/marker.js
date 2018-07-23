@@ -35,10 +35,10 @@ function Marker(poiData) {
     });
 
     // create an AR.Label for the marker's title
-    this.titleLabel = new AR.Label(poiData.title, 0.6, {
+    this.titleLabel = new AR.Label(poiData.title, 0.7, {
         zOrder: 1,
         translate: {
-            y: 0.55
+            y: -1.2
         },
         style: {
             textColor: '#FFFFFF',
@@ -98,8 +98,9 @@ function Marker(poiData) {
         Note that indicator and radar-drawables were added
     */
     this.markerObject = new AR.GeoObject(markerLocation, {
+    enabled : true,
         drawables: {
-            cam: [this.markerDrawable_idle, this.markerDrawable_selected, this.titleLabel, this.descriptionLabel],
+            cam: [this.markerDrawable_idle, this.markerDrawable_selected, this.titleLabel],
             indicator: this.directionIndicatorDrawable,
             radar: this.radardrawables
         }
@@ -151,6 +152,10 @@ Marker.prototype.setSelected = function(marker) {
 
         // create AR.PropertyAnimation that animates the opacity to 0.0 in order to hide the idle-state-drawable
         var hideIdleDrawableAnimation = new AR.PropertyAnimation(marker.markerDrawable_idle, "opacity", null, 0.0, kMarker_AnimationDuration_ChangeDrawable);
+         // create AR.PropertyAnimation that animates the opacity to 0.0 in order to hide the idle-state-drawable
+         var hidetitle = new AR.PropertyAnimation(marker.titleLabel, "opacity", null, 0.0, kMarker_AnimationDuration_ChangeDrawable);
+
+
         // create AR.PropertyAnimation that animates the opacity to 1.0 in order to show the selected-state-drawable
         var showSelectedDrawableAnimation = new AR.PropertyAnimation(marker.markerDrawable_selected, "opacity", null, 1.0, kMarker_AnimationDuration_ChangeDrawable);
 
@@ -191,7 +196,7 @@ Marker.prototype.setSelected = function(marker) {
         /*
          There are two types of AR.AnimationGroups. Parallel animations are running at the same time, sequentials are played one after another. This example uses a parallel AR.AnimationGroup.
          */
-        marker.animationGroup_selected = new AR.AnimationGroup(AR.CONST.ANIMATION_GROUP_TYPE.PARALLEL, [hideIdleDrawableAnimation, showSelectedDrawableAnimation, idleDrawableResizeAnimationX, selectedDrawableResizeAnimationX, titleLabelResizeAnimationX, descriptionLabelResizeAnimationX, idleDrawableResizeAnimationY, selectedDrawableResizeAnimationY, titleLabelResizeAnimationY, descriptionLabelResizeAnimationY]);
+        marker.animationGroup_selected = new AR.AnimationGroup(AR.CONST.ANIMATION_GROUP_TYPE.PARALLEL, [hideIdleDrawableAnimation]);
     }
 
     // removes function that is set on the onClick trigger of the idle-state marker
@@ -202,7 +207,9 @@ Marker.prototype.setSelected = function(marker) {
     // enables the direction indicator drawable for the current marker
     marker.directionIndicatorDrawable.enabled = true;
 
+
     marker.markerObject.drawables.radar = marker.radardrawablesSelected;
+    marker.markerObject.enabled=false;
 
     // starts the selected-state animation
     marker.animationGroup_selected.start();
