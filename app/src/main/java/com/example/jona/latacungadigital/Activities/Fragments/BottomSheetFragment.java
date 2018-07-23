@@ -4,6 +4,7 @@ package com.example.jona.latacungadigital.Activities.Fragments;
  * Created by fabia on 16/07/2018.
  */
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,7 +20,7 @@ import com.example.jona.latacungadigital.R;
 public class BottomSheetFragment extends BottomSheetDialogFragment {
 
     private LinearLayout linearLayoutAtractivo, linearLayoutServios, linearLayoutPanoramica;
-
+    private ProgressDialog dialog;
     public BottomSheetFragment() {
         // Required empty public constructor
     }
@@ -59,9 +60,13 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
                 actividadAR("servicios");
             }
         });
+
+        dialog = new ProgressDialog(getActivity());
         return view;
     }
     public void actividadAR(final String tipo){
+        dialog.setMessage("Cargando realidad aumentada");
+        dialog.show();
         new Handler().postDelayed(new Runnable(){
             public void run(){
                 // Cuando pasen los 3 segundos, pasamos a la actividad principal de la aplicación
@@ -74,6 +79,13 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
 
             };
         }, 1010);
-
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+            }
+        },2020);
     }
 }
