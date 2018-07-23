@@ -4,13 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:map="http://schemas.android.com/apk/res-auto"
 
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cvPlacesInformation"
     android:foreground="?android:attr/selectableItemBackground"
     android:layout_marginTop="10dp"
-    android:layout_marginLeft="10dp"
+    android:layout_marginStart="10dp"
     android:layout_marginBottom="10dp"
-    android:layout_width="300dp"
+    android:layout_width="320dp"
     android:layout_height="wrap_content"
     app:cardCornerRadius="5dp"
     app:cardElevation="5dp">
@@ -20,25 +19,48 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/border_relative_layout"
-            android:orientation="vertical">
+            android:background="@drawable/border_relative_layout">
 
-            <TextView
-                android:id="@+id/txtTitle"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageCvMap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="10dp" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="5dp"
-                android:padding="5dp"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/primaryTextColor"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:layout_marginStart="60dp"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/txtTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtSubTittle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="13sp"
+                    android:textStyle="italic" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -48,7 +70,6 @@
                 android:id="@+id/mapView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/txtTitle"
                 map:cameraZoom="13"
                 map:liteMode="true"
                 map:mapType="normal" />
@@ -60,7 +81,7 @@
                 android:background="#824f5888"
                 android:gravity="center"
                 android:text="@string/permission_location_is_required"
-                android:textAppearance="@android:style/TextAppearance.Material.Large"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/primaryTextColor" />
 
         </RelativeLayout>

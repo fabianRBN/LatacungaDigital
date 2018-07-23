@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="10dp"
-    android:layout_marginBottom="62dp"
+    android:layout_marginBottom="56dp"
+    android:background="@drawable/fondo2"
     tools:context=".Activities.Fragments.AcercaDeFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -16,6 +16,7 @@
             android:id="@+id/lyDescricionAcercaDe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -39,7 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/titleDescriptiosAbout"
-                    android:textColor="@color/black"
+                    android:textColor="@color/button"
                     android:textStyle="bold" />
 
                 <TextView
@@ -49,7 +50,7 @@
                     android:layout_below="@+id/txtDescripcionAcercaDe"
                     android:layout_marginEnd="10dp"
                     android:text="@string/contentDescriptiosAbout"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/white" />
 
             </RelativeLayout>
 
@@ -92,7 +93,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/titleBenefitAbout"
-                    android:textColor="@color/black"
+                    android:textColor="@color/button"
                     android:textStyle="bold" />
 
                 <TextView
@@ -101,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtBeneficiosAcercaDe"
                     android:layout_marginEnd="10dp"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/white" />
 
             </RelativeLayout>
 
@@ -144,7 +145,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/titleDependencesAbout"
-                    android:textColor="@color/black"
+                    android:textColor="@color/button"
                     android:textStyle="bold" />
 
                 <TextView
@@ -153,7 +154,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtDependeciasAcercaDe"
                     android:layout_marginEnd="10dp"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/white" />
 
             </RelativeLayout>
 
@@ -196,7 +197,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/titleCollaboratorsAbout"
-                    android:textColor="@color/black"
+                    android:textColor="@color/button"
                     android:textStyle="bold" />
 
                 <TextView
@@ -205,7 +206,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtColaboradoresAcercaDe"
                     android:layout_marginEnd="10dp"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/white" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -213,6 +214,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_below="@+id/txtContenidoColaboradoresAcercaDe"
                     android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
                     <ImageButton
@@ -221,8 +223,7 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:contentDescription="@string/facebookPageText"
-                        android:src="@drawable/ic_icons_facebook_24"
-                        android:tint="#3b5998" />
+                        android:src="@drawable/ic_icons_facebook_24" />
 
                     <ImageButton
                         android:id="@+id/btnTwitterColaborador"
@@ -249,8 +250,7 @@
                         android:layout_marginStart="10dp"
                         android:background="@android:color/transparent"
                         android:contentDescription="@string/WebPageText"
-                        android:src="@drawable/ic_pagina_web"
-                        android:tint="@color/primaryColor"/>
+                        android:src="@drawable/ic_pagina_web" />
 
                 </LinearLayout>
 

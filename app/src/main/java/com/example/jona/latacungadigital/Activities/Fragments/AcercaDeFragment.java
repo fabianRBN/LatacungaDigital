@@ -88,7 +88,7 @@ public class AcercaDeFragment extends Fragment {
         txtContenidoDependeciasAcercaDe.setText(Html.fromHtml("&#8226" + " Conexión a internet o plan de datos." + "<br>" + "&#8226"
                 + " Permitir ubicación del usuario." + "<br>" + "&#8226" + " Permitir acceso a la cámara."));
 
-        txtContenidoColaboradoresAcercaDe.setText(Html.fromHtml("&#8226" + " Dirección de turismo."));
+        txtContenidoColaboradoresAcercaDe.setText(Html.fromHtml("&#8226" + " GAD Municipal del Cantón Latacunga."));
     }
 
     private Intent socialIntent(String url) {

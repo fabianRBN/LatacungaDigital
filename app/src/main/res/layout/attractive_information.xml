@@ -24,42 +24,52 @@
             android:layout_height="wrap_content"
             android:background="@drawable/border_relative_layout">
 
-            <TextView
-                android:id="@+id/txtTitlePlacesInformation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="5dp"
-                android:padding="5dp"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/primaryTextColor"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtSubTypePlacesInformation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txtTitlePlacesInformation"
-                android:paddingStart="10dp"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/primaryTextColor"
-                android:textSize="13sp"
-                android:textStyle="italic"
-                tools:ignore="RtlSymmetry" />
-
-            <RatingBar
-                android:id="@+id/ratingBarPlacesInformation"
-                style="@style/Widget.AppCompat.RatingBar.Small"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgPlacesInformation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txtSubTypePlacesInformation"
-                android:layout_gravity="start"
-                android:layout_marginStart="9dp"
-                android:numStars="5"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
-                android:stepSize="0.5" />
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtTitlePlacesInformation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtSubTypePlacesInformation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="13sp"
+                    android:textStyle="italic"
+                    tools:ignore="RtlSymmetry" />
+
+                <RatingBar
+                    android:id="@+id/ratingBarPlacesInformation"
+                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:numStars="5"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:stepSize="0.5" />
+
+            </LinearLayout>
 
         </RelativeLayout>
 

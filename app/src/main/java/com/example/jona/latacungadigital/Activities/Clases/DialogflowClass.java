@@ -395,6 +395,7 @@ public class DialogflowClass {
             textMessageModel.setListAttractive(listAttractive);
             textMessageModel.setTitulo(titulo);
             textMessageModel.setAction(result.getAction());
+            textMessageModel.setParameter(getParameterSubTypeAttractive(result));
             listMessagesText.add(textMessageModel);
             addMessagesAdapter(listMessagesText);
         }
@@ -476,5 +477,16 @@ public class DialogflowClass {
                 return false;
             }
         }.execute(message);
+    }
+
+    // Método para obtener el parametro del sub tipo del atractivo obtenido de Dialogflow.
+    private String getParameterSubTypeAttractive(Result result) {
+        String parameterSubTypeAttracttive = "";
+
+        Map<String, JsonElement> params = result.getParameters();
+        if (params != null && !params.isEmpty()) {
+            parameterSubTypeAttracttive = params.get("subtype_attraction").toString().replace("\"", "");
+        }
+        return parameterSubTypeAttracttive; // Retornamos el parametro obtenido de Dialogflow.
     }
 }

@@ -2,76 +2,70 @@ var Menu = {
     objetosInfo: null,
     marcadorseleccionado: null,
     init: function(marcador) {
-
+           AR.context.destroyAll () ;
+        //objeto recibido
+        this.marcadorseleccionado=marcador;
         var distanceFactor = 580.2;
-
-        /* null means: use relative to user, Eje is NORTH to the user */
-        var locationEje = new AR.RelativeLocation(null, 25000, 0, 5000);
-
+       var geoLoc = new AR.GeoLocation(this.marcadorseleccionado.latitude, this.marcadorseleccionado.longitude,this.marcadorseleccionado.altitude);
+               /* null means: use relative to user, Eje is NORTH to the user */
+               var locationEje = new AR.RelativeLocation(geoLoc, 0, 0, 0);
         /* sizes & distances are far away from real values! used these scalings to be able to show within user range */
         var sizeFactor = 0.5;
         var sizeEscala = 12.8 * 25;
 
         /* every object has a name, location and a circle (drawable) */
-        var ejeImg = new AR.ImageResource("assets/agente.jpg");
-        var objeto1Img = new AR.ImageResource("assets/label.png");
-        var objeto2Img= new AR.ImageResource("assets/label.png");
-        var objeto3Img= new AR.ImageResource("assets/label.png");
-        var objeto4Img = new AR.ImageResource("assets/label.png");
-        var indicatorImg = new AR.ImageResource("assets/indicador.png");
-
-        var ejeSize = (((109 * sizeEscala) / sizeEscala) * 0.3) * sizeFactor;
-        var objeto1Size = (10 * sizeEscala / sizeEscala) * sizeFactor;
-        var objeto2Size = (10* sizeEscala / sizeEscala) * sizeFactor;
-        var objeto3Size = (10* sizeEscala / sizeEscala) * sizeFactor;
-        var objeto4Size = (10 * sizeEscala / sizeEscala) * sizeFactor;
+        var ejeImg = new AR.ImageResource("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXSGROtAXkmzThxVgada0s-u1HhnXR_MePPXDpy79GrNKGsUMS5Q");
+        var objeto1Img = new AR.ImageResource("assets/direccion.png");
+        var objeto2Img= new AR.ImageResource("assets/permisos.png");
+        var objeto3Img= new AR.ImageResource("assets/impacto.png");
+        var objeto4Img = new AR.ImageResource("assets/uso.png");
+       // var indicatorImg = new AR.ImageResource("assets/indicador.png");
 
         var parque = {
-            name: "Parque",
+            name: this.marcadorseleccionado.name,
             distance: 0,
             location: locationEje,
-            imgDrawable: new AR.ImageDrawable(ejeImg, ejeSize),
-            size: ejeSize
+            imgDrawable: new AR.ImageDrawable(ejeImg,5),
+            size: 5
         };
 
         var objeto1 = {
-            name: "DATO 1",
+            name: this.marcadorseleccionado.direccion,
             distance: 7 * distanceFactor,
             location: new AR.RelativeLocation(locationEje, 0, -7 * distanceFactor , 2000),
-            imgDrawable: new AR.ImageDrawable(objeto1Img, objeto1Size),
-            size: objeto1Size
+            imgDrawable: new AR.ImageDrawable(objeto1Img, 5),
+            size: 5
         };
 
         var objeto2 = {
-            name: "DATO 2",
+            name: this.marcadorseleccionado.permisos,
             distance: 8 * distanceFactor,
             location: new AR.RelativeLocation(locationEje, 0, 8 * distanceFactor, 0),
-            imgDrawable: new AR.ImageDrawable(objeto2Img, objeto2Size),
-            size: objeto2Size
+            imgDrawable: new AR.ImageDrawable(objeto2Img, 5),
+            size: 5
         };
 
         var objeto3 = {
-            name: "DATO 3",
+            name: this.marcadorseleccionado.usoActual,
             distance: 9 * distanceFactor,
             location: new AR.RelativeLocation(locationEje, 0, 9 * distanceFactor, -2000),
-            imgDrawable: new AR.ImageDrawable(objeto3Img, objeto3Size),
-            size: objeto3Size
+            imgDrawable: new AR.ImageDrawable(objeto3Img, 5),
+            size: 5
         };
 
         var objeto4 = {
-            name: "DATO 4",
+            name: this.marcadorseleccionado.impactoPositivo,
             distance: 10 * distanceFactor,
             location: new AR.RelativeLocation(locationEje, 0, -10 * distanceFactor, -3000),
-            imgDrawable: new AR.ImageDrawable(objeto4Img, objeto4Size),
-            size: objeto4Size
+            imgDrawable: new AR.ImageDrawable(objeto4Img, 5),
+            size: 5
         };
 
 
          /* put eje, objetos 1234 an array */
          this.objetosInfo = [parque, objeto1, objeto2, objeto3, objeto4];
 
-         //objeto recibido
-         this.marcadorseleccionado=marcador;
+
          //if(this.marcadorseleccionado!=null){
          //alert("Dato "+this.marcadorseleccionado.name)
          //}
@@ -81,14 +75,15 @@ var Menu = {
         for (var i = 0; i < this.objetosInfo.length; i++) {
 
             /* show name of object below*/
-            var label = new AR.Label(this.objetosInfo[i].name, 3, {
+            var label = new AR.Label(this.objetosInfo[i].name, 1, {
                 offsetY: -this.objetosInfo[i].size / 2,
                 verticalAnchor: AR.CONST.VERTICAL_ANCHOR.TOP,
                 opacity: 0.9,
                 zOrder: 1,
                 style: {
                     textColor: '#FFFFFF',
-                    backgroundColor: '#00000005'
+                    backgroundColor: '#00000005',
+                    fontStyle: AR.CONST.FONT_STYLE.BOLD
                 }
             });
 
@@ -106,21 +101,21 @@ var Menu = {
                 //enabled: false
                 onClick: this.objetoClicked(this.objetosInfo[i],this.marcadorseleccionado)
             });
-            if (i > 0) {
+           /* if (i > 0) {
                 this.animate(this.objetosInfo[i]);
             } else {
                 var ejeHackAnim = new AR.PropertyAnimation(this.objetosInfo[i].location, 'northing', 10000, 10000, 1000, {
                     type: AR.CONST.EASING_CURVE_TYPE.EASE_IN_SINE
                 });
                 ejeHackAnim.start(-1);
-            }
+            }*/
         }
 
         // Add indicator to Eje
-        var imageDrawable = new AR.ImageDrawable(indicatorImg, 0.2, {
+       /* var imageDrawable = new AR.ImageDrawable(indicatorImg, 0.2, {
             verticalAnchor: AR.CONST.VERTICAL_ANCHOR.TOP
         });
-        objetosGeoObjects[0].drawables.addIndicatorDrawable(imageDrawable);
+        objetosGeoObjects[0].drawables.addIndicatorDrawable(imageDrawable);*/
     },
 
     animate: function(objeto) {
@@ -169,14 +164,14 @@ var Menu = {
             			World.currentMarker.setDeselected(World.currentMarker);
             		});
         }else{
-               // alert("Datos click");
+               /* alert("Datos click");
                 document.getElementById("info").setAttribute("class", "info");
                 document.getElementById("name").innerHTML = marker.name;
                 document.getElementById("dato1").innerHTML = objetoseleccionado.latitude;
                 document.getElementById("dato2").innerHTML =objetoseleccionado.longitude;
                 document.getElementById("info").setAttribute("class", "infoVisible");
                 $('#info').css('display', 'block');
-                 $('#info').css('visibility', 'visible');
+                 $('#info').css('visibility', 'visible');*/
         }
 
         };
@@ -187,4 +182,3 @@ var Menu = {
          $("#info").css('visibility', 'hidden');
     	}
 };
-
