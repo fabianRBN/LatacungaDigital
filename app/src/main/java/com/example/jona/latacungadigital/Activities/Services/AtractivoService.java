@@ -8,11 +8,14 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -20,6 +23,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.jona.latacungadigital.Activities.AtractivoActivity;
+import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
+import com.example.jona.latacungadigital.Activities.modelos.Coordenada;
+import com.example.jona.latacungadigital.LatacungaDigital;
 import com.example.jona.latacungadigital.R;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -34,6 +40,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -41,6 +48,7 @@ import java.util.GregorianCalendar;
 public class AtractivoService extends Service {
 
     GeoFire geoFire;
+
     // Referencia para el usuario (cliente)
     private DatabaseReference mDatabase;
     // REferencia para atractivos
@@ -52,12 +60,16 @@ public class AtractivoService extends Service {
     private LocationManager locationManager;
     private FirebaseUser userFirebase = FirebaseAuth.getInstance().getCurrentUser();
     //Minimo tiempo para updates en Milisegundos
-    private static final long MIN_TIEMPO_ENTRE_UPDATES = 1000 * 60 * 1; // 1 minuto
+    private static final long MIN_TIEMPO_ENTRE_UPDATES = 1000* 30* 1; // 1 minuto
     //Minima distancia para updates en metros.
-    private static final long MIN_CAMBIO_DISTANCIA_PARA_UPDATES = (long) 1.5; // 1.5 metros
+    private static final long MIN_CAMBIO_DISTANCIA_PARA_UPDATES = (long) 0.5; // 1.5 metros
 
     //Para leer y escribir en la base de datos, necesitas una instancia de DatabaseReference:
     private DatabaseReference databaseReference;
+
+    SharedPreferences preferences;
+
+    private boolean ESTADO_SERVICIO = false;
     // Referencia de la fecha
     Calendar fecha = new GregorianCalendar();
     int año,mes,dia ;
@@ -66,6 +78,10 @@ public class AtractivoService extends Service {
     // Identificador de notificacion
     private static  final int ID_NOTIFICATION =1234;
 
+    private ArrayList<AtractivoModel> lista = new ArrayList<>();
+
+    private NotificationManager mNotificationManager;
+
     public AtractivoService() {
     }
 
@@ -73,7 +89,7 @@ public class AtractivoService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
 
@@ -105,9 +121,9 @@ public class AtractivoService extends Service {
 
             @Override
             public void onProviderDisabled(String provider) {
-                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
+                sendNotification("Alerta", String.format(" La búsqueda de atractivos requiere el uso de GPS "),"",1234);
+
+
             }
         };
 
@@ -129,23 +145,28 @@ public class AtractivoService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this,"Servicio iniciado",Toast.LENGTH_SHORT).show();
-
-
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        Toast.makeText(this,"Servicio terminado",Toast.LENGTH_SHORT).show();
-        super.onDestroy();
-        //  evita que se creen varios resgistros de location listener al terminar destruir el servicio
-        if(locationManager!=null){
-            locationManager.removeUpdates(listener);
+
+        if(preferences.getBoolean("notificacionAtractivo",false)){
+            System.out.println("Re activado");
+            Intent serv = new Intent(getApplicationContext(),AtractivoService.class); //serv de tipo Intent
+            sendBroadcast(serv);
+
+        }else {
+
+            Toast.makeText(this, "Servicio terminado", Toast.LENGTH_SHORT).show();
+            super.onDestroy();
+            //  evita que se creen varios resgistros de location listener al terminar destruir el servicio
+            System.out.println("Buscando terminado !!!");
+            if (locationManager != null) {
+                locationManager.removeUpdates(listener);
+            }
+            notificationManager.cancel(ID_NOTIFICATION);
         }
-        notificationManager.cancel(ID_NOTIFICATION);
-
-
     }
 
     @Nullable
@@ -157,10 +178,11 @@ public class AtractivoService extends Service {
 
     // Metodo para realizar la carga de atractivos
     public void listaAtractivos(){
+
         mDatabaseAtractivo.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                    lista.clear();
                     int contador = 1234;
                     for(DataSnapshot child: dataSnapshot.getChildren()){
                         if(child.getValue() != null) { // Validacion para verificar si existe informacion en el child
@@ -168,8 +190,9 @@ public class AtractivoService extends Service {
                             double longitud = (double) child.child("posicion").child("lng").getValue();
                             String nombreAtractivo = child.child("nombre").getValue().toString();
                             String key = child.getKey().toString();
-                            geofireAtractivo((new LatLng(latitud, longitud)), nombreAtractivo, key, contador);// Metodo que agrega geofire listener a cada atractivo
-                            contador++;
+                            //geofireAtractivo((new LatLng(latitud, longitud)), nombreAtractivo, key, contador);// Metodo que agrega geofire listener a cada atractivo
+                            lista.add(new AtractivoModel(nombreAtractivo,"",(new Coordenada( latitud, longitud)),key));
+
                         }
                 }
 
@@ -180,11 +203,25 @@ public class AtractivoService extends Service {
 
             }
         });
+
+  /*      lista.clear();
+        lista.add(new AtractivoModel("La merced","",(new Coordenada( -0.837376, -78.669212)),"-LDcfos4UvolSFqWrpK1"));
+        lista.add(new AtractivoModel("San agustin","",(new Coordenada( -0.837966, -78.670038)),"-LDcgS8X1lDN6ryGhdwu"));
+        lista.add(new AtractivoModel("San salto","",(new Coordenada( -0.836831, -78.669183)),"-LDcheFJwHROPzPfztAG"));
+        lista.add(new AtractivoModel("San fransisco","",(new Coordenada( -0.836831, -78.669183)),"-LDcgyVV2aZ7JGsXCHeA"));
+
+*/
+
+        for(int x=0;x<lista.size();x++) {
+
+            geofireAtractivo(new LatLng(lista.get(x).getPosicion().getLat(), lista.get(x).getPosicion().getLng()), lista.get(x).getNombre(), lista.get(x).getKey(), x);// Metodo que agrega geofire listener a cada atractivo
+
+        }
     }
 
     private void sendNotification(String title, String content, final String key, int id) {
         // Crea una isntancia del systema principal de notificaciones
-        NotificationManager mNotificationManager =
+        mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // Validacion de la vercion de SDK   versiones sueriores a 7v requieren la declaracion de un channel
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -196,29 +233,44 @@ public class AtractivoService extends Service {
             mNotificationManager.createNotificationChannel(channel);
         }
         // Creacion de la notificacion
-        Toast.makeText(this,"Notificacion:"+ key,Toast.LENGTH_SHORT).show();
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "default")
                 .setSmallIcon(R.mipmap.ic_launcher) // notification icon
-                .setContentTitle("Atractivo encontrado") // title for notification
+                .setContentTitle(title) // title for notification
                 .setContentText(content)// message for notification
                 .setAutoCancel(true); // clear notification after click
-        Intent intent = new Intent(getApplicationContext(), AtractivoActivity.class);
-        intent.putExtra("atractivoKey", key);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(pi);
-        mNotificationManager.notify(ID_NOTIFICATION, mBuilder.build());
+        if(key.equals("")){
+
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setAction(Long.toString(System.currentTimeMillis()));
+            PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(pi);
+            mNotificationManager.notify(id, mBuilder.build());
+
+        }else {
+            final Intent intent = new Intent(getApplicationContext(), AtractivoActivity.class);
+            intent.putExtra("atractivoKey", key);
+            intent.setAction(Long.toString(System.currentTimeMillis()));
+            PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(pi);
+            mNotificationManager.notify(id, mBuilder.build());
+        }
+
 
 
 
     }
 
     public void geofireAtractivo(LatLng location , final String nombreAtractivo, final String keyAtractivo, final int id_notificacion){
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), 0.1f);
+        System.out.println("Buscando posicion: "+keyAtractivo );
+
+        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), 0.5f);
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 Date fecha = new Date();
-                sendNotification("Alerta", String.format("Te encuantras en el atractivo:" + nombreAtractivo+"."),keyAtractivo, id_notificacion);
+                sendNotification("Alerta", String.format("Te encuentras  en el atractivo:" + nombreAtractivo+"."),keyAtractivo, id_notificacion);
 
                 mDatabaseHistorial.child(keyAtractivo).child(userFirebase.getUid()).child(fecha.getYear()+""+fecha.getMonth()+""+fecha.getDay()).setValue(fecha);
 
