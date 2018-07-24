@@ -406,10 +406,12 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     String descripcionAtractivo = child.child("descripcion").getValue().toString();
                     String snippit ="";
                     String pathImagen= "";
+                    String rating = child.child("rating").getValue().toString();;
                             for(DataSnapshot galeria: child.child("galeria").getChildren()){
                                 pathImagen = galeria.child("imagenURL").getValue().toString();
                             }
-                            snippit = descripcionAtractivo +"&##"+pathImagen+"&##"+child.getKey();
+                            snippit = descripcionAtractivo +"&##"+pathImagen+"&##"+child.getKey()+"&##"+ rating;
+
                     Coordenada coordenada =  child.child("posicion").getValue(Coordenada.class);
                     LatLng punto = new LatLng( coordenada.getLat(), coordenada.getLng());
                     MarkerOptions markerOptions = new  MarkerOptions().position(punto)
@@ -961,10 +963,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                                 String descripcionAtractivo = child.child("descripcion").getValue().toString();
                                 String snippit ="";
                                 String pathImagen= "";
+                                String rating = child.child("rating").getValue().toString();
                                 for(DataSnapshot galeria: child.child("galeria").getChildren()){
                                     pathImagen = galeria.child("imagenURL").getValue().toString();
                                 }
-                                snippit = descripcionAtractivo +"&##"+pathImagen+"&##"+child.getKey();
+                                snippit = descripcionAtractivo +"&##"+pathImagen+"&##"+child.getKey()+"&##"+rating;
                                 Coordenada coordenada =  child.child("posicion").getValue(Coordenada.class);
                                 LatLng punto = new LatLng( coordenada.getLat(), coordenada.getLng());
                                 MarkerOptions markerOptions = new  MarkerOptions().position(punto)

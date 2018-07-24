@@ -56,8 +56,6 @@ public class MyOnInfoWindowsClickListener implements GoogleMap.OnInfoWindowClick
     public void onInfoWindowLongClick(Marker marker) {
         String[] parametros = marker.getSnippet().split("&##");
         String key = parametros[2];
-        System.out.println("Dtaos key:"+key);
-
         Intent intent = new Intent(context, AtractivoActivity.class);
         intent.putExtra("atractivoKey", key);
         context.startActivity(intent);
