@@ -1,5 +1,7 @@
 package com.example.jona.latacungadigital.Activities.Fragments;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -20,6 +22,8 @@ import java.util.Objects;
 
 
 public class PerfilUsuarioFragment extends Fragment {
+
+    private OnFragmentInteractionListener mListener;
 
     private FirebaseUser user;
 
@@ -87,5 +91,23 @@ public class PerfilUsuarioFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
 }

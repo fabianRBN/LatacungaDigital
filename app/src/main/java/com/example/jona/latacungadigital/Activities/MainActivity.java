@@ -38,7 +38,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MapaFragment.OnFragmentInteractionListener,
         ListAtractivosFragment.OnFragmentInteractionListener, DialogAppFragment.NoticeDialogListener, TrackinFragment.OnFragmentInteractionListener,
-        TrackeadosFragment.OnFragmentInteractionListener, AcercaDeFragment.OnFragmentInteractionListener {
+        TrackeadosFragment.OnFragmentInteractionListener, AcercaDeFragment.OnFragmentInteractionListener, PerfilUsuarioFragment.OnFragmentInteractionListener  {
 
     private GoogleApiClient googleApiClient; // Variable para manejar los datos de Google.
 

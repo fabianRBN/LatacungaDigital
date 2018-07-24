@@ -243,8 +243,6 @@ public class ListAtractivosFragment extends Fragment implements SwipeRefreshLayo
         }
     }
 
-
-
     private void showAlert() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
         dialog.setTitle("Localizacion desactivada")

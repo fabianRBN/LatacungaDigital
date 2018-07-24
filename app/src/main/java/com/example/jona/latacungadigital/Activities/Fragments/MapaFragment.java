@@ -5,11 +5,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -21,6 +25,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -42,6 +47,7 @@ import com.example.jona.latacungadigital.Activities.Adapters.OnMarkerClickListen
 import com.example.jona.latacungadigital.Activities.Adapters.ServiceInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Clases.AreaPeligrosa;
 import com.example.jona.latacungadigital.Activities.Clases.AttractiveClass;
+import com.example.jona.latacungadigital.Activities.Clases.NetworkReceiverClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.Activities.Haversine.Haversine;
 import com.example.jona.latacungadigital.Activities.MainActivity;
@@ -85,6 +91,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 public class MapaFragment extends Fragment implements OnMapReadyCallback,
@@ -126,6 +133,9 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
 
     GeoFire geoFire;
 
+    // Variables para el control de estados wifi y GPS
+    private NetworkReceiverClass networkReceiverClass;
+    private boolean receiversRegistered; // Variable para controlar el brodcast de la conexion a internet.
 
 
     // Variables de firebase
@@ -203,6 +213,13 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         } catch (Exception ex){
             System.out.println("Error: "+ex);
         }
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SetupActionBar(false); // Inicializamos la verificacion de servicio
+            }
+        },1000);
 
 //        try {
 //            MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -1014,6 +1031,24 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         googleMap.setOnMarkerClickListener(onMarkerClickListenerAdapter);
     }
 
+    private void SetupActionBar(boolean statusTSnackbar) {
+
+        // Registra la actividad del la conexion a internet
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        // Registra la actividad del GPS
+        IntentFilter filterGPS = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
+
+        networkReceiverClass = new NetworkReceiverClass(null, getActivity(), statusTSnackbar);
+
+        if (!receiversRegistered) {
+            //Registro de los filtros
+            getActivity().registerReceiver(networkReceiverClass, filter);
+            getActivity().registerReceiver(networkReceiverClass, filterGPS);
+            receiversRegistered = true;
+        }
+
+    }
+
     //Muestra el popup del clima actual
     private void createClima() {
         RequestQueue queue = Volley.newRequestQueue(getContext().getApplicationContext());
@@ -1168,12 +1203,18 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     public void onPause() {
         super.onPause();
         mMapView.onPause();
+        if (receiversRegistered) {
+            Objects.requireNonNull(getActivity()).unregisterReceiver(networkReceiverClass);
+            receiversRegistered = false;
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
+        if (receiversRegistered) Objects.requireNonNull(getActivity()).unregisterReceiver(networkReceiverClass);
+
     }
 
     @Override
