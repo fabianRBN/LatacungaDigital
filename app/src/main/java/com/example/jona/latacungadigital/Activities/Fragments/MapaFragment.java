@@ -497,7 +497,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                                 String formatoDistancia = "Distancia: "+String.format("%.02f", distanciah)+" km";
                                 snippit = formatoDistancia +"&##"+pathImagen+"&##"+trac.getKey();
                                 markerOptions.snippet(snippit);
-                                googleMap.addMarker(markerOptions);//.setTag("userMarker");
+                                googleMap.addMarker(markerOptions);
                                 double distmax = 1;
                                 if (dataArgTrac != null){
                                     distmax = Double.parseDouble(getArguments().getString("trackeo"))/1000;
