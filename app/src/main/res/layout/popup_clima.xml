@@ -9,7 +9,7 @@
         android:layout_width="300dp"
         android:layout_height="100dp"
         android:orientation="vertical"
-        android:background="@color/celeste">
+        android:background="#91B89B">
 
 
         <TextView

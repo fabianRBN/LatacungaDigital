@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.Fragments.TrackeadosFragment">
+    tools:context=".Activities.Fragments.TrackeadosFragment"
+    android:background="#9AAEF7">
 
     <!-- TODO: Update blank fragment layout -->
-    <RelativeLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -22,9 +23,11 @@
             android:id="@+id/tv_misAutorizados"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Me han Autorizado"
+            android:text="Usuarios que puedo ver"
             android:textSize="30dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:textColor="#FFF"
+            android:background="#12297B"/>
     </LinearLayout>
 
             <LinearLayout
@@ -83,6 +86,6 @@
         android:layout_marginBottom="65dp"
         android:src="@drawable/ic_irmapa" />
         </LinearLayout>
-    </RelativeLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
 </FrameLayout>
