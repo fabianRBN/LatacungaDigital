@@ -3,13 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.Fragments.TrackinFragment">
+    tools:context=".Activities.Fragments.TrackinFragment"
+    android:background="#9AAEF7">
+
+
 
     <!-- TODO: Update blank fragment layout -->
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <android.support.design.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,6 +31,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
+                        android:hint="Buscar"
                         android:imeOptions="actionSearch"
                         android:inputType="textAutoComplete|textAutoCorrect">
                         <requestFocus />
@@ -37,14 +41,21 @@
                     android:layout_width="0dp"
                     android:layout_weight=".3"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <Switch
-                        android:id="@+id/switch1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="ON"
-                        tools:layout_editor_absoluteX="134dp"
-                        tools:layout_editor_absoluteY="135dp" />
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/btn_listaAutorizados"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="0"
+                        android:drawableStart="@drawable/ic_lista"
+                        android:background="@drawable/boton_redondo_blue"/>
+                    <Button
+                        android:id="@+id/btn_irmapa"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="0"
+                        android:drawableStart="@drawable/ic_irmapa"
+                        android:background="@drawable/boton_redondo_blue"/>
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -56,36 +67,25 @@
                     android:id="@+id/tv_misAutorizados"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Mis Autorizados"
+                    android:text="Quienes pueden verme"
                     android:textSize="30dp"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:textColor="#FFF"
+                    android:background="#12297B"/>
             </LinearLayout>
-
-
-
-
 
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_friends"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"/>
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="65dp"
-                android:src="@drawable/ic_siguiente" />
+
         </LinearLayout>
 
 
-
-    </RelativeLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
 
 </FrameLayout>

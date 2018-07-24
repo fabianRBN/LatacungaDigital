@@ -2,14 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/popup_element"
     android:layout_width="300dp"
-    android:layout_height="400dp">
+    android:layout_height="370dp"
+    android:gravity="center">
 
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:background="@color/blue_50">
+        android:background="#919AB8">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -24,7 +25,7 @@
                 android:id="@+id/txt_nombreAtractivo1"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="left"
                 android:textSize="20dp"
                 android:text="Manifestaciones Culturales" />
             <Switch
@@ -45,7 +46,7 @@
                 android:id="@+id/txt_nombreAtractivo2"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="left"
                 android:textSize="20dp"
                 android:text="Museo" />
             <Switch
@@ -66,7 +67,7 @@
                 android:id="@+id/txt_nombreAtractiv3"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="left"
                 android:textSize="20dp"
                 android:text="Arquitectura" />
             <Switch
@@ -87,7 +88,7 @@
                 android:id="@+id/txt_nombreAtractivo4"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="left"
                 android:textSize="20dp"
                 android:text="Parque" />
             <Switch
@@ -108,7 +109,7 @@
                 android:id="@+id/txt_nombreAtractivo5"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="left"
                 android:textSize="20dp"
                 android:text="Agencia de viajes" />
             <Switch
@@ -129,7 +130,7 @@
                 android:id="@+id/txt_nombreAtractivo6"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="left"
                 android:textSize="20dp"
                 android:text="Alojamiento" />
             <Switch
@@ -150,7 +151,7 @@
                 android:id="@+id/txt_nombreAtractivo7"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="left"
                 android:textSize="20dp"
                 android:text="Comidas y bebidas" />
             <Switch
@@ -171,7 +172,7 @@
                 android:id="@+id/txt_nombreAtractivo8"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="left"
                 android:textSize="20dp"
                 android:text="Recreación, diversión, esparcimiento" />
             <Switch
@@ -181,17 +182,23 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
+            android:layout_height="30dp">
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_gravity="bottom">
 
             <Button
                 android:id="@+id/btn_cancelarfil"
-                android:layout_width="145dp"
+                android:layout_width="147dp"
                 android:layout_height="wrap_content"
                 android:text="Cancelar"/>
             <Button
                 android:id="@+id/btn_filtrar"
-                android:layout_width="145dp"
+                android:layout_width="147dp"
                 android:layout_height="wrap_content"
                 android:text="Filtrar"/>
         </LinearLayout>

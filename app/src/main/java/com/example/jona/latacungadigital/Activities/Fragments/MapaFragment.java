@@ -491,8 +491,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     }
                     for (TrackinModel trac: listaidUsuarios){
                         if (trac.isAutorizacion()){
+                            String snippit ="";
+                            String pathImagen = "";
                             if (dataSnapshot.child("cliente").child(trac.getKey()).child("GeoFire").exists()){
                                 String nombre = dataSnapshot.child("cliente").child(trac.getKey()).child("nombre").getValue().toString();
+                                pathImagen = dataSnapshot.child("cliente").child(trac.getKey()).child("pathImagen").getValue().toString();
                                 double latitud = Double.parseDouble(dataSnapshot.child("cliente").child(trac.getKey())
                                         .child("GeoFire").child("l").child("0").getValue().toString());
                                 double longitud = Double.parseDouble(dataSnapshot.child("cliente").child(trac.getKey())
@@ -508,11 +511,10 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                                 Coordenada end = new Coordenada(latitud,longitud);// la coordenada del trackeado
                                 LatLng latlong = new LatLng(end.getLat(), end.getLng());
                                 double distanciah = (haversine.distance(inicial,end));
-                                String formatoDistancia = String.format("%.02f", distanciah);
-
-                                markerOptions.snippet("Distancia: "+formatoDistancia+" km");
-                                markerOptions.draggable(false);
-                                googleMap.addMarker(markerOptions).setTag("userMarker");
+                                String formatoDistancia = "Distancia: "+String.format("%.02f", distanciah)+" km";
+                                snippit = formatoDistancia +"&##"+pathImagen+"&##"+trac.getKey();
+                                markerOptions.snippet(snippit);
+                                googleMap.addMarker(markerOptions);
                                 double distmax = 1;
                                 if (dataArgTrac != null){
                                     distmax = Double.parseDouble(getArguments().getString("trackeo"))/1000;
@@ -748,8 +750,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         //Get the devices screen density to calculate correct pixel sizes
         float density= getContext().getResources().getDisplayMetrics().density;
         // create a focusable PopupWindow with the given layout and correct size
-        final PopupWindow pw = new PopupWindow(popupfiltro, (int)density*300, (int)density*400, true);
-        pw.showAtLocation(popupfiltro, Gravity.LEFT, 0, 0);
+        final PopupWindow pw = new PopupWindow(popupfiltro, (int)density*300, (int)density*370, true);
+        pw.showAtLocation(popupfiltro, Gravity.CENTER_HORIZONTAL, 0, 0);
         listaFiltrarServicios.clear();
         listaFiltrarAtractivos.clear();
         //Actualizar lista de atractivos
@@ -937,8 +939,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                             .strokeColor(Color.RED)
                             .fillColor(0x220000FF)
                             .strokeWidth(5.0f));
-                    //Equivalencias de distancia de GeoFire
-                    // 0.1f = 0.1km = 100m
                     GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(dangerousArea.latitude, dangerousArea.longitude), 0.1f);
                     geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
                         @Override
@@ -999,12 +999,12 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                 }
                 //Crea marcadores de los servicios
                 for (DataSnapshot child: dataSnapshot.child("servicio").getChildren()){
-                    if (child.child("categoria").exists()){
-                        String categoria = child.child("categoria").getValue().toString();
+                    if (child.child("tipoDeActividad").exists()){
+                        String categoria = child.child("tipoDeActividad").getValue().toString();
                         for (String itemlist: listServ) {
                             if (categoria.equals(itemlist)){
                                 String nombreAtractivo = child.child("nombre").getValue().toString();
-                                String actividad = "Actividad: "+child.child("tipoDeActividad").getValue().toString();
+                                String actividad = "Actividad: "+child.child("subTipoDeActividad").getValue().toString();
                                 Coordenada coordenada =  child.child("posicion").getValue(Coordenada.class);
                                 LatLng punto = new LatLng( coordenada.getLat(), coordenada.getLng());
                                 MarkerOptions markerOptions = new  MarkerOptions().position(punto)
@@ -1069,7 +1069,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     float density= getContext().getResources().getDisplayMetrics().density;
                     // create a focusable PopupWindow with the given layout and correct size
                     final PopupWindow pw = new PopupWindow(popupclima, (int)density*300, (int)density*100, true);
-                    pw.showAtLocation(popupclima, Gravity.LEFT, 0, 0);
+                    pw.showAtLocation(popupclima, Gravity.CENTER, 0, 0);
                     //Elementos para guardar nuevo sitio
                     TextView nombreCiudad = (TextView) popupclima.findViewById(R.id.tv_ciudad);
                     nombreCiudad.setText("Latacunga");

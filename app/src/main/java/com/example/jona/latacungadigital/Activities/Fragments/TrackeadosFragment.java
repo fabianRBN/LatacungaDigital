@@ -69,7 +69,18 @@ public class TrackeadosFragment extends Fragment {
         ConsultaAmigosAutorizados(uid);
 
         //Flotante que redirige al mapa
-        FloatingActionButton fabMapa = (FloatingActionButton) view.findViewById(R.id.fab_autorizados);
+        final FloatingActionButton fabMapa = (FloatingActionButton) view.findViewById(R.id.fab_autorizados);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && fabMapa.getVisibility() == View.VISIBLE) {
+                    fabMapa.hide();
+                } else if (dy < 0 && fabMapa.getVisibility() != View.VISIBLE) {
+                    fabMapa.show();
+                }
+            }
+        });
         fabMapa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,7 +106,6 @@ public class TrackeadosFragment extends Fragment {
         listaidUsuarios.clear();
         listaAmigosAutrizados.clear();
         mdatabase = FirebaseDatabase.getInstance().getReference();
-        //System.out.println("uid: "+userFirebase.getCurrentUser().getUid());
         mdatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

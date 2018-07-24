@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.jona.latacungadigital.Activities.Fragments.TrackinFragment;
@@ -16,6 +18,7 @@ import com.example.jona.latacungadigital.Activities.Parser.CircleTransform;
 import com.example.jona.latacungadigital.Activities.modelos.TrackinModel;
 import com.example.jona.latacungadigital.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
@@ -41,17 +44,24 @@ public class TrackingAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         final TrackinModel trackinModel = listaAmigos.get(position);
         ((ViewHolderDatos) holder).asignarDatos(trackinModel);
-        ((ViewHolderDatos) holder).btnEliminarUsuario.setOnClickListener(new View.OnClickListener() {
+        if (trackinModel.isAutorizacion()){
+            ((ViewHolderDatos) holder).swAutorizar.setChecked(true);
+        }
+        ((ViewHolderDatos) holder).swAutorizar.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mDatabase = FirebaseDatabase.getInstance();
                 userFirebase = FirebaseAuth.getInstance();
                 String uid = userFirebase.getCurrentUser().getUid();
-                mDatabase = FirebaseDatabase.getInstance();
-                mDatabase.getReference("meAutorizaron").child(listaAmigos.get(position).getKey()).child(uid).getRef().removeValue();
-                mDatabase.getReference("autorizados").child(uid).child(listaAmigos.get(position).getKey()).getRef().removeValue();
+                if (isChecked){
+                    mDatabase.getReference("meAutorizaron").child(listaAmigos.get(position).getKey()).child(uid).child("autorizacion").setValue(true);
+                    mDatabase.getReference("autorizados").child(uid).child(listaAmigos.get(position).getKey()).child("autorizacion").setValue(true);
+                } else {
+                    mDatabase.getReference("meAutorizaron").child(listaAmigos.get(position).getKey()).child(uid).child("autorizacion").setValue(false);
+                    mDatabase.getReference("autorizados").child(uid).child(listaAmigos.get(position).getKey()).child("autorizacion").setValue(false);
+                }
             }
         });
-
     }
 
     @Override
@@ -63,14 +73,14 @@ public class TrackingAdapter extends RecyclerView.Adapter {
         TextView tvNombre;
         TextView tvEmail;
         ImageView ivFoto;
-        Button btnEliminarUsuario;
+        Switch swAutorizar;
 
         public ViewHolderDatos(View itemView) {
             super(itemView);
             tvNombre = (TextView) itemView.findViewById(R.id.tv_nombre);
             tvEmail = (TextView) itemView.findViewById(R.id.tv_email);
             ivFoto = (ImageView) itemView.findViewById(R.id.iv_foto);
-            btnEliminarUsuario = (Button) itemView.findViewById(R.id.btn_eliminarUsuario);
+            swAutorizar = (Switch) itemView.findViewById(R.id.switch1);
         }
 
         public void asignarDatos(TrackinModel trackinModel) {

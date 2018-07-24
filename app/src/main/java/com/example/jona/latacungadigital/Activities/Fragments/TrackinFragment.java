@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -45,7 +46,7 @@ public class TrackinFragment extends Fragment {
     DatabaseReference mdatabase;
     private FirebaseAuth userFirebase;
     RecyclerView recyclerView;
-    Switch swAutorizar;
+    Button btnLista, btnMapa;
     private static final ArrayList<String> listaUsuarios = new ArrayList<>();
 
     public TrackinFragment() {
@@ -67,8 +68,33 @@ public class TrackinFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_friends);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        swAutorizar = (Switch) view.findViewById(R.id.switch1);
-        swAutorizar.setChecked(false);
+        btnLista = (Button) view.findViewById(R.id.btn_listaAutorizados);
+        btnMapa = (Button) view.findViewById(R.id.btn_irmapa);
+
+        //Boton para llevar a lista de trackeados
+        btnLista.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TrackeadosFragment tf = new TrackeadosFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_fragment, tf);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
+        //Boton para ir al mapa
+        btnMapa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MapaFragment mf = new MapaFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_fragment, mf).commit();
+                Bundle data = new Bundle();
+                data.putString("trackeo", "1000");
+                mf.setArguments(data);
+            }
+        });
 
         userFirebase = FirebaseAuth.getInstance();
         final String uid = userFirebase.getCurrentUser().getUid();
@@ -101,7 +127,6 @@ public class TrackinFragment extends Fragment {
                                 }
                             }
                         }
-                        swAutorizar.setChecked(false);
                         textView.setText("");
                         ConsultaAmigos(uid);
                         view.refreshDrawableState();
@@ -116,45 +141,6 @@ public class TrackinFragment extends Fragment {
             }
         });
 
-        //Switch de autorizacion
-        swAutorizar.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mdatabase = FirebaseDatabase.getInstance().getReference();
-                if (isChecked)
-                {
-                    mdatabase.child("cliente").child(uid).child("autorizar").setValue(true);
-                    for (TrackinModel trac: listaAmigos){
-                        mdatabase.child("meAutorizaron").child(trac.getKey()).child(uid)
-                                .setValue(new TrackinModel(uid, true));
-                    }
-                }else
-                    {
-                        mdatabase.child("cliente").child(uid).child("autorizar").setValue(false);
-                        for (TrackinModel trac: listaAmigos){
-                            mdatabase.child("meAutorizaron").child(trac.getKey()).child(uid)
-                                    .setValue(new TrackinModel(uid, false));
-                        }
-                }
-            }
-        });
-
-        //Flotante que redirige a la lista que me han autorizado
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (swAutorizar.isChecked()){
-                    TrackeadosFragment tf = new TrackeadosFragment();
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.main_fragment, tf);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                } else {
-                    Toast.makeText(getContext(),"Debe poner ON en el Switch superior", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
 
 
         return view;
@@ -168,9 +154,6 @@ public class TrackinFragment extends Fragment {
         mdatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                /*if (dataSnapshot.child(uid).child("autorizar").exists()){
-                    swAutorizar.setChecked(Boolean.parseBoolean(dataSnapshot.child(uid).child("autorizar").getValue().toString()));
-                }*/
                 for (DataSnapshot child: dataSnapshot.getChildren()){
                     if (child.child("nombre").exists()){
                         if (!child.getKey().equals(uid))
@@ -203,11 +186,7 @@ public class TrackinFragment extends Fragment {
                     String nombre = dataSnapshot.child("cliente").child(key).child("nombre").getValue().toString();
                     String email = dataSnapshot.child("cliente").child(key).child("email").getValue().toString();
                     String pathimage = dataSnapshot.child("cliente").child(key).child("pathImagen").getValue().toString();
-                    boolean autorizacion = false;
-                    if (dataSnapshot.child("autorizados").child(uid).child(key).child("autorizacion").getValue().toString().equals("true")) {
-                        autorizacion = true;
-                        swAutorizar.setChecked(true);
-                    }
+                    boolean autorizacion = Boolean.parseBoolean(dataSnapshot.child("autorizados").child(uid).child(key).child("autorizacion").getValue().toString());
                     TrackinModel trac = new TrackinModel(nombre, email, pathimage, key, autorizacion);
                     listaAmigos.add(trac);
                 }
