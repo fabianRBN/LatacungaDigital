@@ -66,7 +66,8 @@ var World = {
                  "impactoPositivo": poiData[currentPlaceNr].impactoPositivo,
                 "impactoNegativo": poiData[currentPlaceNr].impactoNegativo,
                  "horario":poiData[currentPlaceNr].horario,
-                 "direccion":poiData[currentPlaceNr].direccion
+                 "direccion":poiData[currentPlaceNr].direccion,
+                 "imagenes":poiData[currentPlaceNr].imagenes
 			};
 
 			World.markerList.push(new Marker(singlePoi));
@@ -165,13 +166,10 @@ var World = {
                               impactoPositivo: marker.poiData.impactoPositivo,
                               impactoNegativo: marker.poiData.impactoNegativo,
                               horario:marker.poiData.horario,
-                              direccion:marker.poiData.direccion
-                             // description: marker.poiData.description
+                              direccion:marker.poiData.direccion,
+                              imagenes:marker.poiData.imagenes,
+                              description: marker.poiData.description
                           };
-                         /* console.log("Dato "+objeto.name);
-                          console.log("Dato "+objeto.latitude);
-                          console.log("Dato "+objeto.longitude);
-                          console.log("Dato "+objeto.description);*/
                   Menu.init(objeto);
 	},
 

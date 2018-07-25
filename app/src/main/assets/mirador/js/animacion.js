@@ -2,68 +2,84 @@ var Menu = {
     objetosInfo: null,
     marcadorseleccionado: null,
     init: function(marcador) {
+    //limpiar el entorno AR
            AR.context.destroyAll () ;
         //objeto recibido
         this.marcadorseleccionado=marcador;
         var distanceFactor = 580.2;
        var geoLoc = new AR.GeoLocation(this.marcadorseleccionado.latitude, this.marcadorseleccionado.longitude,this.marcadorseleccionado.altitude);
-               /* null means: use relative to user, Eje is NORTH to the user */
-               var locationEje = new AR.RelativeLocation(geoLoc, 0, 0, 0);
+       /* null means: use relative to user, Eje is NORTH to the user */
+        var locationEje = new AR.RelativeLocation(geoLoc, 0, 0, 0);
         /* sizes & distances are far away from real values! used these scalings to be able to show within user range */
         var sizeFactor = 0.5;
         var sizeEscala = 12.8 * 25;
 
+       var imagenesLugares=[];
+       var contador=0;
+       $.each(this.marcadorseleccionado.imagenes, function(i, item) {
+              // console.log("indice "+i+"-"+item.imagenURL);
+               imagenesLugares[contador]=item.imagenURL;
+               contador++;
+           });
+        //console.log("imagen "+imagenesLugares[0]);
         /* every object has a name, location and a circle (drawable) */
-        var ejeImg = new AR.ImageResource("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXSGROtAXkmzThxVgada0s-u1HhnXR_MePPXDpy79GrNKGsUMS5Q");
+        var ejeImg = new AR.ImageResource(imagenesLugares[0]);
         var objeto1Img = new AR.ImageResource("assets/direccion.png");
         var objeto2Img= new AR.ImageResource("assets/permisos.png");
         var objeto3Img= new AR.ImageResource("assets/impacto.png");
         var objeto4Img = new AR.ImageResource("assets/uso.png");
+        var objeto5Img = new AR.ImageResource("assets/close.png");
        // var indicatorImg = new AR.ImageResource("assets/indicador.png");
 
-        var parque = {
+        var Lugar = {
             name: this.marcadorseleccionado.name,
             distance: 0,
             location: locationEje,
-            imgDrawable: new AR.ImageDrawable(ejeImg,5),
+            imgDrawable: new AR.ImageDrawable(ejeImg,7),
             size: 5
         };
 
         var objeto1 = {
             name: this.marcadorseleccionado.direccion,
             distance: 7 * distanceFactor,
-            location: new AR.RelativeLocation(locationEje, 0, -7 * distanceFactor , 2000),
-            imgDrawable: new AR.ImageDrawable(objeto1Img, 5),
-            size: 5
+            location: new AR.RelativeLocation(locationEje, 0,0,10),
+            imgDrawable: new AR.ImageDrawable(objeto1Img, 2),
+            size: 2
         };
 
         var objeto2 = {
             name: this.marcadorseleccionado.permisos,
             distance: 8 * distanceFactor,
-            location: new AR.RelativeLocation(locationEje, 0, 8 * distanceFactor, 0),
-            imgDrawable: new AR.ImageDrawable(objeto2Img, 5),
-            size: 5
+            location: new AR.RelativeLocation(locationEje, 0, 0, 20),
+            imgDrawable: new AR.ImageDrawable(objeto2Img, 2),
+            size: 2
         };
 
         var objeto3 = {
             name: this.marcadorseleccionado.usoActual,
             distance: 9 * distanceFactor,
-            location: new AR.RelativeLocation(locationEje, 0, 9 * distanceFactor, -2000),
-            imgDrawable: new AR.ImageDrawable(objeto3Img, 5),
-            size: 5
+            location: new AR.RelativeLocation(locationEje, 0, 0 , -12),
+            imgDrawable: new AR.ImageDrawable(objeto3Img, 2),
+            size: 2
         };
 
         var objeto4 = {
             name: this.marcadorseleccionado.impactoPositivo,
             distance: 10 * distanceFactor,
-            location: new AR.RelativeLocation(locationEje, 0, -10 * distanceFactor, -3000),
-            imgDrawable: new AR.ImageDrawable(objeto4Img, 5),
-            size: 5
+            location: new AR.RelativeLocation(locationEje, 0, 0, -20),
+            imgDrawable: new AR.ImageDrawable(objeto4Img, 2),
+            size: 2
+        };
+       var btncerrar= {
+            name: "Cerrar",
+            distance: 10 * distanceFactor,
+            location: new AR.RelativeLocation(locationEje, 0, 0, -7),
+            imgDrawable: new AR.ImageDrawable(objeto5Img, 2),
+            size: 1
         };
 
-
          /* put eje, objetos 1234 an array */
-         this.objetosInfo = [parque, objeto1, objeto2, objeto3, objeto4];
+         this.objetosInfo = [Lugar, objeto1, objeto2, objeto3, objeto4, btncerrar];
 
 
          //if(this.marcadorseleccionado!=null){
@@ -152,7 +168,7 @@ var Menu = {
     objetoClicked: function(marker, objetoseleccionado) {
 
         return function() {
-        if (marker.name == "Parque"){
+        if (marker.name == objetoseleccionado.name){
             // update panel values
             		$("#poi-detail-title").html(objetoseleccionado.name);
             		$("#poi-detail-description").html(objetoseleccionado.description);
@@ -163,15 +179,8 @@ var Menu = {
             		$("#panel-poidetail").on("panelbeforeclose", function(event, ui) {
             			World.currentMarker.setDeselected(World.currentMarker);
             		});
-        }else{
-               /* alert("Datos click");
-                document.getElementById("info").setAttribute("class", "info");
-                document.getElementById("name").innerHTML = marker.name;
-                document.getElementById("dato1").innerHTML = objetoseleccionado.latitude;
-                document.getElementById("dato2").innerHTML =objetoseleccionado.longitude;
-                document.getElementById("info").setAttribute("class", "infoVisible");
-                $('#info').css('display', 'block');
-                 $('#info').css('visibility', 'visible');*/
+        }else if(marker.name=="Cerrar"){
+              World.reloadPlaces();
         }
 
         };
