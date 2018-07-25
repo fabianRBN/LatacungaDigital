@@ -148,7 +148,7 @@ Marker.prototype.setSelected = function(marker) {
 
     marker.isSelected = true;
 
-    if (marker.animationGroup_selected === null) {
+   if (marker.animationGroup_selected === null) {
 
         // create AR.PropertyAnimation that animates the opacity to 0.0 in order to hide the idle-state-drawable
         var hideIdleDrawableAnimation = new AR.PropertyAnimation(marker.markerDrawable_idle, "opacity", null, 0.0, kMarker_AnimationDuration_ChangeDrawable);
@@ -193,9 +193,7 @@ Marker.prototype.setSelected = function(marker) {
             amplitude: 2.0
         }));
 
-        /*
-         There are two types of AR.AnimationGroups. Parallel animations are running at the same time, sequentials are played one after another. This example uses a parallel AR.AnimationGroup.
-         */
+
         marker.animationGroup_selected = new AR.AnimationGroup(AR.CONST.ANIMATION_GROUP_TYPE.PARALLEL, [hideIdleDrawableAnimation]);
     }
 
@@ -260,9 +258,7 @@ Marker.prototype.setDeselected = function(marker) {
             amplitude: 2.0
         }));
 
-        /*
-         There are two types of AR.AnimationGroups. Parallel animations are running at the same time, sequentials are played one after another. This example uses a parallel AR.AnimationGroup.
-         */
+
         marker.animationGroup_idle = new AR.AnimationGroup(AR.CONST.ANIMATION_GROUP_TYPE.PARALLEL, [showIdleDrawableAnimation, hideSelectedDrawableAnimation, idleDrawableResizeAnimationX, selectedDrawableResizeAnimationX, titleLabelResizeAnimationX, descriptionLabelResizeAnimationX, idleDrawableResizeAnimationY, selectedDrawableResizeAnimationY, titleLabelResizeAnimationY, descriptionLabelResizeAnimationY]);
     }
 

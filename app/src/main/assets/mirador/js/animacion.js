@@ -4,6 +4,11 @@ var Menu = {
     init: function(marcador) {
     //limpiar el entorno AR
            AR.context.destroyAll () ;
+    // show radar & set click-listener
+     	PoiRadar.show();
+       		$('#radarContainer').unbind('click');
+       		$("#radarContainer").click(PoiRadar.clickedRadar);
+
         //objeto recibido
         this.marcadorseleccionado=marcador;
         var distanceFactor = 580.2;
@@ -78,6 +83,20 @@ var Menu = {
             size: 1
         };
 
+
+/*
+        The representation of an AR.GeoObject in the radar is defined in its drawables set (second argument of AR.GeoObject constructor).
+        Once drawables.radar is set the object is also shown on the radar e.g. as an AR.Circle
+    */
+    this.radarCircle = new AR.Circle(0.1, {
+        horizontalAnchor: AR.CONST.HORIZONTAL_ANCHOR.CENTER,
+        opacity: 0.8,
+        style: {
+            fillColor: "#17202A"
+        }
+    });
+    this.radardrawables = [];
+    this.radardrawables.push(this.radarCircle);
          /* put eje, objetos 1234 an array */
          this.objetosInfo = [Lugar, objeto1, objeto2, objeto3, objeto4, btncerrar];
 
@@ -111,7 +130,8 @@ var Menu = {
             /* Create objects in AR*/
             objetosGeoObjects[i] = new AR.GeoObject(this.objetosInfo[i].location, {
                 drawables: {
-                    cam: drawables
+                    cam: drawables,
+                     radar: this.radardrawables
                 },
                 //animacion desabilitada
                 //enabled: false
@@ -172,13 +192,13 @@ var Menu = {
             // update panel values
             		$("#poi-detail-title").html(objetoseleccionado.name);
             		$("#poi-detail-description").html(objetoseleccionado.description);
-            		$("#poi-detail-distance").html(objetoseleccionado.longitude);
+            		$("#poi-detail-distance").html(objetoseleccionado.distance);
             		// show panel
             		$("#panel-poidetail").panel("open", 123);
             		$(".ui-panel-dismiss").unbind("mousedown");
-            		$("#panel-poidetail").on("panelbeforeclose", function(event, ui) {
-            			World.currentMarker.setDeselected(World.currentMarker);
-            		});
+            		//$("#panel-poidetail").on("panelbeforeclose", function(event, ui) {
+            			//World.currentMarker.setDeselected(World.currentMarker);
+            		//});
         }else if(marker.name=="Cerrar"){
               World.reloadPlaces();
         }

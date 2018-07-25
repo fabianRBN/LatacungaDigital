@@ -157,6 +157,11 @@ var World = {
 	// fired when user pressed maker in cam
 	onMarkerSelected: function onMarkerSelectedFn(marker) {
 		World.currentMarker = marker;
+		/* It's ok for AR.Location subclass objects to return a distance of `undefined`. In case such a distance was calculated when all distances were queried in `updateDistanceToUserValues`, we recalcualte this specific distance before we update the UI. */
+        		if( undefined == marker.distanceToUser ) {
+        			marker.distanceToUser = marker.markerObject.locations[0].distanceToUser();
+        		}
+        var distanceToUserValue = (marker.distanceToUser > 999) ? ((marker.distanceToUser / 1000).toFixed(2) + " km") : (Math.round(marker.distanceToUser) + " m");
            var objeto = {
                               name: marker.poiData.title,
                               latitude: marker.poiData.latitude,
@@ -168,7 +173,8 @@ var World = {
                               horario:marker.poiData.horario,
                               direccion:marker.poiData.direccion,
                               imagenes:marker.poiData.imagenes,
-                              description: marker.poiData.description
+                              description: marker.poiData.description,
+                              distance:distanceToUserValue
                           };
                   Menu.init(objeto);
 	},
