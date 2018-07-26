@@ -29,6 +29,8 @@ import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -61,6 +63,7 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.github.florent37.expansionpanel.ExpansionHeader;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -111,8 +114,21 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     private LatLng pointDestination;
     Button btnGuardar, btnCancelar;
     EditText edtNombre, edtDescripcion;
+    private ImageButton img_iglesia, img_museo, img_montana, img_civil;
+    ImageButton img_areaProtegida, img_agencia, img_alojamiento, img_comidas, img_recreacion;
+    //Variables para obtener parametros
     String dataArg;
     String dataArgTrac;
+    //Variables para filtrar atractivos y servicios
+    private boolean iglesias = true;
+    private boolean museo = true;
+    private boolean montana = true;
+    private boolean civil = true;
+    private boolean areaProtegida = true;
+    private boolean agencia = true;
+    private boolean alojamiento = true;
+    private boolean comidas = true;
+    private boolean recreacion = true;
 
     // Variables de mapa
     MapView mMapView;
@@ -183,23 +199,190 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-        // Flotante que redirige al mapa
-        FloatingActionButton fabFiltro = (FloatingActionButton) rootView.findViewById(R.id.fab_filtro);
-        fabFiltro.setOnClickListener(new View.OnClickListener() {
+        // Filtra los sitios
+        ExpansionHeader ehFiltro = (ExpansionHeader) rootView.findViewById(R.id.eh_filtro);
+        img_civil = (ImageButton) rootView.findViewById(R.id.img_civilMap);
+        img_iglesia = (ImageButton) rootView.findViewById(R.id.img_iglesiaMap);
+        img_museo = (ImageButton) rootView.findViewById(R.id.img_museoMap);
+        img_montana = (ImageButton) rootView.findViewById(R.id.img_montanaMap);
+        img_areaProtegida = (ImageButton) rootView.findViewById(R.id.img_areaProtegidaMap);
+        img_agencia = (ImageButton) rootView.findViewById(R.id.img_agenciaMap);
+        img_alojamiento = (ImageButton) rootView.findViewById(R.id.img_alojamientoMap);
+        img_comidas = (ImageButton) rootView.findViewById(R.id.img_comidasbebidasMap);
+        img_recreacion = (ImageButton) rootView.findViewById(R.id.img_recreacionesMap);
+
+        img_civil.setBackgroundResource(R.drawable.ic_civil);
+        img_iglesia.setBackgroundResource(R.drawable.ic_church);
+        img_museo.setBackgroundResource(R.drawable.ic_museum);
+        img_montana.setBackgroundResource(R.drawable.ic_montana);
+        img_areaProtegida.setBackgroundResource(R.drawable.ic_area_protegida);
+        img_agencia.setBackgroundResource(R.drawable.ic_agencias_de_viaje);
+        img_alojamiento.setBackgroundResource(R.drawable.ic_alojamiento);
+        img_comidas.setBackgroundResource(R.drawable.ic_comidas_y_bebidas);
+        img_recreacion.setBackgroundResource(R.drawable.ic_recreacion);
+
+        img_civil.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                crearPopupFiltro();
+            public void onClick(View v) {
+                if(civil){
+                    img_civil.setBackgroundResource(R.drawable.ic_civil_select);
+                    civil = false;
+                    listaFiltrarAtractivos.add("Arquitectura Civil");
+                }else{
+                    img_civil.setBackgroundResource(R.drawable.ic_civil);
+                    civil = true;
+                    listaFiltrarAtractivos.remove("Arquitectura Civil");
+                }
+                filtrarMarkers(listaFiltrarAtractivos, listaFiltrarServicios);
+
+            }
+        });
+
+        img_iglesia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(iglesias){
+                    img_iglesia.setBackgroundResource(R.drawable.ic_church_select);
+                    iglesias = false;
+                    listaFiltrarAtractivos.add("Arquitectura Religiosa");
+                }else{
+                    img_iglesia.setBackgroundResource(R.drawable.ic_church);
+                    iglesias = true;
+                    listaFiltrarAtractivos.remove("Arquitectura Religiosa");
+                }
+                filtrarMarkers(listaFiltrarAtractivos, listaFiltrarServicios);
+
+            }
+        });
+
+        img_museo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(museo){
+                    img_museo.setBackgroundResource(R.drawable.ic_museum_select);
+                    museo = false;
+                    listaFiltrarAtractivos.add("Museos históricos");
+                    listaFiltrarAtractivos.add("Museo");
+                }else{
+                    img_museo.setBackgroundResource(R.drawable.ic_museum);
+                    museo = true;
+                    listaFiltrarAtractivos.remove("Museos históricos");
+                    listaFiltrarAtractivos.remove("Museo");
+                }
+                filtrarMarkers(listaFiltrarAtractivos, listaFiltrarServicios);
+
+            }
+        });
+
+        img_montana.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(montana){
+                    img_montana.setBackgroundResource(R.drawable.ic_montana_select);
+                    montana = false;
+                    listaFiltrarAtractivos.add("Montañas");
+                }else{
+                    img_montana.setBackgroundResource(R.drawable.ic_montana);
+                    montana = true;
+                    listaFiltrarAtractivos.remove("Montañas");
+                }
+                filtrarMarkers(listaFiltrarAtractivos, listaFiltrarServicios);
+
+            }
+        });
+
+        img_areaProtegida.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(areaProtegida){
+                    img_areaProtegida.setBackgroundResource(R.drawable.ic_area_protegida_select);
+                    areaProtegida = false;
+                    listaFiltrarAtractivos.add("Sistema de Áreas Protegidas");
+                }else{
+                    img_areaProtegida.setBackgroundResource(R.drawable.ic_area_protegida);
+                    areaProtegida = true;
+                    listaFiltrarAtractivos.remove("Sistema de Áreas Protegidas");
+                }
+                filtrarMarkers(listaFiltrarAtractivos, listaFiltrarServicios);
+
+            }
+        });
+
+        img_agencia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(agencia){
+                    img_agencia.setBackgroundResource(R.drawable.ic_agencias_de_viaje_select);
+                    agencia = false;
+                    listaFiltrarServicios.add("Agencia de viajes");
+                }else{
+                    img_agencia.setBackgroundResource(R.drawable.ic_agencias_de_viaje);
+                    agencia = true;
+                    listaFiltrarServicios.remove("Agencia de viajes");
+                }
+                filtrarMarkers(listaFiltrarAtractivos, listaFiltrarServicios);
+
+            }
+        });
+
+        img_alojamiento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(alojamiento){
+                    img_alojamiento.setBackgroundResource(R.drawable.ic_alojamiento_select);
+                    alojamiento = false;
+                    listaFiltrarServicios.add("Alojamiento");
+                }else{
+                    img_alojamiento.setBackgroundResource(R.drawable.ic_alojamiento);
+                    alojamiento = true;
+                    listaFiltrarServicios.remove("Alojamiento");
+                }
+                filtrarMarkers(listaFiltrarAtractivos, listaFiltrarServicios);
+
+            }
+        });
+
+        img_comidas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(comidas){
+                    img_comidas.setBackgroundResource(R.drawable.ic_comidas_y_bebidas_select);
+                    comidas = false;
+                    listaFiltrarServicios.add("Comidas y bebidas");
+                }else{
+                    img_comidas.setBackgroundResource(R.drawable.ic_comidas_y_bebidas);
+                    comidas = true;
+                    listaFiltrarServicios.remove("Comidas y bebidas");
+                }
+                filtrarMarkers(listaFiltrarAtractivos, listaFiltrarServicios);
+
+            }
+        });
+
+        img_recreacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(recreacion){
+                    img_recreacion.setBackgroundResource(R.drawable.ic_recreacion_select);
+                    recreacion = false;
+                    listaFiltrarServicios.add("Comidas y bebidas");
+                }else{
+                    img_recreacion.setBackgroundResource(R.drawable.ic_recreacion);
+                    recreacion = true;
+                    listaFiltrarServicios.remove("Comidas y bebidas");
+                }
+                filtrarMarkers(listaFiltrarAtractivos, listaFiltrarServicios);
+
             }
         });
 
         // Establecer visibilidad
         if ((dataArgTrac!=null) || (dataArg !=null)){
-            fabFiltro.setVisibility(View.INVISIBLE);
+            ehFiltro.setVisibility(View.GONE);
         }
 
         if (isSerchFromChatBot){
             fabClima.setVisibility(View.GONE);
-            fabFiltro.setVisibility(View.GONE);
         }
 
         // Obtener argumentos de las notificaciones
@@ -741,177 +924,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             }
         }
     }
-    //Se muestra el popup para filtrar los actrativos
-    private void crearPopupFiltro(){
-        //We need to get the instance of the LayoutInflater, use the context of this activity
-        LayoutInflater inflaterT = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        //Inflate the view from a predefined XML layout (no need for root id, using entire layout)
-        final View popupfiltro = inflaterT.inflate(R.layout.popup_filtroatractivos,null);
-        //Get the devices screen density to calculate correct pixel sizes
-        float density= getContext().getResources().getDisplayMetrics().density;
-        // create a focusable PopupWindow with the given layout and correct size
-        final PopupWindow pw = new PopupWindow(popupfiltro, (int)density*300, (int)density*370, true);
-        pw.showAtLocation(popupfiltro, Gravity.CENTER_HORIZONTAL, 0, 0);
-        listaFiltrarServicios.clear();
-        listaFiltrarAtractivos.clear();
-        //Actualizar lista de atractivos
-        Switch sw_ManiCul = (Switch) popupfiltro.findViewById(R.id.sw_atractivo1);
-        sw_ManiCul.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                {
-                    listaFiltrarAtractivos.add("Manifestaciones Culturales");
-                }else
-                {
-                    listaFiltrarAtractivos.remove("Manifestaciones Culturales");
-                }
-            }
-        });
-        Switch sw_Museo = (Switch) popupfiltro.findViewById(R.id.sw_atractivo2);
-        sw_Museo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                {
-                    listaFiltrarAtractivos.add("Museo");
-                }else
-                {
-                    listaFiltrarAtractivos.remove("Museo");
-                }
-            }
-        });
-        Switch sw_Arqui = (Switch) popupfiltro.findViewById(R.id.sw_atractivo3);
-        sw_Arqui.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                {
-                    listaFiltrarAtractivos.add("Arquitectura");
-                }else
-                {
-                    listaFiltrarAtractivos.remove("Arquitectura");
-                }
-            }
-        });
-        Switch sw_Parque = (Switch) popupfiltro.findViewById(R.id.sw_atractivo4);
-        sw_Parque.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                {
-                    listaFiltrarAtractivos.add("Parque");
-                }else
-                {
-                    listaFiltrarAtractivos.remove("Parque");
-                }
-            }
-        });
-
-        //Actualizar lista de servicios
-        Switch sw_Agencias = (Switch) popupfiltro.findViewById(R.id.sw_atractivo5);
-        sw_Agencias.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                {
-                    listaFiltrarServicios.add("Agencia de viajes");
-                }else
-                {
-                    listaFiltrarServicios.remove("Agencia de viajes");
-                }
-            }
-        });
-        Switch sw_Alojamiento = (Switch) popupfiltro.findViewById(R.id.sw_atractivo6);
-        sw_Alojamiento.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                {
-                    listaFiltrarServicios.add("Alojamiento");
-                }else
-                {
-                    listaFiltrarServicios.remove("Alojamiento");
-                }
-            }
-        });
-        Switch sw_ComiBebidas = (Switch) popupfiltro.findViewById(R.id.sw_atractivo7);
-        sw_ComiBebidas.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                {
-                    listaFiltrarServicios.add("Comidas y bebidas");
-                }else
-                {
-                    listaFiltrarServicios.remove("Comidas y bebidas");
-                }
-            }
-        });
-        Switch sw_Recreacion = (Switch) popupfiltro.findViewById(R.id.sw_atractivo8);
-        sw_Recreacion.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                {
-                    listaFiltrarServicios.add("Recreación, diversión, esparcimiento");
-                }else
-                {
-                    listaFiltrarServicios.remove("Recreación, diversión, esparcimiento");
-                }
-            }
-        });
-
-        //Estado de los switch
-       /* if (!listaFiltrarAtractivos.isEmpty()){
-            for (String itemlis: listaFiltrarAtractivos) {
-                if (itemlis.equals("Manifestaciones Culturales")) {
-                    sw_ManiCul.setChecked(true);
-                }else
-                if (itemlis.equals("Museo")){
-                    sw_Museo.setChecked(true);
-                }else
-                if (itemlis.equals("Arquitectura")){
-                    sw_Arqui.setChecked(true);
-                }else
-                if (itemlis.equals("Parque"))
-                    sw_Parque.setChecked(true);
-            }
-        }
-        if (!listaFiltrarServicios.isEmpty()){
-            for (String itemlis: listaFiltrarServicios) {
-                if (itemlis.equals("Agencia de viajes")) {
-                    sw_Agencias.setChecked(true);
-                }else
-                if (itemlis.equals("Alojamiento")) {
-                    sw_Alojamiento.setChecked(true);
-                }else
-                if (itemlis.equals("Comidas y bebidas")) {
-                    sw_ComiBebidas.setChecked(true);
-                }else
-                if (itemlis.equals("Recreación, diversión, esparcimiento"))
-                    sw_Recreacion.setChecked(true);
-            }
-        }*/
-
-        Button btnCancelarFil = (Button) popupfiltro.findViewById(R.id.btn_cancelarfil);
-        btnCancelarFil.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listaFiltrarServicios.clear();
-                listaFiltrarAtractivos.clear();
-                pw.dismiss();
-            }
-        });
-        Button btnFiltrar = (Button) popupfiltro.findViewById(R.id.btn_filtrar);
-        btnFiltrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                filtrarMarkers(listaFiltrarAtractivos, listaFiltrarServicios);
-                pw.dismiss();
-            }
-        });
-    }
 
     //Filtra los markers con las preferencias del usuario
     private void filtrarMarkers(final ArrayList<String> listAtrac, final ArrayList<String> listServ){
@@ -972,8 +984,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                 setListaAreaPeligrosa(listaAreaPeligrosa);
                 //Crea marcadores de los atractivos
                 for (DataSnapshot child: dataSnapshot.child("atractivo").getChildren()){
-                    if (child.child("categoria").exists()){
-                        String categoria = child.child("categoria").getValue().toString();
+                    if (child.child("subtipo").exists()){
+                        String categoria = child.child("subtipo").getValue().toString();
                         for (String itemlist: listAtrac) {
                             if (categoria.equals(itemlist)){
                                 String nombreAtractivo = child.child("nombre").getValue().toString();

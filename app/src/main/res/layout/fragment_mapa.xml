@@ -11,6 +11,127 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        >
+
+        <com.github.florent37.expansionpanel.ExpansionHeader
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/eh_filtro"
+            app:expansion_headerIndicator="@id/headerIndicator"
+            app:expansion_layout="@id/expansionLayout"
+            android:background="@color/colorPrimary"
+            app:expansion_toggleOnClick="true">
+
+            <!-- HEADER -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="#ffffff"
+                android:text="Filtro"/>
+            ...
+            <!-- HEADER INDICATOR -->
+            <android.support.v7.widget.AppCompatImageView
+                android:adjustViewBounds="true"
+                android:id="@+id/headerIndicator"
+                android:layout_gravity="center_vertical|right"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_width="wrap_content"
+                app:srcCompat="@drawable/ic_expansion_header_indicator_grey_24dp" />
+
+
+        </com.github.florent37.expansionpanel.ExpansionHeader>
+
+        <com.github.florent37.expansionpanel.ExpansionLayout
+            android:id="@+id/expansionLayout"
+            android:layout_height="50dp"
+            android:layout_width="match_parent">
+
+            <!-- CONTENT -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:id="@+id/layout_menu"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:animateLayoutChanges="true"
+                >
+
+                <ImageButton
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:layout_margin="3dp"
+                    android:id="@+id/img_civilMap"
+                    android:background="@color/colorPrimary"
+                    />
+                <ImageButton
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/img_museoMap"
+                    android:layout_margin="3dp"
+                    android:background="@color/colorPrimary"
+                    />
+                <ImageButton
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/img_montanaMap"
+                    android:layout_margin="3dp"
+                    android:background="@color/colorPrimary"
+                    />
+                <ImageButton
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/img_iglesiaMap"
+                    android:layout_margin="3dp"
+                    android:background="@color/colorPrimary"
+                    />
+                <ImageButton
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:layout_margin="3dp"
+                    android:id="@+id/img_areaProtegidaMap"
+                    android:background="@color/colorPrimary"
+                    />
+                <ImageButton
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:layout_margin="3dp"
+                    android:id="@+id/img_agenciaMap"
+                    android:background="@color/colorPrimary"
+                    />
+                <ImageButton
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:layout_margin="3dp"
+                    android:id="@+id/img_alojamientoMap"
+                    android:background="@color/colorPrimary"
+                    />
+                <ImageButton
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:layout_margin="3dp"
+                    android:id="@+id/img_comidasbebidasMap"
+                    android:background="@color/colorPrimary"
+                    />
+                <ImageButton
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:layout_margin="3dp"
+                    android:id="@+id/img_recreacionesMap"
+                    android:background="@color/colorPrimary"
+                    />
+            </LinearLayout>
+        </com.github.florent37.expansionpanel.ExpansionLayout>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,17 +149,7 @@
             android:layout_marginTop="5dp"
             android:src="@drawable/ic_clima"
             android:tint="@color/secondaryTextColor" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_filtro"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginTop="5dp"
-            android:src="@drawable/ic_filtro"
-            android:tint="@color/secondaryTextColor" />
     </LinearLayout>
+
 
 </FrameLayout>
