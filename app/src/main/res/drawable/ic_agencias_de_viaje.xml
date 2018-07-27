@@ -5,7 +5,7 @@
 
     <path
         android:pathData="M504 252A252 252 0 0 1 252 504 252 252 0 0 1 0 252 252 252 0 0 1 252 0 252 252 0 0 1 504 252Z"
-        android:fillColor="#78bdf3" />
+        android:fillColor="#6684F5" />
     <path
         android:pathData="M347 255.3c0.3 18 7.1 32.3 15.5 32.3 8.4 0 15.2 -14.4 15.5 -32.3l-31 0z"
         android:fillColor="#324a5e" />

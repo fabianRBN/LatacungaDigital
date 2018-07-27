@@ -7,11 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.VectorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -75,6 +79,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -365,11 +370,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                 if(recreacion){
                     img_recreacion.setBackgroundResource(R.drawable.ic_recreacion_select);
                     recreacion = false;
-                    listaFiltrarServicios.add("Comidas y bebidas");
+                    listaFiltrarServicios.add("Recreación, diversión, esparcimiento");
                 }else{
                     img_recreacion.setBackgroundResource(R.drawable.ic_recreacion);
                     recreacion = true;
-                    listaFiltrarServicios.remove("Comidas y bebidas");
+                    listaFiltrarServicios.remove("Recreación, diversión, esparcimiento");
                 }
                 filtrarMarkers(listaFiltrarAtractivos, listaFiltrarServicios);
 
@@ -1001,8 +1006,22 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                                 LatLng punto = new LatLng( coordenada.getLat(), coordenada.getLng());
                                 MarkerOptions markerOptions = new  MarkerOptions().position(punto)
                                         .title(nombreAtractivo)
-                                        .snippet(snippit)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_building_blue));
+                                        .snippet(snippit);
+                                if (categoria.equals("Arquitectura Civil") ){
+                                    markerOptions.icon(getBitmapDescriptor(R.drawable.ic_civil_map));
+                                }
+                                if (categoria.equals("Arquitectura Religiosa") ){
+                                    markerOptions.icon(getBitmapDescriptor(R.drawable.ic_church_map));
+                                }
+                                if ((categoria.equals("Museos históricos")) || (categoria.equals("Museo"))){
+                                    markerOptions.icon(getBitmapDescriptor(R.drawable.ic_museum_map));
+                                }
+                                if (categoria.equals("Montañas") ){
+                                    markerOptions.icon(getBitmapDescriptor(R.drawable.ic_montana_map));
+                                }
+                                if (categoria.equals("Sistema de Áreas Protegidas") ){
+                                    markerOptions.icon(getBitmapDescriptor(R.drawable.ic_area_protegida_map));
+                                }
                                 listaMarkadores.add(markerOptions);
                                 googleMap.addMarker(markerOptions);
                             }
@@ -1022,8 +1041,19 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                                 MarkerOptions markerOptions = new  MarkerOptions().position(punto)
                                         .title(nombreAtractivo)
                                         .snippet(actividad)
-                                        .draggable(false)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_building_blue));
+                                        .draggable(false);
+                                if (categoria.equals("Agencia de viajes") ){
+                                    markerOptions.icon(getBitmapDescriptor(R.drawable.ic_agencias_de_viaje_map));
+                                }
+                                if (categoria.equals("Alojamiento") ){
+                                    markerOptions.icon(getBitmapDescriptor(R.drawable.ic_alojamiento_map));
+                                }
+                                if (categoria.equals("Comidas y bebidas") ){
+                                    markerOptions.icon(getBitmapDescriptor(R.drawable.ic_comidas_y_bebidas_map));
+                                }
+                                if (categoria.equals("Recreación, diversión, esparcimiento") ){
+                                    markerOptions.icon(getBitmapDescriptor(R.drawable.ic_recreacion_map));
+                                }
                                 listaMarkadores.add(markerOptions);
                                 googleMap.addMarker(markerOptions).setTag("service");
                             }
@@ -1041,6 +1071,21 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
         });
         // For zooming automatically to the location of the marker
         googleMap.setOnMarkerClickListener(onMarkerClickListenerAdapter);
+    }
+    private BitmapDescriptor getBitmapDescriptor(int id) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            VectorDrawable vectorDrawable = (VectorDrawable) getContext().getDrawable(id);
+            vectorDrawable.setBounds(0, 0, 80, 120);
+
+            Bitmap bm = Bitmap.createBitmap(80, 120, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bm);
+            vectorDrawable.draw(canvas);
+
+            return BitmapDescriptorFactory.fromBitmap(bm);
+
+        } else {
+            return BitmapDescriptorFactory.fromResource(id);
+        }
     }
 
     private void SetupActionBar(boolean statusTSnackbar) {
