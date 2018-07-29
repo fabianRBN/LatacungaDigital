@@ -181,13 +181,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         } else if (id == R.id.navigation_configuraciones) {
             startActivity(new Intent(MainActivity.this, PreferenciasActivity.class));
 
-        } else if (id == R.id.navigation_prefrencia) {
-           /* Gestor de preferiencias
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-
-            System.out.println("Prefencias servicio:"+pref.getBoolean("notificacionAtractivo",false));*/
-
-        } else if (id == R.id.navigation_rastrear) {
+        }  else if (id == R.id.navigation_rastrear) {
             setFragment(new TrackinFragment());
         }
 
