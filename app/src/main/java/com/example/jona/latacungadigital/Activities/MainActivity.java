@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setBackgroundDrawableResource(R.color.white);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

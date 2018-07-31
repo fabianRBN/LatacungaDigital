@@ -40,6 +40,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener ,A
     private String tipoAR= "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setBackgroundDrawableResource(R.color.white);
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 

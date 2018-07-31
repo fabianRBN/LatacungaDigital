@@ -1,6 +1,7 @@
 package com.example.jona.latacungadigital.Activities;
 
 import android.Manifest;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -24,11 +25,12 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.MyTheme_NoActionBar);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+     /*   setContentView(R.layout.activity_splash);
         mLayout = findViewById(R.id.splash_relative_layout);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
 
         //Pedir Permisos
         if(checkAllPermision()){
@@ -36,14 +38,13 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
                     PermissionsReferences.REQUEST_CODE_ALL_PERMISSIONS);
         }else{
             //Handler Class. comunicarnos desde un subproceso con el hilo principal de la aplicación Android
-            new Handler().postDelayed(new Runnable(){
-                public void run(){
+
                     //Iniciar LoginActivity
                     Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.animation_fade_in,R.anim.animation_fade_out);
                     finish();
-                };
-            }, DURACION_SPLASH);
+
         }
     }
 
@@ -147,14 +148,10 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == PermissionsReferences.REQUEST_CODE_ALL_PERMISSIONS){
             //Handler Class. comunicarnos desde un subproceso con el hilo principal de la aplicación Android
-            new Handler().postDelayed(new Runnable(){
-                public void run(){
                     //Iniciar LoginActivity
                     Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
-                };
-            }, DURACION_SPLASH);
         }
     }
 }

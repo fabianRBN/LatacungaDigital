@@ -21,6 +21,7 @@ public class PreferenciasActivity extends PreferenceActivity {
     private SharedPreferences.OnSharedPreferenceChangeListener mPreferenceListener ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setBackgroundDrawableResource(R.color.white);
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferencias);
         mPreferenceListener = new SharedPreferences.OnSharedPreferenceChangeListener(){

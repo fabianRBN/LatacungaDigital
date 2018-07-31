@@ -26,6 +26,7 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setBackgroundDrawableResource(R.color.white);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_bot);
         chatFragment = new ChatTextFragment();

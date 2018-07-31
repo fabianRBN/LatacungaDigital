@@ -10,6 +10,9 @@
         <item name="android:actionMenuTextColor">@color/white</item>
 
 
+
+
+
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
@@ -33,11 +36,14 @@
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
         <item name="cardViewStyle">@style/CardView</item>
+        <item name="android:windowBackground">@color/primaryColor</item>
+
     </style>
 
     <style name="MyTheme.NoActionBar" parent="MyTheme">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
         <item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayout</item>
     </style>
 
@@ -54,5 +60,12 @@
         </item>
     </style>
 
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/backgroud_splash</item>
+    </style>
+
+    <style name="SplashThemeLoading" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/background_loading</item>
+    </style>
     <!--Rating Bar Style-->
 </resources>
