@@ -120,7 +120,7 @@ public class Tab_detalle_atractivo extends Fragment {
 
 
                 if(horarioClass.isSiempreAbierto()){
-                    txtSiempreAbierto.setText("Simpre Abierto");
+                    txtSiempreAbierto.setText("Siempre Abierto");
                     txtSiempreAbierto.setVisibility(View.VISIBLE);
 
                 }else{

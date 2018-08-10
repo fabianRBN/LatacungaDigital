@@ -14,6 +14,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+
 /**
  * Created by fabia on 28/05/2018.
  */
@@ -41,6 +43,12 @@ public class LatacungaDigital  extends Application {
         if(notificacionAtractivo){
             activarServicio();
         }
+
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath("fonts/Roboto-RobotoRegular.ttf")
+                .setFontAttrId(R.attr.fontPath)
+                .build()
+        );
 
 
     }

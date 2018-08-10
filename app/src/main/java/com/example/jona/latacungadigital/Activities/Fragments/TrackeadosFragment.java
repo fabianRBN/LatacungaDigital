@@ -84,7 +84,7 @@ public class TrackeadosFragment extends Fragment {
         fabMapa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (et_distancia.getText() != null){
+                if (et_distancia.getText() != null ){
                     MapaFragment mf = new MapaFragment();
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     transaction.replace(R.id.main_fragment, mf).commit();

@@ -4,8 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activities.Fragments.TrackeadosFragment"
-    android:background="#9AAEF7">
-
+    android:background="#9AAEF7"
+    android:paddingBottom="45dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <!-- TODO: Update blank fragment layout -->
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -73,19 +76,21 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_friendsAutorizados"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent"
+       />
+
+        </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
+    </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_autorizados"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:elevation="6dp"
         android:layout_gravity="bottom|end"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="65dp"
         android:src="@drawable/ic_irmapa" />
-        </LinearLayout>
-    </android.support.design.widget.CoordinatorLayout>
+
 
 </FrameLayout>

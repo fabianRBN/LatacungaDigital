@@ -4,11 +4,16 @@ package com.example.jona.latacungadigital.Activities.Fragments;
  * Created by fabia on 16/07/2018.
  */
 
+
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +26,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
 
     private LinearLayout linearLayoutAtractivo, linearLayoutServios, linearLayoutPanoramica;
     private ProgressDialog dialog;
+    String contenido= "";
+
     public BottomSheetFragment() {
         // Required empty public constructor
     }
@@ -35,9 +42,23 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bottom_sheet_dialog, container, false);
+
+
+
         linearLayoutAtractivo = (LinearLayout) view.findViewById(R.id.linerLayoutAtractivos);
         linearLayoutServios = (LinearLayout) view.findViewById(R.id.linerLayoutServicios);
         linearLayoutPanoramica = (LinearLayout) view.findViewById(R.id.linerLayoutPanoramica);
+
+        PackageManager packageManager = getContext().getPackageManager();
+
+         final boolean acelrometro = packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
+         final boolean compass = packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS);
+        if(!acelrometro){
+            contenido = "\n     - Acelerometro ";
+        }
+        if(!compass){
+            contenido = contenido +  "\n    - Compas ";
+        }
 
         linearLayoutAtractivo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,14 +71,23 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
 
-                actividadAR("panoramica");
+                if(acelrometro && compass){
+                    actividadAR("panoramica");
+                }else{
+                    alert(contenido);
+                }
+
             }
         });
 
         linearLayoutServios.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actividadAR("servicios");
+                if(acelrometro && compass) {
+                    actividadAR("servicios");
+                }else{
+                    alert(contenido);
+                }
             }
         });
 
@@ -88,4 +118,27 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
             }
         },2020);
     }
+
+    public void alert(String contenido){
+        String mensaje = "El dispositivo no cuenta con:" + contenido;
+        AlertDialog.Builder builder= new AlertDialog.Builder(getActivity());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(getContext());
+        }
+        builder.setTitle("Alerta")
+                .setMessage(mensaje)
+                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+
+
+
 }

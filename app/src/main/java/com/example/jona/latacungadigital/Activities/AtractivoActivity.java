@@ -1,5 +1,6 @@
 package com.example.jona.latacungadigital.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 
 
 import me.relex.circleindicator.CircleIndicator;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class AtractivoActivity extends AppCompatActivity  implements TabLayout.OnTabSelectedListener{
@@ -255,4 +257,8 @@ public class AtractivoActivity extends AppCompatActivity  implements TabLayout.O
         return true;
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 }

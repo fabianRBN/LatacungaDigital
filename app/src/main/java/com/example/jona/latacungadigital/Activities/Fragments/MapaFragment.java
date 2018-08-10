@@ -1,6 +1,7 @@
 package com.example.jona.latacungadigital.Activities.Fragments;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -1153,6 +1154,16 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                                     .setContentTitle(title)
                                     .setContentText(content);
         NotificationManager manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            // Creaccion de channel
+            NotificationChannel channel = new NotificationChannel("default",
+                    "LATACUNGA_CHANNEL",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("LATACUNGA_NOTIFICATION_CHANNEL");
+            manager.createNotificationChannel(channel);
+        }
+
         Intent intent = new Intent(getActivity(), MainActivity.class);
         intent.putExtra("OpenMapFragment", latlong.latitude+","+latlong.longitude);
 
@@ -1270,6 +1281,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
+
         if (receiversRegistered) Objects.requireNonNull(getActivity()).unregisterReceiver(networkReceiverClass);
 
     }

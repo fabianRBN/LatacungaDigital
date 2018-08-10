@@ -25,6 +25,7 @@ import com.example.jona.latacungadigital.Activities.Clases.TrackingClass;
 import com.example.jona.latacungadigital.Activities.modelos.TrackinModel;
 import com.example.jona.latacungadigital.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,7 +47,7 @@ public class TrackinFragment extends Fragment {
     DatabaseReference mdatabase;
     private FirebaseAuth userFirebase;
     RecyclerView recyclerView;
-    Button btnLista, btnMapa;
+    FloatingActionButton btnLista, btnMapa;
     private static final ArrayList<String> listaUsuarios = new ArrayList<>();
 
     public TrackinFragment() {
@@ -68,8 +69,8 @@ public class TrackinFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_friends);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        btnLista = (Button) view.findViewById(R.id.btn_listaAutorizados);
-        btnMapa = (Button) view.findViewById(R.id.btn_irmapa);
+        btnLista = (FloatingActionButton) view.findViewById(R.id.btn_listaAutorizados);
+        btnMapa = (FloatingActionButton) view.findViewById(R.id.btn_irmapa);
 
         //Boton para llevar a lista de trackeados
         btnLista.setOnClickListener(new View.OnClickListener() {
@@ -173,12 +174,13 @@ public class TrackinFragment extends Fragment {
 
     private void ConsultaAmigos(final String uid) {
         final ArrayList<String> listaidUsuarios = new ArrayList<>();
-        listaidUsuarios.clear();
-        listaAmigos.clear();
+
         mdatabase = FirebaseDatabase.getInstance().getReference();
-        mdatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+        mdatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                listaidUsuarios.clear();
+                listaAmigos.clear();
                 for (DataSnapshot child: dataSnapshot.child("autorizados").child(uid).getChildren()){
                     listaidUsuarios.add(child.getKey());
                 }
