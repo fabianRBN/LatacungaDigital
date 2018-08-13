@@ -141,7 +141,7 @@ var World = {
                                                          },
                                                          translate: {
                                                          x: -0.5,
-                                                         y: -0.3,
+                                                         y: -0.4,
                                                          z: 0
                                                          }
                                                          });
@@ -229,27 +229,38 @@ var World = {
                                                     },
                                                     translate: {
                                                      x: 0.7,
-                                                     y: 0,
+                                                     y: -0.1,
                                                     z: 0
                                                      }
                                                     });
 
                             var Domingo = new AR.Label("Domingo: "+singlePoi.horario.Domingo.horaInicio+"-"+singlePoi.horario.Domingo.horaSalida
-                            , 0.05, { zOrder: 1, style: { textColor: '#17202A',backgroundColor: '#FFFFFF'},translate: {x: 0.5, y: -0.1, z: 0}});
+                            , 0.05, { zOrder: 1, style: { textColor: '#17202A',backgroundColor: '#FFFFFF'},translate: {x: 0.5, y: -0.2, z: 0}});
                             var Lunes = new AR.Label("Lunes: "+singlePoi.horario.Lunes.horaInicio+"-"+singlePoi.horario.Lunes.horaSalida
-                            , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 1,y: -0.1,z: 0} });
+                            , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 1,y: -0.2,z: 0} });
                             var Martes = new AR.Label("Martes: "+singlePoi.horario.Martes.horaInicio+"-"+singlePoi.horario.Martes.horaSalida
-                             , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 0.5,y: -0.2,z: 0} });
-                             var Miercoles = new AR.Label("Miercoles: "+singlePoi.horario.Miercoles.horaInicio+"-"+singlePoi.horario.Miercoles.horaSalida
-                             , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 1,y: -0.2,z: 0} });
-                             var Jueves = new AR.Label("Jueves: "+singlePoi.horario.Jueves.horaInicio+"-"+singlePoi.horario.Jueves.horaSalida
                              , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 0.5,y: -0.3,z: 0} });
-                             var Viernes = new AR.Label("Viernes: "+singlePoi.horario.Lunes.horaInicio+"-"+singlePoi.horario.Viernes.horaSalida
+                             var Miercoles = new AR.Label("Miercoles: "+singlePoi.horario.Miercoles.horaInicio+"-"+singlePoi.horario.Miercoles.horaSalida
                              , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 1,y: -0.3,z: 0} });
-                             var Sabado = new AR.Label("Sabado: "+singlePoi.horario.Sabado.horaInicio+"-"+singlePoi.horario.Sabado.horaSalida
+                             var Jueves = new AR.Label("Jueves: "+singlePoi.horario.Jueves.horaInicio+"-"+singlePoi.horario.Jueves.horaSalida
                              , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 0.5,y: -0.4,z: 0} });
+                             var Viernes = new AR.Label("Viernes: "+singlePoi.horario.Lunes.horaInicio+"-"+singlePoi.horario.Viernes.horaSalida
+                             , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 1,y: -0.4,z: 0} });
+                             var Sabado = new AR.Label("Sabado: "+singlePoi.horario.Sabado.horaInicio+"-"+singlePoi.horario.Sabado.horaSalida
+                             , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 0.5,y: -0.5,z: 0} });
 
                               var imgDescripcion= new AR.ImageResource("assets/descripcion.png");
+
+                              //sonido
+                                      this.sirenSound = new AR.Sound("assets/intro.mp3", {
+                                                  onError : function(){
+                                                      alert(errorMessage);
+                                                  },
+                                                  onFinishedPlaying : function() {
+                                                     // World.setLightsEnabled(false);
+                                                  }
+                                              });
+                                              this.sirenSound.load();
                              var overlaydescripcion = new AR.ImageDrawable(imgDescripcion, 0.1, {
                                               translate: {
                                               x:0,
@@ -300,6 +311,7 @@ html:"<head><style> div {border: 1px solid gray; padding: 8px; width: 500px; fon
             document.getElementById("info").setAttribute("class", "info");
    },
     objectRecognized: function objectRecognizedFn() {
+        World.sirenSound.play();
         World.removeLoadingBar();
         World.setAugmentationsEnabled(true);
     },
