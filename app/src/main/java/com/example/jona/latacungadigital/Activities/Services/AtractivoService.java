@@ -60,9 +60,10 @@ public class AtractivoService extends Service {
     private LocationManager locationManager;
     private FirebaseUser userFirebase = FirebaseAuth.getInstance().getCurrentUser();
     //Minimo tiempo para updates en Milisegundos
-    private static final long MIN_TIEMPO_ENTRE_UPDATES = 1000* 30* 1; // 1 minuto
+    private static final long MIN_TIEMPO_ENTRE_UPDATES = 1000 * 30 * 1; // 1 minuto
     //Minima distancia para updates en metros.
     private static final long MIN_CAMBIO_DISTANCIA_PARA_UPDATES = (long) 0.5; // 1.5 metros
+
 
     //Para leer y escribir en la base de datos, necesitas una instancia de DatabaseReference:
     private DatabaseReference databaseReference;
@@ -129,7 +130,10 @@ public class AtractivoService extends Service {
 
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         //noinspection MissingPermission
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,MIN_TIEMPO_ENTRE_UPDATES,MIN_CAMBIO_DISTANCIA_PARA_UPDATES,listener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                MIN_TIEMPO_ENTRE_UPDATES ,
+                MIN_CAMBIO_DISTANCIA_PARA_UPDATES,
+                listener);
 
         // Referencia de firebase
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -152,6 +156,7 @@ public class AtractivoService extends Service {
     public void onDestroy() {
 
         if(preferences.getBoolean("notificacionAtractivo",false)){
+
             System.out.println("Re activado");
             Intent serv = new Intent(getApplicationContext(),AtractivoService.class); //serv de tipo Intent
             sendBroadcast(serv);
@@ -265,7 +270,7 @@ public class AtractivoService extends Service {
     public void geofireAtractivo(LatLng location , final String nombreAtractivo, final String keyAtractivo, final int id_notificacion){
         System.out.println("Buscando posicion: "+keyAtractivo );
 
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), 0.5f);
+        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), 0.2);
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {

@@ -28,7 +28,7 @@ public class PreferenciasActivity extends PreferenceActivity {
 
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                if(key.equals("notificacionAtractivo")) {
+                if(key.equals("notificacionAtractivo") || key.equals("tiempoNotificacion") || key.equals("distanciaNotificacion") ) {
                     System.out.println("Preferencia listener:" + sharedPreferences.getBoolean(key,false));
                     if(sharedPreferences.getBoolean(key,false)){
                         //System.out.println("Servicio intent start");

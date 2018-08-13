@@ -17,15 +17,7 @@
             >
         </CheckBoxPreference>
 
-        <ListPreference
-            android:key="tiempoNotificacion"
-            android:title="Frecuencia de uso del gps"
-            android:summary="El uso de gps permite detectar la poscion del usuario y calcular buscar atractivos cercanos al mismo."
-            android:dialogTitle="Frecuencia de uso del gps"
-            android:entries="@array/tiempoNotificacion"
-            android:entryValues="@array/valortiempoNotificacion"
-            >
-        </ListPreference>
+
 
 
     </PreferenceCategory>
