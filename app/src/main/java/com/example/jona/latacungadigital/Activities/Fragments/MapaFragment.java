@@ -9,8 +9,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -19,6 +22,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -47,6 +51,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
 import com.example.jona.latacungadigital.Activities.Adapters.AttractiveInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.CustomInfoWindowsAdapter;
 import com.example.jona.latacungadigital.Activities.Adapters.MyOnInfoWindowsClickListener;
@@ -58,6 +64,7 @@ import com.example.jona.latacungadigital.Activities.Clases.NetworkReceiverClass;
 import com.example.jona.latacungadigital.Activities.Clases.ServiceClass;
 import com.example.jona.latacungadigital.Activities.Haversine.Haversine;
 import com.example.jona.latacungadigital.Activities.MainActivity;
+import com.example.jona.latacungadigital.Activities.Parser.CircleTransform;
 import com.example.jona.latacungadigital.Activities.Permisos.EstadoGPS;
 import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
 import com.example.jona.latacungadigital.Activities.modelos.AtractivoModel;
@@ -95,10 +102,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
@@ -680,30 +692,50 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                     }
                     for (TrackinModel trac: listaidUsuarios){
                         if (trac.isAutorizacion()){
-                            String snippit ="";
                             String pathImagen = "";
                             if (dataSnapshot.child("cliente").child(trac.getKey()).child("GeoFire").exists()){
-                                String nombre = dataSnapshot.child("cliente").child(trac.getKey()).child("nombre").getValue().toString();
+                                final String nombre = dataSnapshot.child("cliente").child(trac.getKey()).child("nombre").getValue().toString();
                                 pathImagen = dataSnapshot.child("cliente").child(trac.getKey()).child("pathImagen").getValue().toString();
-                                double latitud = Double.parseDouble(dataSnapshot.child("cliente").child(trac.getKey())
+                                final double latitud = Double.parseDouble(dataSnapshot.child("cliente").child(trac.getKey())
                                         .child("GeoFire").child("l").child("0").getValue().toString());
-                                double longitud = Double.parseDouble(dataSnapshot.child("cliente").child(trac.getKey())
+                                final double longitud = Double.parseDouble(dataSnapshot.child("cliente").child(trac.getKey())
                                         .child("GeoFire").child("l").child("1").getValue().toString());
-                                MarkerOptions markerOptions =  new MarkerOptions();
-                                markerOptions.position(new LatLng(latitud,longitud));
-                                markerOptions.title(nombre);
-                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_user_dark_blue));
 
                                 //Calculo de la distancia
                                 haversine = new Haversine();
                                 Coordenada inicial = new Coordenada(currentUserLatLng.latitude,currentUserLatLng.longitude);//mi coordenada
                                 Coordenada end = new Coordenada(latitud,longitud);// la coordenada del trackeado
                                 LatLng latlong = new LatLng(end.getLat(), end.getLng());
-                                double distanciah = (haversine.distance(inicial,end));
-                                String formatoDistancia = "Distancia: "+String.format("%.02f", distanciah)+" km";
-                                snippit = formatoDistancia +"&##"+pathImagen+"&##"+trac.getKey();
-                                markerOptions.snippet(snippit);
-                                googleMap.addMarker(markerOptions);
+                                double distanciah = (haversine.distance(inicial,end))*1000;
+                                final String formatoDistancia = "Distancia: "+String.format("%.02f", distanciah)+" metros";
+
+                                ColorDrawable cd = new ColorDrawable(ContextCompat.getColor(getContext(), R.color.wallet_holo_blue_light));
+                                Glide.with(getContext())
+                                        .load(pathImagen)
+                                        .asBitmap()
+                                        .listener(new RequestListener<String, Bitmap>() {
+                                            @Override
+                                            public boolean onException(Exception e, String model, com.bumptech.glide.request.target.Target<Bitmap> target, boolean isFirstResource) {
+                                                return false;
+                                            }
+
+                                            @Override
+                                            public boolean onResourceReady(Bitmap resource, String model, com.bumptech.glide.request.target.Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                                final MarkerOptions markerOptions =  new MarkerOptions();
+                                                markerOptions.position(new LatLng(latitud,longitud));
+                                                markerOptions.title(nombre);
+                                                markerOptions.snippet(formatoDistancia);
+                                                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resource));
+                                                googleMap.addMarker(markerOptions).setTag("trackeo");
+                                                return true;
+                                            }
+                                        })
+                                        .placeholder(cd)
+                                        .centerCrop()
+                                        .preload();
+                                //snippit = formatoDistancia +"&##"+pathImagen+"&##"+trac.getKey();
+
+
                                 double distmax = 1;
                                 if (dataArgTrac != null){
                                     distmax = Double.parseDouble(getArguments().getString("trackeo"))/1000;
@@ -712,7 +744,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
                                 if (distanciah >= distmax){
                                     if (dataArg == null)
                                         sendNotification("Alerta", String.format(nombre+" se alejo a "+formatoDistancia+" km de distancia de ti"), latlong);
-
                                 }
 
                             }

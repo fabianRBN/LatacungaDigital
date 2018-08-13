@@ -31,7 +31,8 @@ public class EstadoGPS {
     boolean gps_enabled = false;
     boolean network_enabled = false;
     double longitudeGPS, latitudeGPS;
-    public LatLng puntoOrigen = new LatLng(-0.9337192,-78.6174786);
+    //public LatLng puntoOrigen = new LatLng(-0.9337192,-78.6174786);
+    public LatLng puntoOrigen = new LatLng(-0.936109,-78.612881);
     private LatLng currentLatLng;
 
     public EstadoGPS(Context context, GoogleMap googleMap) {
