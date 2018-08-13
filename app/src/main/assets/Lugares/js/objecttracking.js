@@ -53,7 +53,7 @@ var World = {
                                                          }
                                                      });
                  //direccion
-                var titulodireccion = new AR.Label("Dirección:", 0.1, {
+                /*var titulodireccion = new AR.Label("Dirección:", 0.1, {
                                                                 zOrder: 1,
                                                                 style: {
                                                                 textColor: '#48C9B0'
@@ -63,11 +63,12 @@ var World = {
                                                                 y: 0.7,
                                                                 z: 0
                                                                 }
-                                                                });
+                                                                });*/
                 var Direccion = new AR.Label(singlePoi.direccion, 0.08, {
                                                 zOrder: 1,
                                                 style: {
-                                                textColor: '#48C9B0'
+                                                textColor: '#48C9B0',
+                                                backgroundColor: '#FFFFFF'
                                                 },
                                                 translate: {
                                                 x: -0.6,
@@ -87,7 +88,7 @@ var World = {
 
          //permisos
 
-                var titulopermiso = new AR.Label("Permisos:", 0.1, {
+               /* var titulopermiso = new AR.Label("Permisos:", 0.1, {
                                                                 zOrder: 1,
                                                                 style: {
                                                                 textColor: '#8E44AD'
@@ -97,11 +98,12 @@ var World = {
                                                                 y: 0.3,
                                                                 z: 0
                                                                 }
-                                                                });
+                                                                });*/
                 var Permiso = new AR.Label(singlePoi.permisos, 0.08, {
                                                 zOrder: 1,
                                                 style: {
-                                                textColor: '#8E44AD'
+                                                textColor: '#8E44AD',
+                                                backgroundColor: '#FFFFFF'
                                                 },
                                                 translate: {
                                                 x: -0.6,
@@ -120,7 +122,7 @@ var World = {
          });
          //Uso Actual
 
-                         var titulouso = new AR.Label("Uso Actual:", 0.1, {
+                        /* var titulouso = new AR.Label("Uso Actual:", 0.1, {
                                                                          zOrder: 1,
                                                                          style: {
                                                                          textColor: '#229954'
@@ -130,11 +132,12 @@ var World = {
                                                                          y: -0.1,
                                                                          z: 0
                                                                          }
-                                                                         });
+                                                                         });*/
                          var Uso = new AR.Label(singlePoi.usoActual, 0.08, {
                                                          zOrder: 1,
                                                          style: {
-                                                         textColor: '#229954'
+                                                         textColor: '#229954',
+                                                         backgroundColor: '#FFFFFF'
                                                          },
                                                          translate: {
                                                          x: -0.5,
@@ -152,7 +155,7 @@ var World = {
 
                   });
                   //impacto positivo
-          var titulopositivo = new AR.Label("Impacto Positivo:", 0.08, {
+        /*  var titulopositivo = new AR.Label("Impacto Positivo:", 0.08, {
                               zOrder: 1,
                               style: {
                               textColor: '#5DADE2'
@@ -162,11 +165,12 @@ var World = {
                               y: 0.7,
                              z: 0
                               }
-                             });
+                             });*/
                              var Positivo = new AR.Label(singlePoi.impactoPositivo, 0.08, {
                                                              zOrder: 1,
                                                              style: {
-                                                             textColor: '#5DADE2'
+                                                             textColor: '#5DADE2',
+                                                             backgroundColor: '#FFFFFF'
                                                              },
                                                              translate: {
                                                              x: 0.7,
@@ -184,7 +188,7 @@ var World = {
 
                       });
                       //impacto negativo
-                      var titulonegativo = new AR.Label("Impacto Negativo:", 0.08, {
+                      /*var titulonegativo = new AR.Label("Impacto Negativo:", 0.08, {
                                                     zOrder: 1,
                                                     style: {
                                                     textColor: '#EC7063'
@@ -194,11 +198,12 @@ var World = {
                                                     y: 0.3,
                                                    z: 0
                                                     }
-                                                   });
+                                                   });*/
                     var Negativo = new AR.Label(singlePoi.impactoNegativo, 0.08, {
                                                    zOrder: 1,
                                                      style: {
-                                                       textColor: '#EC7063'
+                                                       textColor: '#EC7063',
+                                                       backgroundColor: '#FFFFFF'
                                                     },
                                                translate: {
                                                x: 0.7,
@@ -244,63 +249,39 @@ var World = {
                              var Sabado = new AR.Label("Sabado: "+singlePoi.horario.Sabado.horaInicio+"-"+singlePoi.horario.Sabado.horaSalida
                              , 0.05, {zOrder: 1,style: {textColor: '#17202A',backgroundColor: '#FFFFFF'}, translate: {x: 0.5,y: -0.4,z: 0} });
 
-                           /* var imgDos= new AR.ImageResource("https://www.google.com.ec/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiugdeIkqrcAhURpFkKHU0yA-IQjRx6BAgBEAU&url=https%3A%2F%2Fbusiness.facebook.com%2Fmunicipiodelatacunga%2F&psig=AOvVaw2sRHXyFLX0mJ26_Z-qmshI&ust=1532054540143190");
-                                         var overlaytiempo = new AR.ImageDrawable(imgDos, 0.5, {
-                                         			translate: {
-                                         				x:0.5,
-                                         				y:-0.4,
-                                         				z:0.5
-                                         			}
-
-                                         });*/
-                             /*var descripcion = new AR.Model("assets/love.wt3", {
-                                                onLoaded: this.loadingStep,
-                                                scale: {
-                                                    x: 0.002,
-                                                    y: 0.002,
-                                                    z: 0.002
-                                                },
-                                                translate: {
-                                                    x: 0,
-                                                    y: 1.7,
-                                                    z: 0.0
-                                                },
-                                                 rotate: {
-                                                 x: -90
-                                                 },
-                                                 onClick : function () {
-                                                   document.getElementById("info").setAttribute("class", "info");
-                                                   document.getElementById("name").innerHTML = singlePoi.name;
-                                                   document.getElementById("descripcion").innerHTML = singlePoi.description;
-                                                   document.getElementById("info").setAttribute("class", "infoVisible");
-                                                  }
-                                            });*/
-
                               var imgDescripcion= new AR.ImageResource("assets/descripcion.png");
-                                                                       var overlaydescripcion = new AR.ImageDrawable(imgDescripcion, 0.1, {
-                                                                       			translate: {
-                                                                       				x:0,
-                                                                       				y:0.8,
-                                                                       				z:0
-                                                                       			},
-                                                                                    onClick : function () {
-                                                                                       document.getElementById("info").setAttribute("class", "info");
-                                                                                       document.getElementById("name").innerHTML = singlePoi.name;
-                                                                                       document.getElementById("descripcion").innerHTML = singlePoi.description;
-                                                                                       document.getElementById("info").setAttribute("class", "infoVisible");
-                                                                                       }
-
-                                                                       });
-
+                             var overlaydescripcion = new AR.ImageDrawable(imgDescripcion, 0.1, {
+                                              translate: {
+                                              x:0,
+                                              y:0.8,
+                                              z:0
+                                              },
+                             onClick : function () {
+                              document.getElementById("info").setAttribute("class", "info");
+                              document.getElementById("name").innerHTML = singlePoi.name;
+                              document.getElementById("descripcion").innerHTML = singlePoi.description;
+                              document.getElementById("info").setAttribute("class", "infoVisible");
+                              }
+                               });
+//create a new html drawable and pass some setup parameters to it
+var htmlDrawable = new AR.HtmlDrawable({
+html:"<head><style> div {border: 1px solid gray; padding: 8px; width: 500px; font-size: 10px; overflow-y: scroll; background: white; } h1 { text-align: center;text-transform: uppercase; color: #FDFEFE;} p {text-indent: 50px; text-align: justify;letter-spacing: 3px; color: #000000 ;}</style></head> <body> <div><p>"+singlePoi.description+"</div></body>"
+}, 5, {
+  translate : { x: -2,
+   y:-3,
+   z:0},
+  horizontalAnchor : AR.CONST.HORIZONTAL_ANCHOR.LEFT,
+  opacity : 0.9
+});
                        //areglo de objetos visualizados
 
 
-                                     drawables=[overlaydescripcion, Titulo,titulodireccion,Direccion,overlaydireccion,
-                                                       titulopermiso, Permiso,overlaypermiso,
-                                                       titulouso,Uso,overlayuso,
-                                                       titulopositivo, Positivo, overlaypositivo,
-                                                       titulonegativo, Negativo, overlaynegativo, titulohorario,
-                                                       Domingo,Lunes, Martes,Miercoles,Jueves,Viernes,Sabado]
+                                     drawables=[overlaydescripcion, Titulo,Direccion,overlaydireccion,
+                                                        Permiso,overlaypermiso,
+                                                       Uso,overlayuso,
+                                                        Positivo, overlaypositivo,
+                                                        Negativo, overlaynegativo, titulohorario,
+                                                       Domingo,Lunes, Martes,Miercoles,Jueves,Viernes,Sabado,htmlDrawable]
                                 this.objectTrackable = new AR.ObjectTrackable(this.tracker, singlePoi.targetName, {
                                     drawables: {
                                         cam: drawables
