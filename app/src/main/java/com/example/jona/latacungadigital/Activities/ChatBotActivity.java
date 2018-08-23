@@ -13,6 +13,7 @@ import com.example.jona.latacungadigital.Activities.Clases.CharacterClass;
 import com.example.jona.latacungadigital.Activities.Fragments.ChatTextFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.DialogAppFragment;
 import com.example.jona.latacungadigital.Activities.Fragments.MapaFragment;
+import com.example.jona.latacungadigital.Activities.Permisos.AccesoInternet;
 import com.example.jona.latacungadigital.Activities.References.ChatBotReferences;
 import com.example.jona.latacungadigital.Activities.modelos.TextMessageModel;
 import com.example.jona.latacungadigital.R;
@@ -88,19 +89,21 @@ public class ChatBotActivity extends AppCompatActivity implements ChatTextFragme
                 break;
             case ChatBotReferences.DIALOG_CHANGE_CHARACTER:
                 // Proceso para cambiar de personaje del ChatBot.
-                String keyCharacter = chatFragment.getDialogAppFragment().getCharacterAdapter().getKeyCharacter();
-                CharacterClass characterClass = new CharacterClass();
+                if (AccesoInternet.getInstance(getApplicationContext()).isOnline()) {
+                    String keyCharacter = chatFragment.getDialogAppFragment().getCharacterAdapter().getKeyCharacter();
+                    CharacterClass characterClass = new CharacterClass();
 
-                if (chatFragment.getDialogAppFragment().getCharacterAdapter().getPoisitionList() != -1) {
-                    characterClass.updateKeyCharacterSeletedFormUser(keyCharacter);
+                    if (chatFragment.getDialogAppFragment().getCharacterAdapter().getPoisitionList() != -1) {
+                        characterClass.updateKeyCharacterSeletedFormUser(keyCharacter);
 
-                    // Proceso para obtener el genero del personaje cuando el usuario decida cambiar este.
-                    characterClass.getGenreCharacterFormChanged(keyCharacter, new CharacterClass.GenreCharacterFromChanged() {
-                        @Override
-                        public void genreCharacterFromChanged(String genreCharacter) {
-                            chatFragment.getDialogflowClass().setGenreCharacter(genreCharacter);
-                        }
-                    });
+                        // Proceso para obtener el genero del personaje cuando el usuario decida cambiar este.
+                        characterClass.getGenreCharacterFormChanged(keyCharacter, new CharacterClass.GenreCharacterFromChanged() {
+                            @Override
+                            public void genreCharacterFromChanged(String genreCharacter) {
+                                chatFragment.getDialogflowClass().setGenreCharacter(genreCharacter);
+                            }
+                        });
+                    }
                 }
                 break;
         }

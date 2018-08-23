@@ -399,8 +399,10 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback,
             ehFiltro.setVisibility(View.GONE);
         }
 
-        if (isSerchFromChatBot){
+        // Cocultar visibilidad del filto del clima y de los atractivos si es peticion del chatbot.
+        if (isSerchFromChatBot) {
             fabClima.setVisibility(View.GONE);
+            ehFiltro.setVisibility(View.GONE);
         }
 
         // Obtener argumentos de las notificaciones

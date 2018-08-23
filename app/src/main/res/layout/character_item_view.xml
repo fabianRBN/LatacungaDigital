@@ -16,6 +16,7 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/characterImage"
             android:layout_width="50dp"
+            android:src="@drawable/ic_chat_bot_profile_default"
             android:layout_height="50dp" />
 
         <TextView
