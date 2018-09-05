@@ -60,18 +60,7 @@ var World = {
                             				z: 0
                             			}
                             		});
-               /* var Titulo = new AR.Label(singlePoi.name, 0.2, {
-                                                         opacity: 0.9,
-                                                         zOrder: 1,
-                                                         style: {
-                                                             textColor: '#FFFFFF'
-                                                         },
-                                                         translate: {
-                                                           x: 0,
-                                                           y: 1,
-                                                           z: 0
-                                                         }
-                                                     });
+               /*
                  //direccion
                 var titulodireccion = new AR.Label("Dirección:", 0.1, {
                                                                 zOrder: 1,
