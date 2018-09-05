@@ -7,6 +7,7 @@ var ServerInformation = {
 };
 var World = {
     // you may request new data from server periodically, however: in this sample data is only requested once
+
     isRequestingData: false,
     objectInfo: null,
     // true once data was fetched
@@ -14,6 +15,8 @@ var World = {
     loaded: false,
     drawables: [],
     init: function initFn(poiData) {
+    //limpiar el entorno AR
+                   AR.context.destroyAll () ;
         this.targetCollectionResource = new AR.TargetCollectionResource("assets/Latacunga.wto", {
                 });
 
@@ -40,7 +43,24 @@ var World = {
                 				"horario":poiData[i].horario,
                 				"direccion":poiData[i].direccion
                 			};
-                var Titulo = new AR.Label(singlePoi.name, 0.2, {
+
+                			var Titulo = new AR.Model("assets/"+singlePoi.targetName+".wt3", {
+                            			onLoaded: this.loadingStep,
+                            			scale: {
+                            				x: 0.005,
+                            				y: 0.005,
+                            				z: 0.005
+                            			},
+                            			translate: {
+                            				x: 0.0,
+                            				y: 1,
+                            				z: 0.0
+                            			},
+                            			rotate: {
+                            				z: 0
+                            			}
+                            		});
+               /* var Titulo = new AR.Label(singlePoi.name, 0.2, {
                                                          opacity: 0.9,
                                                          zOrder: 1,
                                                          style: {
@@ -53,7 +73,7 @@ var World = {
                                                          }
                                                      });
                  //direccion
-                /*var titulodireccion = new AR.Label("Dirección:", 0.1, {
+                var titulodireccion = new AR.Label("Dirección:", 0.1, {
                                                                 zOrder: 1,
                                                                 style: {
                                                                 textColor: '#48C9B0'
@@ -266,16 +286,14 @@ var World = {
                                               x:0,
                                               y:0.8,
                                               z:0
-                                              },
-                             onClick : function () {
-                              document.getElementById("info").setAttribute("class", "info");
-                              document.getElementById("name").innerHTML = singlePoi.name;
-                              document.getElementById("descripcion").innerHTML = singlePoi.description;
-                              document.getElementById("info").setAttribute("class", "infoVisible");
-                              }
+                                              }
+
                                });
+
+
+
 //create a new html drawable and pass some setup parameters to it
-var htmlDrawable = new AR.HtmlDrawable({
+/*var htmlDrawable = new AR.HtmlDrawable({
 html:"<head><style> div {border: 1px solid gray; padding: 8px; width: 500px; font-size: 10px; overflow-y: scroll; background: white; } h1 { text-align: center;text-transform: uppercase; color: #FDFEFE;} p {text-indent: 50px; text-align: justify;letter-spacing: 3px; color: #000000 ;}</style></head> <body> <div><p>"+singlePoi.description+"</div></body>"
 }, 5, {
   translate : { x: -2,
@@ -283,7 +301,7 @@ html:"<head><style> div {border: 1px solid gray; padding: 8px; width: 500px; fon
    z:0},
   horizontalAnchor : AR.CONST.HORIZONTAL_ANCHOR.LEFT,
   opacity : 0.9
-});
+});*/
                        //areglo de objetos visualizados
 
 
@@ -292,7 +310,7 @@ html:"<head><style> div {border: 1px solid gray; padding: 8px; width: 500px; fon
                                                        Uso,overlayuso,
                                                         Positivo, overlaypositivo,
                                                         Negativo, overlaynegativo, titulohorario,
-                                                       Domingo,Lunes, Martes,Miercoles,Jueves,Viernes,Sabado,htmlDrawable]
+                                                       Domingo,Lunes, Martes,Miercoles,Jueves,Viernes,Sabado]
                                 this.objectTrackable = new AR.ObjectTrackable(this.tracker, singlePoi.targetName, {
                                     drawables: {
                                         cam: drawables
@@ -301,7 +319,13 @@ html:"<head><style> div {border: 1px solid gray; padding: 8px; width: 500px; fon
                                     onObjectLost: this.objectLost,
                                     onError: function(errorMessage) {
                                         alert(errorMessage);
-                                    }
+                                    },
+                                    onClick : function () {
+                                    document.getElementById("info").setAttribute("class", "info");
+                                    document.getElementById("name").innerHTML = "Hola";
+                                    //document.getElementById("descripcion").innerHTML = singlePoi.description;
+                                    document.getElementById("info").setAttribute("class", "infoVisible");
+                                                                  }
                                 });
                                 AR.context.onScreenClick = this.screenClick;
                 }
@@ -316,6 +340,7 @@ html:"<head><style> div {border: 1px solid gray; padding: 8px; width: 500px; fon
         World.setAugmentationsEnabled(true);
     },
     objectLost: function objectLostFn() {
+        document.getElementById("info").setAttribute("class", "info");
         World.setAugmentationsEnabled(false);
     },
     setAugmentationsEnabled: function setAugmentationsEnabledFn(enabled) {

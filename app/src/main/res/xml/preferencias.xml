@@ -5,15 +5,15 @@
 
         <CheckBoxPreference
             android:key="notificacionAtractivo"
-            android:title="Notificacion de Atractivos"
-            android:summary="Activar o desactivar notificaciones de atractivos cercanos al usuario"
+            android:title="Notificación de los Atractivos"
+            android:summary="Activar o desactivar notificaciones de los atractivos cercanos al usuario"
             >
         </CheckBoxPreference>
 
         <CheckBoxPreference
             android:key="databaselocal"
-            android:title="Datos sin conexio a internet"
-            android:summary="Permite guardar informacion de los atractivos en la memoria de su dispositivo para "
+            android:title="Datos sin conexión a Internet"
+            android:summary="Permite guardar informacion de los atractivos en la memoria de su dispositivo para tener información en todo momento "
             >
         </CheckBoxPreference>
 
@@ -27,7 +27,7 @@
         <ListPreference
             android:key="modoViaje"
             android:title="Modos de viaje"
-            android:summary="Determina el medio de transporque en el cual viajas, esto servira para calcular la trayectoria al atractivo"
+            android:summary="Determina el medio de transporte en el cual viajar, esto servirá para calcular la trayectoria al atractivo"
             android:dialogTitle="Indica el modo de viaje"
             android:entries="@array/transportes"
             android:entryValues="@array/codigoTransporte"

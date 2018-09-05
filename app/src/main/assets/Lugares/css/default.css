@@ -81,10 +81,9 @@ tr {
 #info {
 	display: inline-block;
 	background-color: rgba(34,34,34,0.75);
-	bottom: 100px;
-	left: 100px;
+	bottom: 0;
 	position: absolute;
-	width: 60%;
+	width: 100%;
 	border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     border-bottom-left-radius: 20px;
