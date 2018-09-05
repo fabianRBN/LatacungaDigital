@@ -61,7 +61,7 @@ var World = {
                             			}
                             		});
                /*
-                 //direccion
+                 direccion
                 var titulodireccion = new AR.Label("Dirección:", 0.1, {
                                                                 zOrder: 1,
                                                                 style: {
